@@ -29,11 +29,12 @@ export default function AvatarPreview({ deck, score, theme }: Props) {
   }
 
   return (
-    <div className="glass-strong rounded-3xl p-4 relative overflow-hidden">
+    <div className="glass-holo rounded-3xl p-4 relative overflow-hidden" style={{ borderRadius:'24px' }}>
       {/* Decorative background gradient */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-0 left-0 w-32 h-32 bg-pink-500 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500 rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-25 pointer-events-none">
+        <div className="absolute top-0 left-0 w-32 h-32 bg-pink-400 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-24 h-24 bg-violet-500 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 right-4 w-16 h-16 bg-sky-400 rounded-full blur-2xl" />
       </div>
 
       <div className="relative flex items-center gap-6">
@@ -112,18 +113,23 @@ export default function AvatarPreview({ deck, score, theme }: Props) {
 
           <motion.div
             key={score}
-            initial={{ scale: 1.2 }}
+            initial={{ scale: 1.25 }}
             animate={{ scale: 1 }}
-            className={`text-3xl font-black ${getScoreColor(score)} mb-1`}
+            className={`font-black mb-1 ${getScoreColor(score)}`}
+            style={{
+              fontSize: '2rem',
+              textShadow: score >= 90 ? '0 0 12px rgba(255,215,0,0.7)' : score >= 70 ? '0 0 10px rgba(192,132,252,0.7)' : 'none',
+            }}
           >
             {score > 0 ? `${score}pt` : '--'}
           </motion.div>
 
-          <p className={`text-sm font-bold ${getScoreColor(score)}`}>
+          <p className={`text-sm font-black ${getScoreColor(score)}`}
+            style={{ textShadow: score >= 50 ? '0 0 8px currentColor' : 'none' }}>
             {getScoreLabel(score)}
           </p>
 
-          <p className="text-white/40 text-xs mt-1">
+          <p className="text-white/45 text-xs mt-1 font-semibold">
             {filledCount}/5 スロット装填済み
           </p>
         </div>

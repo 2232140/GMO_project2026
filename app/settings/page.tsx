@@ -170,7 +170,7 @@ export default function SettingsPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-3 glass-strong rounded-2xl p-4"
+              className="mt-3 glass-holo rounded-2xl p-4"
             >
               <div className="flex items-start gap-2">
                 <span className="text-2xl flex-shrink-0">🤖</span>

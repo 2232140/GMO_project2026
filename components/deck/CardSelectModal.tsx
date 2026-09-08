@@ -70,14 +70,15 @@ export default function CardSelectModal({ category, onSelect, onClose, currentCa
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 80, opacity: 0, scale: 0.96 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="relative w-full max-w-2xl mx-4 mb-0 sm:mb-4 glass-strong rounded-t-3xl sm:rounded-3xl overflow-hidden"
-          style={{ maxHeight: '85vh' }}
+          className="relative w-full max-w-2xl mx-4 mb-0 sm:mb-4 glass-holo rounded-t-3xl sm:rounded-3xl overflow-hidden"
+          style={{ maxHeight: '85vh', borderRadius:'28px 28px 0 0' }}
         >
           {/* Header */}
-          <div className="relative p-4 pb-3 border-b border-white/10">
+          <div className="relative p-4 pb-3 border-b border-white/15">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-black text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-yellow-300" />
+              <h2 className="text-lg font-black flex items-center gap-2"
+                style={{ background:'linear-gradient(90deg,#ffd700,#ff69b4,#c084fc)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+                <Sparkles className="w-5 h-5 text-yellow-300 flex-shrink-0" style={{WebkitTextFillColor:'#fcd34d'}} />
                 カードを選択
               </h2>
               <button
@@ -107,10 +108,10 @@ export default function CardSelectModal({ category, onSelect, onClose, currentCa
                   <button
                     key={tab.key}
                     onClick={() => setCosmeTab(tab.key)}
-                    className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black transition-all ${
                       cosmeTab === tab.key
-                        ? 'bg-pink-500/80 text-white shadow-lg shadow-pink-500/30'
-                        : 'glass text-white/60 hover:text-white hover:bg-white/10'
+                        ? 'btn-puffy-pink text-white'
+                        : 'glass text-white/65 hover:text-white hover:bg-white/15'
                     }`}
                   >
                     <span>{tab.emoji}</span>

@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, Save, ChevronLeft, Wand2, Star } from 'lucide-react'
+import { Sparkles, Save, ChevronLeft, Wand2, Star, Gem } from 'lucide-react'
+import SparkleDecor from '@/components/ui/SparkleDecor'
 import { useRouter } from 'next/navigation'
 import { Deck, CardCategory, ItemCard } from '@/lib/types'
 import { SLOT_CONFIG, MOCK_ITEM_CARDS, AI_COORD_THEMES } from '@/lib/mockData'
@@ -91,13 +92,14 @@ export default function DeckScreen() {
           <span className="text-sm font-medium">ホーム</span>
         </button>
 
-        <div className="text-center">
-          <h1 className="text-base font-black text-white flex items-center gap-1.5">
-            <Star className="w-4 h-4 text-yellow-300" />
+        <div className="text-center relative">
+          <h1 className="text-base font-black flex items-center gap-1.5"
+            style={{ background:'linear-gradient(90deg,#ffd700,#ff69b4,#c084fc)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+            <Star className="w-4 h-4 text-yellow-300 flex-shrink-0" style={{WebkitTextFillColor:'#fcd34d'}} />
             デッキ・フィッティング
-            <Star className="w-4 h-4 text-yellow-300" />
+            <Star className="w-4 h-4 text-yellow-300 flex-shrink-0" style={{WebkitTextFillColor:'#fcd34d'}} />
           </h1>
-          <p className="text-white/40 text-xs">カードをスロットにセット！</p>
+          <p className="text-white/50 text-xs font-semibold">カードをスロットにセット！</p>
         </div>
 
         <div className="w-16" />
@@ -114,13 +116,15 @@ export default function DeckScreen() {
         </motion.div>
 
         {/* Card Slots */}
-        <div className="glass-strong rounded-3xl p-4 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-pink-500 rounded-full blur-3xl" />
+        <div className="glass-holo rounded-3xl p-4 relative overflow-hidden" style={{ borderRadius:'24px' }}>
+          <div className="absolute inset-0 opacity-15 pointer-events-none">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-pink-400 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-violet-500 rounded-full blur-3xl" />
           </div>
 
           <div className="relative">
-            <p className="text-white/50 text-xs font-bold mb-4 text-center tracking-widest uppercase">
+            <p className="text-xs font-black mb-4 text-center tracking-widest"
+              style={{ background:'linear-gradient(90deg,#ff69b4,#c084fc,#7dd3fc)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
               ✦ 5つのスロット ✦
             </p>
 
@@ -156,62 +160,60 @@ export default function DeckScreen() {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
+          {/* AI ボタン */}
           <motion.button
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.97, y: 4 }}
             onClick={handleAIRecommend}
             disabled={isAILoading}
-            className="w-full py-4 rounded-2xl btn-glow-purple font-black text-white text-base flex items-center justify-center gap-2 relative overflow-hidden"
+            className="w-full py-4 rounded-2xl btn-puffy-purple font-black text-white text-base flex items-center justify-center gap-2 relative disabled:opacity-60"
+            style={{ borderRadius: '18px' }}
           >
+            <SparkleDecor variant="button" />
             {isAILoading ? (
               <>
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                >
-                  <Sparkles className="w-5 h-5" />
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                  <Sparkles className="w-5 h-5 relative z-10" />
                 </motion.div>
-                <span>AIがコーデを考え中…</span>
+                <span className="relative z-10">AIがコーデを考え中…</span>
+                <motion.div
+                  className="absolute inset-0 opacity-30 rounded-2xl"
+                  style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }}
+                  animate={{ x: ['-100%', '200%'] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                />
               </>
             ) : (
               <>
-                <Wand2 className="w-5 h-5" />
-                <span>✨ AIおすすめを呼び出す</span>
+                <Wand2 className="w-5 h-5 relative z-10" style={{ filter:'drop-shadow(0 1px 3px rgba(0,0,0,0.4))' }} />
+                <span className="relative z-10" style={{ textShadow:'0 1px 4px rgba(0,0,0,0.35)' }}>
+                  ✨ AIおすすめを呼び出す
+                </span>
               </>
-            )}
-
-            {/* Animated background */}
-            {isAILoading && (
-              <motion.div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
-                }}
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              />
             )}
           </motion.button>
 
+          {/* 変身完了ボタン */}
           <motion.button
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.97, y: 4 }}
             onClick={handleSave}
             disabled={isSaving || Object.values(deck).filter(Boolean).length === 0}
-            className="w-full py-4 rounded-2xl btn-glow-pink font-black text-white text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed relative overflow-hidden"
+            className="w-full py-4 rounded-2xl btn-puffy-pink font-black text-white text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed relative"
+            style={{ borderRadius: '18px' }}
           >
+            <SparkleDecor variant="button" />
             {isSaving ? (
               <>
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-                >
-                  <Star className="w-5 h-5 text-yellow-300" />
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}>
+                  <Gem className="w-5 h-5 text-yellow-200 relative z-10" />
                 </motion.div>
-                <span>変身中…！</span>
+                <span className="relative z-10">✨ 変身中…！</span>
               </>
             ) : (
               <>
-                <Save className="w-5 h-5" />
-                <span>💾 デッキ保存 / 今日の変身完了！</span>
+                <Save className="w-5 h-5 relative z-10" style={{ filter:'drop-shadow(0 1px 3px rgba(0,0,0,0.4))' }} />
+                <span className="relative z-10" style={{ textShadow:'0 1px 4px rgba(0,0,0,0.35)' }}>
+                  💖 デッキ保存 / 今日の変身完了！
+                </span>
               </>
             )}
           </motion.button>

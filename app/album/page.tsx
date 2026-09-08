@@ -27,11 +27,12 @@ export default function AlbumPage() {
           <span className="text-sm font-medium">ホーム</span>
         </button>
         <div className="text-center">
-          <h1 className="text-base font-black text-white flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4 text-amber-300" />
+          <h1 className="text-base font-black flex items-center gap-1.5"
+            style={{ background:'linear-gradient(90deg,#ffd700,#ff69b4)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+            <BookOpen className="w-4 h-4 text-amber-300 flex-shrink-0" style={{WebkitTextFillColor:'#fcd34d'}} />
             コレクションアルバム
           </h1>
-          <p className="text-white/40 text-xs">あなたのカード帳</p>
+          <p className="text-white/45 text-xs font-semibold">あなたのカード帳 ✦</p>
         </div>
         <div className="w-16" />
       </header>
@@ -47,8 +48,8 @@ export default function AlbumPage() {
             onClick={() => setTab(t.key)}
             className={`flex-1 py-2.5 rounded-2xl text-sm font-black transition-all flex items-center justify-center gap-1.5 ${
               tab === t.key
-                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg shadow-pink-500/30'
-                : 'glass text-white/50 hover:text-white hover:bg-white/10'
+                ? 'btn-puffy-pink text-white'
+                : 'glass text-white/55 hover:text-white hover:bg-white/12'
             }`}
           >
             <span>{t.emoji}</span>
@@ -169,7 +170,8 @@ export default function AlbumPage() {
               animate={{ scale: 1, rotateY: 0 }}
               exit={{ scale: 0.6, rotateY: 90 }}
               transition={{ type: 'spring', stiffness: 250, damping: 25 }}
-              className="relative glass-strong rounded-3xl p-6 max-w-sm w-full"
+              className="relative glass-holo rounded-3xl p-6 max-w-sm w-full"
+              style={{ borderRadius:'24px' }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -246,7 +248,8 @@ export default function AlbumPage() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 30 }}
               transition={{ type: 'spring', stiffness: 250, damping: 25 }}
-              className="relative glass-strong rounded-3xl p-5 max-w-sm w-full"
+              className="relative glass-holo rounded-3xl p-5 max-w-sm w-full"
+              style={{ borderRadius:'24px' }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
