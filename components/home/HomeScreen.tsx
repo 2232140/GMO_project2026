@@ -4,14 +4,13 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { Settings } from 'lucide-react'
 
-/* ━━━ 3枚のサンプルカード ━━━ */
+/* ━━━ 3枚のサンプルカード（同一ピボットから扇状） ━━━ */
 const SAMPLE_CARDS = [
-  { src: '/img/dress.png',  label: 'トップス', rotate: -10, x: -76, z: 1, floatDelay: 0.0  },
-  { src: '/img/shoes.png',  label: 'シューズ', rotate:   0, x:   0, z: 3, floatDelay: 0.45 },
-  { src: '/img/cosme.png',  label: 'コスメ',   rotate:  10, x:  76, z: 2, floatDelay: 0.22 },
+  { src: '/img/dress.png', label: 'トップス', rotate: -8, z: 1, floatDelay: 0.0  },
+  { src: '/img/shoes.png', label: 'シューズ', rotate:  0, z: 3, floatDelay: 0.45 },
+  { src: '/img/cosme.png', label: 'コスメ',   rotate:  8, z: 2, floatDelay: 0.22 },
 ]
 
-/* ━━━ 共通スタイル定数 ━━━ */
 const ZEN_FONT = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
 
 const OUTLINE = {
@@ -24,25 +23,33 @@ const OUTLINE = {
   ].join(', '),
 }
 
+const CARD_W = 148
+const CARD_H = 207
+
 export default function HomeScreen() {
   const router = useRouter()
 
   return (
+    /* position: fixed で viewport を完全に占有 → ボディスクロール完全防止 */
     <div
-      className="min-h-screen relative"
       style={{
+        position: 'fixed',
+        inset: 0,
+        overflow: 'hidden',
         backgroundImage: "url('/img/wall.jpeg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center top',
-        backgroundAttachment: 'fixed',
         backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* ━━━ スマホ幅コンテナ (max 430px / 中央寄せ) ━━━ */}
-      <div className="mx-auto w-full min-h-screen flex flex-col" style={{ maxWidth: 430 }}>
+      {/* ━━━ スマホ幅コンテナ (max 430px / 中央寄せ / 全高) ━━━ */}
+      <div
+        className="mx-auto w-full h-full flex flex-col"
+        style={{ maxWidth: 430 }}
+      >
 
-        {/* ━━━ 設定ボタン ━━━ */}
-        <header className="relative z-20 flex justify-end px-4 pt-4">
+        {/* ━━━ ヘッダー：設定ボタン ━━━ */}
+        <header className="flex-shrink-0 relative z-20 flex justify-end px-4 pt-3 pb-0">
           <motion.button
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -50,7 +57,7 @@ export default function HomeScreen() {
             whileTap={{ scale: 0.94 }}
             onClick={() => router.push('/settings')}
             className="relative"
-            style={{ width: 120 }}
+            style={{ width: 110 }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/Logo_Frame.png" alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
@@ -63,10 +70,12 @@ export default function HomeScreen() {
           </motion.button>
         </header>
 
-        <div className="relative z-20 flex flex-col items-center px-3 pb-10">
+        {/* ━━━ メインコンテンツ ━━━ */}
+        <div className="flex-1 relative z-20 flex flex-col items-center px-3 overflow-hidden">
 
-          {/* ━━━ ロゴ (88% 幅) ━━━ */}
+          {/* ロゴ */}
           <motion.div
+            className="flex-shrink-0"
             initial={{ opacity: 0, y: -28, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.65, type: 'spring', stiffness: 130 }}
@@ -75,32 +84,32 @@ export default function HomeScreen() {
             <img
               src="/img/logo.png"
               alt="MIRROR GRAPH"
-              style={{ width: 'min(400px, 88vw)', height: 'auto', display: 'block' }}
+              style={{ width: 'min(360px, 84vw)', height: 'auto', display: 'block' }}
             />
           </motion.div>
 
-          {/* ━━━ カードファン（3枚 / -10・0・+10deg) ━━━ */}
+          {/* ━━━ カードファン（3枚 / 同一底辺ピボットから扇状に回転） ━━━ */}
           <motion.div
             initial={{ opacity: 0, scale: 0.82, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 0.18, type: 'spring', stiffness: 110 }}
-            className="relative w-full mb-7"
-            style={{ height: 268 }}
+            className="flex-1 relative w-full"
+            style={{ minHeight: 180 }}
           >
             {SAMPLE_CARDS.map((card, i) => (
               <motion.div
                 key={i}
                 className="absolute"
                 style={{
-                  width: 160,
-                  height: 224,
+                  width: CARD_W,
+                  height: CARD_H,
                   left: '50%',
-                  top: 0,
-                  marginLeft: -80,
-                  transform: `translateX(${card.x}px) rotate(${card.rotate}deg)`,
+                  bottom: 16,
+                  marginLeft: -(CARD_W / 2),
+                  /* 全カード同一ピボット点から rotate のみで扇状に展開 */
+                  transform: `rotate(${card.rotate}deg)`,
                   transformOrigin: 'bottom center',
                   zIndex: card.z,
-                  opacity: 1,
                   filter: 'drop-shadow(0 12px 22px rgba(120,40,180,0.55))',
                 }}
                 animate={{ y: [0, -(5 + i * 2), 0] }}
@@ -111,14 +120,14 @@ export default function HomeScreen() {
                   delay: card.floatDelay,
                 }}
               >
-                {/* 白背景（透過完全防止） */}
+                {/* 白背景（透過防止） */}
                 <div style={{
                   position: 'absolute', inset: 0,
                   borderRadius: 10,
                   background: 'white',
                   zIndex: 0,
                 }} />
-                {/* イラスト（フレームの背後） */}
+                {/* イラスト */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={card.src}
@@ -133,7 +142,7 @@ export default function HomeScreen() {
                     pointerEvents: 'none',
                   }}
                 />
-                {/* カードフレーム（前面）*/}
+                {/* カードフレーム（前面） */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/img/Card_Frame.png"
@@ -153,7 +162,7 @@ export default function HomeScreen() {
           </motion.div>
 
           {/* ━━━ ボタン群 ━━━ */}
-          <div className="w-full flex flex-col gap-4 px-1">
+          <div className="flex-shrink-0 w-full flex flex-col gap-3 px-1">
 
             {/* メインボタン: 今日のデッキを組む */}
             <motion.button
@@ -164,7 +173,6 @@ export default function HomeScreen() {
               onClick={() => router.push('/deck')}
               className="relative w-full"
             >
-              {/* Logo_Frame を自然なアスペクト比で表示（引き伸ばしなし） */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/img/Logo_Frame.png"
@@ -174,7 +182,7 @@ export default function HomeScreen() {
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
                 <p className="font-black leading-tight" style={{
                   fontFamily: ZEN_FONT,
-                  fontSize: 'clamp(1.15rem, 5.5vw, 1.45rem)',
+                  fontSize: 'clamp(1.1rem, 5.2vw, 1.4rem)',
                   color: '#3a1890',
                   ...OUTLINE,
                 }}>
@@ -182,7 +190,7 @@ export default function HomeScreen() {
                 </p>
                 <p className="font-bold" style={{
                   fontFamily: ZEN_FONT,
-                  fontSize: 'clamp(0.72rem, 3.2vw, 0.88rem)',
+                  fontSize: 'clamp(0.68rem, 3vw, 0.84rem)',
                   color: '#6848b0',
                   textShadow: '0 1px 3px rgba(255,255,255,0.95)',
                 }}>
@@ -192,7 +200,7 @@ export default function HomeScreen() {
             </motion.button>
 
             {/* サブボタン 2列 */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
 
               {/* カードをつくる */}
               <motion.button
@@ -210,9 +218,8 @@ export default function HomeScreen() {
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center gap-2 px-2">
-                  {/* 魔法陣ペン (deco_2 左半分) */}
                   <div className="flex-shrink-0" style={{
-                    width: 36, height: 36,
+                    width: 32, height: 32,
                     backgroundImage: "url('/img/deco_2.png')",
                     backgroundSize: '200% auto',
                     backgroundPosition: '0% 50%',
@@ -220,7 +227,7 @@ export default function HomeScreen() {
                   }} />
                   <span className="font-black leading-tight text-left" style={{
                     fontFamily: ZEN_FONT,
-                    fontSize: 'clamp(0.72rem, 3.5vw, 0.9rem)',
+                    fontSize: 'clamp(0.68rem, 3.3vw, 0.88rem)',
                     color: '#3a1890',
                     ...OUTLINE,
                   }}>
@@ -245,9 +252,8 @@ export default function HomeScreen() {
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center gap-2 px-2">
-                  {/* バインダー (deco_2 右半分) */}
                   <div className="flex-shrink-0" style={{
-                    width: 36, height: 36,
+                    width: 32, height: 32,
                     backgroundImage: "url('/img/deco_2.png')",
                     backgroundSize: '200% auto',
                     backgroundPosition: '100% 50%',
@@ -255,7 +261,7 @@ export default function HomeScreen() {
                   }} />
                   <span className="font-black leading-tight text-left" style={{
                     fontFamily: ZEN_FONT,
-                    fontSize: 'clamp(0.72rem, 3.5vw, 0.9rem)',
+                    fontSize: 'clamp(0.68rem, 3.3vw, 0.88rem)',
                     color: '#3a1890',
                     ...OUTLINE,
                   }}>
@@ -272,7 +278,7 @@ export default function HomeScreen() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.9 }}
-            className="mt-8 text-sm font-black"
+            className="flex-shrink-0 text-sm font-black py-3"
             style={{
               fontFamily: ZEN_FONT,
               color: '#9060c0',
