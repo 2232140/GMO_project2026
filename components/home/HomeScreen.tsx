@@ -20,78 +20,87 @@ export default function HomeScreen() {
   const router = useRouter()
 
   return (
-    /* 背景: fixed で全画面を覆う */
+    /* 背景: fixed で全画面 / cover + center でスマホ縦長に最適化 */
     <div
       style={{
         position: 'fixed',
         inset: 0,
         backgroundImage: "url('/img/wall.jpeg')",
         backgroundSize: 'cover',
-        backgroundPosition: 'center top',
+        backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* ━━━ メインコンテナ: 100dvh / max-width 430px / space-between ━━━ */}
+      {/* ━━━ メインコンテナ ━━━
+          100dvh: スマホアドレスバー込みの実表示領域に固定
+          space-between: 要素を縦方向に均等分散
+          padding bottom 24px: 最下部ボタンが確実に見切れない余白 */}
       <div
         style={{
+          position: 'relative',
           height: '100dvh',
           maxWidth: 430,
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '12px 16px',
+          padding: '12px 16px 24px 16px',
+          boxSizing: 'border-box',
           overflow: 'hidden',
         }}
       >
 
-        {/* ① ヘッダー: 設定ボタン（右上） */}
-        <header style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            whileTap={{ scale: 0.94 }}
-            onClick={() => router.push('/settings')}
-            style={{ position: 'relative', width: 110 }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/img/Logo_Frame.png"
-              alt=""
-              style={{ width: '100%', height: 'auto', display: 'block' }}
-            />
-            <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            }}>
-              <Settings style={{ width: 16, height: 16, flexShrink: 0, color: '#5030a0' }} />
-              <span style={{ fontFamily: ZEN_FONT, fontSize: '0.875rem', fontWeight: 900, color: '#5030a0', ...OUTLINE }}>
-                設定
-              </span>
-            </div>
-          </motion.button>
-        </header>
+        {/* ① 設定ボタン: absolute で右上に浮かせる */}
+        <motion.button
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+          whileTap={{ scale: 0.94 }}
+          onClick={() => router.push('/settings')}
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            zIndex: 10,
+            width: 110,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/img/Logo_Frame.png"
+            alt=""
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}>
+            <Settings style={{ width: 16, height: 16, flexShrink: 0, color: '#5030a0' }} />
+            <span style={{ fontFamily: ZEN_FONT, fontSize: '0.875rem', fontWeight: 900, color: '#5030a0', ...OUTLINE }}>
+              設定
+            </span>
+          </div>
+        </motion.button>
 
-        {/* ② ロゴ */}
+        {/* ② ロゴ: 設定ボタンの下に収まるよう marginTop で押し下げ */}
         <motion.div
-          style={{ display: 'flex', justifyContent: 'center' }}
-          initial={{ opacity: 0, y: -24, scale: 0.88 }}
+          style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}
+          initial={{ opacity: 0, y: -20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, type: 'spring', stiffness: 130 }}
+          transition={{ duration: 0.55, type: 'spring', stiffness: 130 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/img/logo.png"
             alt="MIRROR GRAPH"
-            style={{ width: 'min(360px, 88%)', height: 'auto', display: 'block' }}
+            style={{ maxHeight: '12vh', width: 'auto', display: 'block' }}
           />
         </motion.div>
 
-        {/* ③ メインビジュアル: 横長3枚重ね画像 */}
+        {/* ③ メインビジュアル: hero-cards.png (max-height 25vh) */}
         <motion.div
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          initial={{ opacity: 0, scale: 0.88, y: 18 }}
+          initial={{ opacity: 0, scale: 0.88, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.15, type: 'spring', stiffness: 110 }}
         >
@@ -101,7 +110,7 @@ export default function HomeScreen() {
             alt="カードコレクション"
             style={{
               width: '100%',
-              maxHeight: '28vh',
+              maxHeight: '25vh',
               objectFit: 'contain',
               display: 'block',
               filter: 'drop-shadow(0 8px 24px rgba(120,40,180,0.55))',
@@ -109,14 +118,14 @@ export default function HomeScreen() {
           />
         </motion.div>
 
-        {/* ④⑤ ボタン群（メイン + サブ2列） */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* ④⑤ ボタン群: メインボタン + サブ2列 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
 
           {/* ④ メインボタン: 今日のデッキを組む */}
           <motion.button
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 180 }}
+            transition={{ delay: 0.28, type: 'spring', stiffness: 180 }}
             whileTap={{ scale: 0.97, y: 3 }}
             onClick={() => router.push('/deck')}
             style={{ position: 'relative', width: '100%' }}
@@ -132,22 +141,22 @@ export default function HomeScreen() {
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
             }}>
               <p style={{
+                margin: 0,
                 fontFamily: ZEN_FONT,
-                fontSize: 'clamp(1.1rem, 5.2vw, 1.4rem)',
+                fontSize: 'clamp(1.05rem, 5vw, 1.35rem)',
                 fontWeight: 900,
                 lineHeight: 1.2,
                 color: '#3a1890',
-                margin: 0,
                 ...OUTLINE,
               }}>
                 今日のデッキを組む
               </p>
               <p style={{
+                margin: 0,
                 fontFamily: ZEN_FONT,
-                fontSize: 'clamp(0.68rem, 3vw, 0.84rem)',
+                fontSize: 'clamp(0.65rem, 2.8vw, 0.82rem)',
                 fontWeight: 700,
                 color: '#6848b0',
-                margin: 0,
                 textShadow: '0 1px 3px rgba(255,255,255,0.95)',
               }}>
                 カードスロットを自分でセット ✦
@@ -155,14 +164,14 @@ export default function HomeScreen() {
             </div>
           </motion.button>
 
-          {/* ⑤ サブボタン 2列（1fr 1fr） */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {/* ⑤ サブボタン 2列 (1fr 1fr / gap 8px) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
 
             {/* カードをつくる */}
             <motion.button
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -18 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, type: 'spring', stiffness: 180 }}
+              transition={{ delay: 0.38, type: 'spring', stiffness: 180 }}
               whileTap={{ scale: 0.95, y: 2 }}
               onClick={() => router.push('/create')}
               style={{ position: 'relative', width: '100%' }}
@@ -175,10 +184,10 @@ export default function HomeScreen() {
               />
               <div style={{
                 position: 'absolute', inset: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '0 6px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '0 6px',
               }}>
                 <div style={{
-                  flexShrink: 0, width: 36, height: 36,
+                  flexShrink: 0, width: 34, height: 34,
                   backgroundImage: "url('/img/deco_2.png')",
                   backgroundSize: '200% auto',
                   backgroundPosition: '0% 50%',
@@ -186,7 +195,7 @@ export default function HomeScreen() {
                 }} />
                 <span style={{
                   fontFamily: ZEN_FONT,
-                  fontSize: 'clamp(0.78rem, 3.8vw, 1rem)',
+                  fontSize: 'clamp(0.75rem, 3.6vw, 0.95rem)',
                   fontWeight: 900,
                   lineHeight: 1.25,
                   textAlign: 'left',
@@ -200,9 +209,9 @@ export default function HomeScreen() {
 
             {/* コレクションをみる */}
             <motion.button
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 18 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.46, type: 'spring', stiffness: 180 }}
+              transition={{ delay: 0.44, type: 'spring', stiffness: 180 }}
               whileTap={{ scale: 0.95, y: 2 }}
               onClick={() => router.push('/album')}
               style={{ position: 'relative', width: '100%' }}
@@ -215,10 +224,10 @@ export default function HomeScreen() {
               />
               <div style={{
                 position: 'absolute', inset: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '0 6px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '0 6px',
               }}>
                 <div style={{
-                  flexShrink: 0, width: 36, height: 36,
+                  flexShrink: 0, width: 34, height: 34,
                   backgroundImage: "url('/img/deco_2.png')",
                   backgroundSize: '200% auto',
                   backgroundPosition: '100% 50%',
@@ -226,7 +235,7 @@ export default function HomeScreen() {
                 }} />
                 <span style={{
                   fontFamily: ZEN_FONT,
-                  fontSize: 'clamp(0.78rem, 3.8vw, 1rem)',
+                  fontSize: 'clamp(0.75rem, 3.6vw, 0.95rem)',
                   fontWeight: 900,
                   lineHeight: 1.25,
                   textAlign: 'left',
