@@ -64,45 +64,70 @@ function Slot({ cat, card, onTap }: {
           borderRadius: 8,
           overflow: 'hidden',
           border: 'none',
-          background: card ? card.color : 'rgba(255,240,248,0.92)',
+          /* ピンクはフレーム内側にのみ置くため、ボタン自体は透明 */
+          background: 'transparent',
           boxShadow: card
             ? `0 0 14px ${card.color}99, 0 2px 10px rgba(0,0,0,0.5)`
             : '0 2px 10px rgba(0,0,0,0.35)',
           cursor: 'pointer',
-          transition: 'box-shadow 0.2s',
           filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.35))',
         }}
       >
+        {/* z1: slot-frame — 外周透明・装飾枠がベースレイヤー */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/img/slot-frame.png" alt=""
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 1, pointerEvents: 'none' }}
+        />
+
+        {/* z2: フレーム内窓の白ピンク背景（外枠装飾の内側にのみ表示） */}
+        <div style={{
+          position: 'absolute',
+          top: '16%', bottom: '14%', left: '9%', right: '9%',
+          background: 'rgba(255,240,248,0.95)',
+          borderRadius: 4,
+          zIndex: 2,
+        }} />
+
         {card ? (
-          /* ── カードあり ── */
-          <>
+          /* z3: カード画像（白背景はmultiplyで透過） */
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={card.image} alt={card.name}
+            style={{
+              position: 'absolute',
+              top: '16%', bottom: '14%', left: '9%', right: '9%',
+              width: '82%', height: '70%',
+              objectFit: 'contain',
+              mixBlendMode: 'multiply',
+              zIndex: 3,
+            }}
+          />
+        ) : (
+          /* z3: 空スロットのマーク表示 */
+          <div style={{
+            position: 'absolute',
+            top: '16%', bottom: '14%', left: '9%', right: '9%',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+            zIndex: 3,
+          }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={card.image} alt={card.name}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
+              src={cat.mark} alt={cat.label}
+              style={{ width: '65%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply', opacity: 0.6 }}
             />
-            {/* タップで解除バッジ */}
-            <div style={{ position: 'absolute', top: 3, right: 3, zIndex: 4, width: 14, height: 14, borderRadius: '50%', background: 'rgba(255,60,100,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <X size={8} color="white" strokeWidth={3} />
-            </div>
-          </>
-        ) : (
-          /* ── 空スロット ── */
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, zIndex: 1 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={cat.mark} alt={cat.label} style={{ width: '52%', height: 'auto', objectFit: 'contain', opacity: 0.45 }} />
-            <span style={{ fontFamily: ZEN, fontSize: '0.38rem', fontWeight: 900, color: 'rgba(180,80,140,0.7)', letterSpacing: '0.08em' }}>
+            <span style={{ fontFamily: ZEN, fontSize: '0.36rem', fontWeight: 900, color: 'rgba(180,60,120,0.75)', letterSpacing: '0.06em' }}>
               {cat.label}
             </span>
           </div>
         )}
 
-        {/* slot-frame.png を最前面に重ねる（装飾枠） */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/img/slot-frame.png" alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 3, pointerEvents: 'none' }}
-        />
+        {/* z4: タップで解除バッジ（フレームより上） */}
+        {card && (
+          <div style={{ position: 'absolute', top: 3, right: 3, zIndex: 4, width: 14, height: 14, borderRadius: '50%', background: 'rgba(255,60,100,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <X size={8} color="white" strokeWidth={3} />
+          </div>
+        )}
       </button>
 
       <span style={{ fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, color: 'white', letterSpacing: '0.06em', textShadow: TEXT_SHADOW }}>
@@ -142,7 +167,7 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
+      <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1, mixBlendMode: 'multiply' }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
       {selected && (
@@ -311,10 +336,12 @@ export default function DeckScreen() {
                     width: active ? 30 : 24,
                     height: active ? 30 : 24,
                     objectFit: 'contain',
-                    transition: 'all 0.18s ease',
+                    transition: 'width 0.18s ease, height 0.18s ease',
+                    mixBlendMode: 'multiply',
                     filter: active
-                      ? 'drop-shadow(0 0 8px rgba(255,192,203,0.8)) drop-shadow(0 0 3px rgba(255,215,0,0.6))'
-                      : 'drop-shadow(0 1px 2px rgba(0,0,0,0.5)) opacity(0.85)',
+                      ? 'drop-shadow(0 0 8px rgba(255,100,220,0.9)) drop-shadow(0 0 3px rgba(255,215,0,0.7))'
+                      : 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))',
+                    opacity: active ? 1 : 0.85,
                   }}
                 />
                 <span style={{ fontFamily: ZEN, fontSize: '0.48rem', fontWeight: 900, letterSpacing: '0.04em', color: 'white', textShadow: TEXT_SHADOW }}>
@@ -455,9 +482,11 @@ export default function DeckScreen() {
                         src={cat.mark} alt={cat.label}
                         style={{
                           width: 18, height: 18, objectFit: 'contain',
+                          mixBlendMode: 'multiply',
                           filter: active
                             ? 'drop-shadow(0 0 6px rgba(255,192,203,0.9))'
-                            : 'opacity(0.75)',
+                            : undefined,
+                          opacity: active ? 1 : 0.75,
                         }}
                       />
                       {cat.label}
