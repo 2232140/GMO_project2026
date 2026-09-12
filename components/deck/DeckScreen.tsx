@@ -22,9 +22,9 @@ const MOCK_CARDS: Card[] = [
   { id: 't1', category: 'tops',    name: 'フリルブラウス',     emoji: '🌸', color: '#f9a8d4', image: '/img/dress.png'  },
   { id: 't2', category: 'tops',    name: 'ホログラムトップ',   emoji: '⭐', color: '#c084fc', image: '/img/dress.png'  },
   { id: 't3', category: 'tops',    name: 'ニットベスト',       emoji: '☁️', color: '#93c5fd', image: '/img/dress.png'  },
-  { id: 'b1', category: 'bottoms', name: 'バルーンミニ',       emoji: '🎀', color: '#fda4af', image: '/img/dress.png'  },
-  { id: 'b2', category: 'bottoms', name: 'プリーツスカート',   emoji: '🌺', color: '#fde68a', image: '/img/dress.png'  },
-  { id: 'b3', category: 'bottoms', name: 'デニムミニ',         emoji: '👖', color: '#7dd3fc', image: '/img/dress.png'  },
+  { id: 'b1', category: 'bottoms', name: 'バルーンミニ',       emoji: '🎀', color: '#fda4af', image: '/img/bottom.png' },
+  { id: 'b2', category: 'bottoms', name: 'プリーツスカート',   emoji: '🌺', color: '#fde68a', image: '/img/bottom.png' },
+  { id: 'b3', category: 'bottoms', name: 'デニムミニ',         emoji: '👖', color: '#7dd3fc', image: '/img/bottom.png' },
   { id: 's1', category: 'shoes',   name: 'ローヒールパンプス', emoji: '👠', color: '#fca5a5', image: '/img/shoes.png'  },
   { id: 's2', category: 'shoes',   name: 'プラットフォーム',   emoji: '✨', color: '#a78bfa', image: '/img/shoes.png'  },
   { id: 's3', category: 'shoes',   name: 'グリッターサンダル', emoji: '💫', color: '#6ee7b7', image: '/img/shoes.png'  },
@@ -36,12 +36,12 @@ const MOCK_CARDS: Card[] = [
 ]
 
 /* ━━━ category config ━━━ */
-const CATEGORIES: { key: SlotKey; label: string; icon: string }[] = [
-  { key: 'tops',    label: 'TOPS',  icon: '/img/icon-tops.png'    },
-  { key: 'bottoms', label: 'SKIRT', icon: '/img/icon-bottoms.png' },
-  { key: 'shoes',   label: 'SHOES', icon: '/img/icon-shoes.png'   },
-  { key: 'cosme',   label: 'COSME', icon: '/img/icon-cosme.png'   },
-  { key: 'bag',     label: 'BAG',   icon: '/img/icon-bag.png'     },
+const CATEGORIES: { key: SlotKey; label: string; emoji: string }[] = [
+  { key: 'tops',    label: 'TOPS',    emoji: '💖' },
+  { key: 'bottoms', label: 'BOTTOMS', emoji: '💎' },
+  { key: 'shoes',   label: 'SHOES',   emoji: '🌟' },
+  { key: 'cosme',   label: 'COSME',   emoji: '💄' },
+  { key: 'bag',     label: 'BAG',     emoji: '🎀' },
 ]
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
@@ -91,8 +91,7 @@ function Slot({ cat, card, onTap }: {
           </>
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={cat.icon} alt={cat.label} style={{ width: '60%', height: '60%', objectFit: 'contain', opacity: 0.7 }} />
+            <span style={{ fontSize: '1.6rem', lineHeight: 1, opacity: 0.8 }}>{cat.emoji}</span>
           </div>
         )}
       </button>
@@ -250,16 +249,22 @@ export default function DeckScreen() {
           </h1>
 
           <motion.button
-            whileTap={{ scale: 0.92 }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleAI}
             style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              color: '#ffd700',
-              fontFamily: ZEN, fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer',
-              textShadow: `0 0 8px rgba(255,215,0,0.7), ${TEXT_SHADOW}`,
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '7px 13px',
+              borderRadius: 9999,
+              background: 'linear-gradient(135deg, #ff69b4 0%, #ffcc00 100%)',
+              border: '2px solid #ffd700',
+              color: 'white',
+              fontFamily: ZEN, fontWeight: 900, fontSize: '0.78rem', cursor: 'pointer',
+              textShadow: TEXT_SHADOW,
+              boxShadow: '0 4px 14px rgba(255,160,0,0.55), 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.4)',
+              filter: 'drop-shadow(0 2px 6px rgba(255,130,0,0.4))',
             }}
           >
-            <Sparkles size={14} />
+            <Sparkles size={13} />
             AI提案
           </motion.button>
         </header>
@@ -315,20 +320,16 @@ export default function DeckScreen() {
                   cursor: 'pointer',
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={cat.icon}
-                  alt={cat.label}
-                  style={{
-                    width: active ? 32 : 26,
-                    height: active ? 32 : 26,
-                    objectFit: 'contain',
-                    transition: 'all 0.18s ease',
-                    filter: active
-                      ? 'drop-shadow(0 0 6px rgba(255,100,220,0.9)) drop-shadow(0 0 3px rgba(255,215,0,0.7))'
-                      : 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
-                  }}
-                />
+                <span style={{
+                  fontSize: active ? '1.7rem' : '1.4rem',
+                  lineHeight: 1,
+                  transition: 'font-size 0.18s ease',
+                  filter: active
+                    ? 'drop-shadow(0 0 6px rgba(255,100,220,0.9)) drop-shadow(0 0 3px rgba(255,215,0,0.7))'
+                    : 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
+                }}>
+                  {cat.emoji}
+                </span>
                 <span style={{
                   fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, letterSpacing: '0.04em',
                   color: 'white',
@@ -494,17 +495,12 @@ export default function DeckScreen() {
                         boxShadow: active ? '0 0 10px rgba(255,100,220,0.55)' : 'none',
                       }}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={cat.icon}
-                        alt={cat.label}
-                        style={{
-                          width: 18, height: 18, objectFit: 'contain',
-                          filter: active
-                            ? 'drop-shadow(0 0 4px rgba(255,100,220,0.9))'
-                            : 'opacity(0.7)',
-                        }}
-                      />
+                      <span style={{
+                        fontSize: '1rem',
+                        filter: active ? 'drop-shadow(0 0 4px rgba(255,100,220,0.9))' : undefined,
+                      }}>
+                        {cat.emoji}
+                      </span>
                       {cat.label}
                     </button>
                   )
