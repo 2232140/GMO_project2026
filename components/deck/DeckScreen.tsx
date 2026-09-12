@@ -36,15 +36,18 @@ const MOCK_CARDS: Card[] = [
 ]
 
 /* ━━━ category config ━━━ */
-const CATEGORIES: { key: SlotKey; label: string; emoji: string }[] = [
-  { key: 'tops',    label: 'TOPS',  emoji: '👕' },
-  { key: 'bottoms', label: 'SKIRT', emoji: '👗' },
-  { key: 'shoes',   label: 'SHOES', emoji: '👠' },
-  { key: 'cosme',   label: 'COSME', emoji: '💄' },
-  { key: 'bag',     label: 'BAG',   emoji: '👜' },
+const CATEGORIES: { key: SlotKey; label: string; icon: string }[] = [
+  { key: 'tops',    label: 'TOPS',  icon: '/img/icon-tops.png'    },
+  { key: 'bottoms', label: 'SKIRT', icon: '/img/icon-bottoms.png' },
+  { key: 'shoes',   label: 'SHOES', icon: '/img/icon-shoes.png'   },
+  { key: 'cosme',   label: 'COSME', icon: '/img/icon-cosme.png'   },
+  { key: 'bag',     label: 'BAG',   icon: '/img/icon-bag.png'     },
 ]
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
+
+/* 強めの文字縁取りドロップシャドウ */
+const TEXT_SHADOW = '0 2px 4px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.9)'
 
 /* ━━━ sub-components ━━━ */
 
@@ -55,7 +58,7 @@ function Slot({ cat, card, onTap }: {
   onTap: () => void
 }) {
   return (
-    <div style={{ flex: 1, maxWidth: 68, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+    <div style={{ flex: 1, maxWidth: 68, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
       <button
         onClick={onTap}
         style={{
@@ -65,12 +68,15 @@ function Slot({ cat, card, onTap }: {
           borderRadius: 8,
           overflow: 'hidden',
           border: card
-            ? '2px solid rgba(255,200,255,0.9)'
-            : '2px dashed rgba(255,255,255,0.3)',
+            ? '2px solid rgba(255,255,255,0.8)'
+            : '2px dashed rgba(255,255,255,0.45)',
           background: card ? card.color : 'rgba(255,255,255,0.06)',
-          boxShadow: card ? `0 0 14px ${card.color}99` : 'none',
+          boxShadow: card
+            ? `0 0 14px ${card.color}99, 0 2px 8px rgba(0,0,0,0.5)`
+            : '0 2px 8px rgba(0,0,0,0.4)',
           cursor: 'pointer',
           transition: 'box-shadow 0.2s',
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))',
         }}
       >
         {card ? (
@@ -79,18 +85,22 @@ function Slot({ cat, card, onTap }: {
             <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
-            {/* タップで解除インジケーター */}
             <div style={{ position: 'absolute', top: 3, right: 3, zIndex: 4, width: 14, height: 14, borderRadius: '50%', background: 'rgba(255,80,120,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <X size={8} color="white" strokeWidth={3} />
             </div>
           </>
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-            <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>{cat.emoji}</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={cat.icon} alt={cat.label} style={{ width: '60%', height: '60%', objectFit: 'contain', opacity: 0.7 }} />
           </div>
         )}
       </button>
-      <span style={{ fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.06em' }}>
+      <span style={{
+        fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, color: 'white',
+        letterSpacing: '0.06em',
+        textShadow: TEXT_SHADOW,
+      }}>
         {cat.label}
       </span>
     </div>
@@ -118,9 +128,12 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
         borderRadius: 8,
         overflow: 'hidden',
         background: card.color,
-        border: selected ? '2.5px solid #ffd700' : '2px solid rgba(255,255,255,0.2)',
-        boxShadow: selected ? `0 0 14px ${card.color}` : '0 3px 10px rgba(0,0,0,0.35)',
+        border: selected ? '2.5px solid #ffd700' : '2px solid rgba(255,255,255,0.8)',
+        boxShadow: selected
+          ? `0 0 14px ${card.color}, 0 3px 12px rgba(0,0,0,0.45)`
+          : '0 3px 12px rgba(0,0,0,0.45)',
         cursor: 'pointer',
+        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.35))',
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -132,9 +145,9 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
           <Check size={9} color="#5030a0" strokeWidth={3} />
         </div>
       )}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '3px 4px', background: 'rgba(0,0,0,0.55)', zIndex: 3 }}>
-        <p style={{ fontFamily: ZEN, fontSize: '0.48rem', fontWeight: 900, color: 'white', margin: 0, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {card.emoji} {card.name}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '3px 4px', background: 'rgba(0,0,0,0.65)', zIndex: 3 }}>
+        <p style={{ fontFamily: ZEN, fontSize: '0.48rem', fontWeight: 900, color: 'white', margin: 0, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: TEXT_SHADOW }}>
+          {card.name}
         </p>
       </div>
     </button>
@@ -162,10 +175,8 @@ export default function DeckScreen() {
 
   const toggleSlot = (key: SlotKey) => {
     if (deck[key]) {
-      // セット済みならタップで解除
       setDeck(prev => ({ ...prev, [key]: null }))
     } else {
-      // 空ならそのカテゴリのタブをアクティブに
       setActiveTab(key)
     }
   }
@@ -187,23 +198,12 @@ export default function DeckScreen() {
   }
 
   return (
-    /* 背景: wall.jpeg cover */
     <div style={{
       position: 'fixed', inset: 0,
       backgroundImage: "url('/img/wall.jpeg')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     }}>
-      {/*
-        ┌─────────────────────────────┐  100dvh
-        │ [← 戻る] デッキ作成 [AI提案] │  header
-        │ [TOPS][SKIRT][SHOES][COSME][BAG] │  slots
-        │ [👕TOPS][👗SKIRT]…[👜BAG]    │  category tabs  ┐ flex:1
-        │  所持カード       [📖全体]   │  section header  │
-        │  ─ card ─ card ─ card ─→    │  h-scroll list   ┘
-        │  ████  💾 デッキを保存 ████  │  save btn
-        └─────────────────────────────┘
-      */}
       <div
         style={{
           position: 'relative',
@@ -212,10 +212,10 @@ export default function DeckScreen() {
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
-          padding: '12px',
+          justifyContent: 'space-between',
+          padding: '16px 12px 24px',
           boxSizing: 'border-box',
           overflow: 'hidden',
-          gap: 10,
         }}
       >
 
@@ -231,20 +231,33 @@ export default function DeckScreen() {
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={() => router.push('/')}
-            style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'rgba(255,255,255,0.8)', fontFamily: ZEN, fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 4,
+              color: 'white',
+              fontFamily: ZEN, fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
+              textShadow: TEXT_SHADOW,
+            }}
           >
             <ChevronLeft size={17} />
             戻る
           </motion.button>
 
-          <h1 style={{ fontFamily: ZEN, fontWeight: 900, fontSize: '1rem', color: 'white', margin: 0, textShadow: '0 0 14px rgba(255,120,220,0.9)' }}>
+          <h1 style={{
+            fontFamily: ZEN, fontWeight: 900, fontSize: '1rem', color: 'white', margin: 0,
+            textShadow: `0 0 14px rgba(255,120,220,0.9), ${TEXT_SHADOW}`,
+          }}>
             デッキ作成
           </h1>
 
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={handleAI}
-            style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#ffd700', fontFamily: ZEN, fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer', textShadow: '0 0 8px rgba(255,215,0,0.7)' }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 4,
+              color: '#ffd700',
+              fontFamily: ZEN, fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer',
+              textShadow: `0 0 8px rgba(255,215,0,0.7), ${TEXT_SHADOW}`,
+            }}
           >
             <Sparkles size={14} />
             AI提案
@@ -258,10 +271,11 @@ export default function DeckScreen() {
             display: 'flex',
             gap: 6,
             justifyContent: 'center',
-            padding: '6px 4px',
+            padding: '8px 4px',
             borderRadius: 14,
             background: 'rgba(255,255,255,0.07)',
-            border: '1px solid rgba(255,255,255,0.12)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
           }}
         >
           {CATEGORIES.map(cat => (
@@ -274,104 +288,110 @@ export default function DeckScreen() {
           ))}
         </div>
 
-        {/* ━━━ ③④ カテゴリタブ + カードリスト (flex:1) ━━━ */}
-        <div
-          style={{
-            flex: 1,
-            minHeight: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            overflow: 'hidden',
-          }}
-        >
-          {/* カテゴリタブ */}
-          <div style={{ flexShrink: 0, display: 'flex', gap: 5 }}>
-            {CATEGORIES.map(cat => {
-              const active = activeTab === cat.key
-              return (
-                <motion.button
-                  key={cat.key}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(cat.key)}
-                  style={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 3,
-                    padding: '7px 2px',
-                    borderRadius: 11,
-                    border: active ? '2px solid rgba(255,180,255,0.95)' : '2px solid rgba(255,255,255,0.12)',
-                    background: active ? 'rgba(255,80,200,0.28)' : 'rgba(255,255,255,0.06)',
-                    boxShadow: active ? '0 0 12px rgba(255,80,200,0.55)' : 'none',
-                    transform: active ? 'scale(1.07)' : 'scale(1)',
-                    transition: 'all 0.18s ease',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <span style={{ fontSize: active ? '1.35rem' : '1.1rem', lineHeight: 1, transition: 'font-size 0.18s' }}>
-                    {cat.emoji}
-                  </span>
-                  <span style={{
-                    fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, letterSpacing: '0.04em',
-                    color: active ? 'white' : 'rgba(255,255,255,0.5)',
-                  }}>
-                    {cat.label}
-                  </span>
-                </motion.button>
-              )
-            })}
-          </div>
-
-          {/* 所持カードリスト */}
-          <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
-
-            {/* セクションヘッダー */}
-            <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingInline: 2 }}>
-              <span style={{ fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 900, color: 'rgba(255,255,255,0.75)' }}>
-                ✦ 所持カード ({filteredCards.length})
-              </span>
+        {/* ━━━ ③ カテゴリタブ ━━━ */}
+        <div style={{ flexShrink: 0, display: 'flex', gap: 5 }}>
+          {CATEGORIES.map(cat => {
+            const active = activeTab === cat.key
+            return (
               <motion.button
-                whileTap={{ scale: 0.94 }}
-                onClick={() => setShowBinder(true)}
+                key={cat.key}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab(cat.key)}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 4,
-                  fontFamily: ZEN, fontSize: '0.68rem', fontWeight: 700,
-                  color: '#ffd700',
-                  padding: '4px 10px',
-                  borderRadius: 8,
-                  border: '1.5px solid rgba(255,215,0,0.4)',
-                  background: 'rgba(255,215,0,0.1)',
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 4,
+                  padding: '8px 2px',
+                  borderRadius: 11,
+                  border: active ? '2px solid rgba(255,180,255,0.95)' : '2px solid rgba(255,255,255,0.15)',
+                  background: active ? 'rgba(255,80,200,0.28)' : 'rgba(255,255,255,0.07)',
+                  boxShadow: active
+                    ? '0 0 14px rgba(255,100,220,0.7), 0 0 6px rgba(255,215,0,0.4)'
+                    : '0 2px 6px rgba(0,0,0,0.25)',
+                  transform: active ? 'scale(1.07)' : 'scale(1)',
+                  transition: 'all 0.18s ease',
                   cursor: 'pointer',
                 }}
               >
-                <BookOpen size={11} />
-                📖 全体を見る
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={cat.icon}
+                  alt={cat.label}
+                  style={{
+                    width: active ? 32 : 26,
+                    height: active ? 32 : 26,
+                    objectFit: 'contain',
+                    transition: 'all 0.18s ease',
+                    filter: active
+                      ? 'drop-shadow(0 0 6px rgba(255,100,220,0.9)) drop-shadow(0 0 3px rgba(255,215,0,0.7))'
+                      : 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
+                  }}
+                />
+                <span style={{
+                  fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, letterSpacing: '0.04em',
+                  color: 'white',
+                  textShadow: TEXT_SHADOW,
+                }}>
+                  {cat.label}
+                </span>
               </motion.button>
-            </div>
+            )
+          })}
+        </div>
 
-            {/* 横スクロールカードリスト */}
-            <div
-              className="overflow-x-auto"
+        {/* ━━━ ④ 所持カードリスト ━━━ */}
+        <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+          {/* セクションヘッダー */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingInline: 2 }}>
+            <span style={{
+              fontFamily: ZEN, fontSize: '0.72rem', fontWeight: 900, color: 'white',
+              textShadow: TEXT_SHADOW,
+            }}>
+              ✦ 所持カード ({filteredCards.length})
+            </span>
+            <motion.button
+              whileTap={{ scale: 0.94 }}
+              onClick={() => setShowBinder(true)}
               style={{
-                flexShrink: 0,
-                display: 'flex',
-                gap: 8,
-                paddingBottom: 6,
-                paddingInline: 2,
+                display: 'flex', alignItems: 'center', gap: 4,
+                fontFamily: ZEN, fontSize: '0.68rem', fontWeight: 700,
+                color: '#ffd700',
+                padding: '5px 10px',
+                borderRadius: 8,
+                border: '2px solid rgba(255,215,0,0.5)',
+                background: 'rgba(255,215,0,0.12)',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                textShadow: '0 1px 3px rgba(0,0,0,0.8)',
               }}
             >
-              {filteredCards.map(card => (
-                <CardThumb
-                  key={card.id}
-                  card={card}
-                  selected={deck[card.category]?.id === card.id}
-                  onSelect={() => selectCard(card)}
-                  size="sm"
-                />
-              ))}
-            </div>
+              <BookOpen size={11} />
+              全体を見る
+            </motion.button>
+          </div>
+
+          {/* 横スクロールカードリスト */}
+          <div
+            className="overflow-x-auto"
+            style={{
+              display: 'flex',
+              gap: 8,
+              paddingBottom: 4,
+              paddingInline: 2,
+            }}
+          >
+            {filteredCards.map(card => (
+              <CardThumb
+                key={card.id}
+                card={card}
+                selected={deck[card.category]?.id === card.id}
+                onSelect={() => selectCard(card)}
+                size="sm"
+              />
+            ))}
           </div>
         </div>
 
@@ -385,7 +405,7 @@ export default function DeckScreen() {
             padding: '14px',
             borderRadius: 14,
             background: 'linear-gradient(135deg, #ff69b4 0%, #c040e0 100%)',
-            border: '2px solid rgba(255,255,255,0.35)',
+            border: '2px solid rgba(255,255,255,0.8)',
             color: 'white',
             fontFamily: ZEN,
             fontSize: '1rem',
@@ -395,11 +415,13 @@ export default function DeckScreen() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: 8,
-            boxShadow: '0 4px 22px rgba(200,40,160,0.55)',
+            boxShadow: '0 4px 22px rgba(200,40,160,0.55), 0 2px 8px rgba(0,0,0,0.4)',
+            textShadow: TEXT_SHADOW,
+            filter: 'drop-shadow(0 2px 6px rgba(200,40,160,0.5))',
           }}
         >
           <Save size={18} />
-          💾 デッキを保存する
+          デッキを保存する
         </motion.button>
 
       </div>
@@ -408,7 +430,6 @@ export default function DeckScreen() {
       <AnimatePresence>
         {showBinder && (
           <>
-            {/* オーバーレイ背景 */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -417,7 +438,6 @@ export default function DeckScreen() {
               style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 50 }}
             />
 
-            {/* モーダルシート */}
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
@@ -440,7 +460,7 @@ export default function DeckScreen() {
             >
               {/* モーダルヘッダー */}
               <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px 8px' }}>
-                <h2 style={{ fontFamily: ZEN, fontWeight: 900, fontSize: '0.95rem', color: 'white', margin: 0 }}>
+                <h2 style={{ fontFamily: ZEN, fontWeight: 900, fontSize: '0.95rem', color: 'white', margin: 0, textShadow: TEXT_SHADOW }}>
                   📖 カードバインダー
                 </h2>
                 <button onClick={() => setShowBinder(false)} style={{ color: 'rgba(255,255,255,0.65)', cursor: 'pointer', lineHeight: 0 }}>
@@ -450,26 +470,45 @@ export default function DeckScreen() {
 
               {/* カテゴリタブ (横スクロール) */}
               <div className="overflow-x-auto" style={{ flexShrink: 0, display: 'flex', gap: 6, padding: '0 16px 10px' }}>
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat.key}
-                    onClick={() => setActiveTab(cat.key)}
-                    style={{
-                      flexShrink: 0,
-                      padding: '5px 12px',
-                      borderRadius: 20,
-                      border: activeTab === cat.key ? '2px solid rgba(255,180,255,0.9)' : '2px solid rgba(255,255,255,0.18)',
-                      background: activeTab === cat.key ? 'rgba(255,80,200,0.28)' : 'rgba(255,255,255,0.05)',
-                      color: activeTab === cat.key ? 'white' : 'rgba(255,255,255,0.45)',
-                      fontFamily: ZEN,
-                      fontSize: '0.7rem',
-                      fontWeight: 900,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {cat.emoji} {cat.label}
-                  </button>
-                ))}
+                {CATEGORIES.map(cat => {
+                  const active = activeTab === cat.key
+                  return (
+                    <button
+                      key={cat.key}
+                      onClick={() => setActiveTab(cat.key)}
+                      style={{
+                        flexShrink: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        padding: '5px 12px',
+                        borderRadius: 20,
+                        border: active ? '2px solid rgba(255,180,255,0.9)' : '2px solid rgba(255,255,255,0.18)',
+                        background: active ? 'rgba(255,80,200,0.28)' : 'rgba(255,255,255,0.05)',
+                        color: 'white',
+                        fontFamily: ZEN,
+                        fontSize: '0.7rem',
+                        fontWeight: 900,
+                        cursor: 'pointer',
+                        textShadow: TEXT_SHADOW,
+                        boxShadow: active ? '0 0 10px rgba(255,100,220,0.55)' : 'none',
+                      }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={cat.icon}
+                        alt={cat.label}
+                        style={{
+                          width: 18, height: 18, objectFit: 'contain',
+                          filter: active
+                            ? 'drop-shadow(0 0 4px rgba(255,100,220,0.9))'
+                            : 'opacity(0.7)',
+                        }}
+                      />
+                      {cat.label}
+                    </button>
+                  )
+                })}
               </div>
 
               {/* グリッド 3列 */}
@@ -529,10 +568,10 @@ export default function DeckScreen() {
               >
                 ✨
               </motion.div>
-              <h3 style={{ fontFamily: ZEN, fontWeight: 900, color: 'white', fontSize: '1.05rem', margin: '0 0 8px' }}>
+              <h3 style={{ fontFamily: ZEN, fontWeight: 900, color: 'white', fontSize: '1.05rem', margin: '0 0 8px', textShadow: TEXT_SHADOW }}>
                 AIコーデ提案完了！
               </h3>
-              <p style={{ fontFamily: ZEN, color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>
+              <p style={{ fontFamily: ZEN, color: 'rgba(255,255,255,0.85)', fontSize: '0.78rem', margin: 0, textShadow: TEXT_SHADOW }}>
                 今日のベストコーデをセットしました 💖
               </p>
             </motion.div>
@@ -567,6 +606,8 @@ export default function DeckScreen() {
               fontWeight: 900,
               fontSize: '0.9rem',
               boxShadow: '0 4px 20px rgba(200,40,160,0.65)',
+              border: '2px solid rgba(255,255,255,0.8)',
+              textShadow: TEXT_SHADOW,
             }}>
               <Check size={16} />
               デッキを保存しました！
