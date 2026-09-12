@@ -168,7 +168,7 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1, mixBlendMode: 'multiply' }} />
+      <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
       {selected && (
