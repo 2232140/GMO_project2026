@@ -85,9 +85,8 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={coord.image} alt={coord.theme} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,180,255,0.16) 0%, rgba(180,240,255,0.10) 35%, rgba(255,255,180,0.10) 65%, rgba(220,180,255,0.16) 100%)', mixBlendMode: 'screen', pointerEvents: 'none' }} />
-          {/* ゴールドカードフレーム */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 3, pointerEvents: 'none' }} />
+          {/* MY SNAP風・ゴールドCSSカラー内枠 */}
+          <div style={{ position: 'absolute', inset: 5, borderRadius: 10, border: '2px solid rgba(255,215,0,0.72)', boxShadow: '0 0 10px rgba(255,215,0,0.38), inset 0 0 6px rgba(255,215,0,0.16)', pointerEvents: 'none', zIndex: 3 }} />
           {/* キラキラシール風バッジ */}
           <div style={{ position: 'absolute', top: 6, left: 6, zIndex: 5, background: 'linear-gradient(120deg, #ffd200 0%, #ffaaee 35%, #ff30c0 65%, #b800ff 100%)', borderRadius: 20, padding: '3.5px 9px', fontSize: '0.46rem', fontWeight: 900, color: 'white', fontFamily: FREDOKA, letterSpacing: '0.08em', textShadow: '0 1px 3px rgba(80,0,80,0.65)', boxShadow: '0 0 0 1.5px rgba(255,255,255,0.88), 0 0 0 3px rgba(255,185,80,0.42), 0 3px 8px rgba(180,0,150,0.52), inset 0 1px 2px rgba(255,255,255,0.55)', transform: 'rotate(-2deg)' }}>
             ✨ AI ART
@@ -372,8 +371,8 @@ export default function BinderScreen() {
           <div style={{ width: 52 }} />
         </header>
 
-        {/* ぷっくりタブ — アイコンがはみ出る立体配置 */}
-        <div style={{ flexShrink: 0, display: 'flex', gap: 8, padding: '26px 12px 0' }}>
+        {/* ぷっくりタブ — アイコン左・テキスト右の横並び */}
+        <div style={{ flexShrink: 0, display: 'flex', gap: 8, padding: '10px 12px 0' }}>
           {([
             { key: 'coord' as MainTab, icon: '/img/tab-snap.png',    label: '完成コーデ' },
             { key: 'item'  as MainTab, icon: '/img/icon-binder.png', label: 'アイテムカード' },
@@ -383,9 +382,9 @@ export default function BinderScreen() {
               <motion.button
                 key={tab.key} whileTap={{ scale: 0.97 }} onClick={() => setMainTab(tab.key)}
                 style={{
-                  flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
-                  gap: 3,
-                  padding: '8px 6px 10px',
+                  flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+                  gap: 6,
+                  padding: '9px 6px 11px',
                   borderRadius: '14px 14px 0 0',
                   border: active ? '2px solid #ffd700' : '2px solid rgba(255,255,255,0.25)',
                   borderBottom: 'none',
@@ -398,20 +397,16 @@ export default function BinderScreen() {
                   transform: active ? 'translateY(2px)' : 'translateY(0)',
                   transition: 'all 0.18s ease',
                   cursor: 'pointer', position: 'relative', zIndex: active ? 2 : 1,
-                  overflow: 'visible',
                 }}
               >
-                {/* アイコン — タブ枠の上にはみ出るぷっくり配置 */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={tab.icon} alt=""
                   style={{
-                    position: 'absolute', top: -24, left: '50%',
-                    transform: `translateX(-50%) scale(${active ? 1.14 : 1})`,
-                    width: 56, height: 56,
+                    width: 38, height: 38,
                     objectFit: 'contain',
                     filter: active
-                      ? 'drop-shadow(0 5px 10px rgba(255,30,200,0.85)) drop-shadow(0 -2px 6px rgba(255,215,0,0.6))'
-                      : 'drop-shadow(0 3px 8px rgba(160,20,160,0.65)) drop-shadow(0 1px 5px rgba(0,0,0,0.35))',
+                      ? 'drop-shadow(0 2px 6px rgba(255,30,200,0.75)) drop-shadow(0 1px 3px rgba(255,215,0,0.5))'
+                      : 'drop-shadow(0 2px 5px rgba(160,20,160,0.6)) drop-shadow(0 1px 4px rgba(0,0,0,0.3))',
                     transition: 'all 0.18s ease',
                   }}
                 />
