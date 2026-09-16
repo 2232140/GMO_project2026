@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useRef } from 'react'
+import { motion, AnimatePresence, useAnimate } from 'framer-motion'
 import { ChevronLeft, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -154,8 +154,21 @@ function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
 
 /* ── CoordFlipModal ── */
 function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => void }) {
-  const [flipped, setFlipped] = useState(false)
+  const [showBack, setShowBack] = useState(false)
   const [activeSlot, setActiveSlot] = useState<SlotKey | null>(null)
+  const [cardScope, animateCard] = useAnimate()
+  const animating = useRef(false)
+
+  const handleFlip = async () => {
+    if (animating.current) return
+    animating.current = true
+    setActiveSlot(null)
+    await animateCard(cardScope.current, { rotateY: 90 }, { duration: 0.22, ease: 'easeIn' })
+    setShowBack(v => !v)
+    await animateCard(cardScope.current, { rotateY: -90 }, { duration: 0 })
+    await animateCard(cardScope.current, { rotateY: 0 }, { duration: 0.22, ease: 'easeOut' })
+    animating.current = false
+  }
 
   return (
     <motion.div
@@ -165,14 +178,17 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
     >
       <button onClick={onClose} style={{ position: 'absolute', top: 20, right: 20, color: 'rgba(255,255,255,0.75)', lineHeight: 0, cursor: 'pointer' }}><X size={24} /></button>
       <p style={{ fontFamily: ZEN, fontSize: '0.68rem', color: 'rgba(255,200,240,0.8)', marginBottom: 16, textShadow: TEXT_SHADOW }}>
-        {flipped ? '🃏 タップで表に戻す' : '🃏 タップで裏面を見る'}
+        {showBack ? '🃏 タップで表に戻す' : '🃏 タップで裏面を見る'}
       </p>
 
-      <div style={{ width: '100%', maxWidth: 264, aspectRatio: '3/4', perspective: '1000px', cursor: 'pointer' }} onClick={() => setFlipped(f => !f)}>
-        <motion.div animate={{ rotateY: flipped ? 180 : 0 }} transition={{ duration: 0.6, ease: 'easeInOut' }} style={{ width: '100%', height: '100%', transformStyle: 'preserve-3d', position: 'relative' }}>
-
-          {/* 表面 */}
-          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', borderRadius: 20, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.65)', boxShadow: '0 16px 50px rgba(0,0,0,0.72)' }}>
+      <div
+        ref={cardScope}
+        onClick={handleFlip}
+        style={{ width: '100%', maxWidth: 264, aspectRatio: '3/4', cursor: 'pointer', borderRadius: 20, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.65)', boxShadow: '0 16px 50px rgba(0,0,0,0.72)', position: 'relative' }}
+      >
+        {!showBack ? (
+          /* 表面 */
+          <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={coord.image} alt={coord.theme} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,180,255,0.1) 0%, rgba(180,240,255,0.07) 50%, rgba(255,255,180,0.07) 100%)', mixBlendMode: 'screen', pointerEvents: 'none' }} />
@@ -183,28 +199,22 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
               <p style={{ fontFamily: ZEN, color: 'rgba(255,210,240,0.8)', fontSize: '0.56rem', margin: 0 }}>{coord.date}</p>
               <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.95rem', fontWeight: 900, margin: '4px 0 0', textShadow: TEXT_SHADOW }}>💎 {coord.theme}</p>
             </div>
-          </div>
-
-          {/* 裏面 */}
-          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: 20, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.65)', boxShadow: '0 16px 50px rgba(0,0,0,0.72)' }}>
+          </>
+        ) : (
+          /* 裏面 */
+          <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/card-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,0,20,0.45)' }} />
-
-            <div
-              style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', padding: '14px 11px 12px' }}
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', padding: '14px 11px 12px' }}>
               {/* ゴールドラベルスタンプ */}
               <div style={{ background: 'rgba(255,215,0,0.1)', border: '1.5px solid rgba(255,215,0,0.48)', borderRadius: 10, padding: '7px 10px', textAlign: 'center', marginBottom: 8, backdropFilter: 'blur(6px)' }}>
                 <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.5rem', fontWeight: 700, margin: '0 0 2px', letterSpacing: '0.14em', textShadow: '0 0 12px rgba(255,215,0,0.7)' }}>✦ COORD RECORD ✦</p>
                 <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.78rem', fontWeight: 900, margin: '0 0 1px', textShadow: TEXT_SHADOW }}>💎 {coord.theme}</p>
                 <p style={{ fontFamily: ZEN, color: 'rgba(255,210,240,0.82)', fontSize: '0.46rem', margin: 0 }}>{coord.date}</p>
               </div>
-
               <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.55), transparent)', marginBottom: 8 }} />
               <p style={{ fontFamily: ZEN, color: 'rgba(255,215,0,0.88)', fontSize: '0.46rem', fontWeight: 900, margin: '0 0 7px', textAlign: 'center', letterSpacing: '0.1em' }}>✦ TODAY&apos;S DECK ✦</p>
-
               {/* 5枚ミニスロットカード（タップで詳細） */}
               <div style={{ display: 'flex', gap: 4, flex: 1, alignItems: 'flex-start' }}>
                 {SLOT_CONFIG.map(slot => {
@@ -230,13 +240,13 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
                   )
                 })}
               </div>
-
               {/* スロット詳細ポップアップ */}
               <AnimatePresence>
                 {activeSlot && coord.deck[activeSlot] && (
                   <motion.div
                     initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: 0.18 }}
                     style={{ marginTop: 8, background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 9, padding: '7px 11px', border: '1px solid rgba(255,215,0,0.38)' }}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.42rem', fontWeight: 700, margin: '0 0 2px', letterSpacing: '0.08em' }}>
                       {SLOT_CONFIG.find(s => s.key === activeSlot)?.label}
@@ -252,11 +262,10 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
                   </motion.div>
                 )}
               </AnimatePresence>
-
               <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.38), transparent)', marginTop: 8 }} />
             </div>
-          </div>
-        </motion.div>
+          </>
+        )}
       </div>
     </motion.div>
   )
@@ -264,7 +273,19 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
 
 /* ── ItemFlipModal ── */
 function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void }) {
-  const [flipped, setFlipped] = useState(false)
+  const [showBack, setShowBack] = useState(false)
+  const [cardScope, animateCard] = useAnimate()
+  const animating = useRef(false)
+
+  const handleFlip = async () => {
+    if (animating.current) return
+    animating.current = true
+    await animateCard(cardScope.current, { rotateY: 90 }, { duration: 0.22, ease: 'easeIn' })
+    setShowBack(v => !v)
+    await animateCard(cardScope.current, { rotateY: -90 }, { duration: 0 })
+    await animateCard(cardScope.current, { rotateY: 0 }, { duration: 0.22, ease: 'easeOut' })
+    animating.current = false
+  }
 
   return (
     <motion.div
@@ -274,20 +295,25 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
     >
       <button onClick={onClose} style={{ position: 'absolute', top: 20, right: 20, color: 'rgba(255,255,255,0.75)', lineHeight: 0, cursor: 'pointer' }}><X size={24} /></button>
       <p style={{ fontFamily: ZEN, fontSize: '0.68rem', color: 'rgba(255,200,240,0.8)', marginBottom: 18, textShadow: TEXT_SHADOW }}>
-        {flipped ? '🃏 タップで表に戻す' : '🃏 タップで裏面を見る'}
+        {showBack ? '🃏 タップで表に戻す' : '🃏 タップで裏面を見る'}
       </p>
 
-      <div style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', perspective: '1000px', cursor: 'pointer' }} onClick={() => setFlipped(f => !f)}>
-        <motion.div animate={{ rotateY: flipped ? 180 : 0 }} transition={{ duration: 0.6, ease: 'easeInOut' }} style={{ width: '100%', height: '100%', transformStyle: 'preserve-3d', position: 'relative' }}>
-          {/* 表面 */}
-          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', borderRadius: 16, overflow: 'hidden', background: card.color, border: '2px solid rgba(255,215,0,0.6)', boxShadow: `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` }}>
+      <div
+        ref={cardScope}
+        onClick={handleFlip}
+        style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.6)', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', background: !showBack ? card.color : undefined }}
+      >
+        {!showBack ? (
+          /* 表面 */
+          <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
-          </div>
-          {/* 裏面 */}
-          <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: 16, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.6)', boxShadow: '0 14px 44px rgba(0,0,0,0.6)' }}>
+          </>
+        ) : (
+          /* 裏面 */
+          <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/card-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,0,20,0.35)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', gap: 12 }}>
@@ -302,8 +328,8 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
                 <p style={{ fontFamily: ZEN, color: 'rgba(255,210,240,0.75)', fontSize: '0.6rem', margin: '5px 0 0' }}>{card.rarity}</p>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </>
+        )}
       </div>
     </motion.div>
   )
