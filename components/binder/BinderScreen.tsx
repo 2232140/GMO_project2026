@@ -85,7 +85,11 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={coord.image} alt={coord.theme} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,180,255,0.16) 0%, rgba(180,240,255,0.10) 35%, rgba(255,255,180,0.10) 65%, rgba(220,180,255,0.16) 100%)', mixBlendMode: 'screen', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: 7, left: 7, zIndex: 3, background: 'linear-gradient(135deg, #ff4da6, #ff9800, #ffd700)', borderRadius: 20, padding: '3px 9px', fontSize: '0.46rem', fontWeight: 900, color: 'white', fontFamily: FREDOKA, letterSpacing: '0.07em', textShadow: '0 1px 3px rgba(0,0,0,0.5)', boxShadow: '0 2px 8px rgba(255,60,0,0.45)' }}>
+          {/* ゴールドカードフレーム */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 3, pointerEvents: 'none' }} />
+          {/* キラキラシール風バッジ */}
+          <div style={{ position: 'absolute', top: 6, left: 6, zIndex: 5, background: 'linear-gradient(120deg, #ffd200 0%, #ffaaee 35%, #ff30c0 65%, #b800ff 100%)', borderRadius: 20, padding: '3.5px 9px', fontSize: '0.46rem', fontWeight: 900, color: 'white', fontFamily: FREDOKA, letterSpacing: '0.08em', textShadow: '0 1px 3px rgba(80,0,80,0.65)', boxShadow: '0 0 0 1.5px rgba(255,255,255,0.88), 0 0 0 3px rgba(255,185,80,0.42), 0 3px 8px rgba(180,0,150,0.52), inset 0 1px 2px rgba(255,255,255,0.55)', transform: 'rotate(-2deg)' }}>
             ✨ AI ART
           </div>
         </>
@@ -105,7 +109,7 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
 
       {/* 下部情報バー */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 2,
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4,
         background: coord.aiArt
           ? 'linear-gradient(transparent, rgba(12,0,35,0.9) 42%, rgba(6,0,20,0.97))'
           : 'linear-gradient(transparent, rgba(255,220,242,0.92) 38%, rgba(255,205,235,0.98))',
@@ -132,7 +136,7 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
       </div>
 
       {/* 内側シャイン枠 */}
-      <div style={{ position: 'absolute', inset: 0, borderRadius: 14, boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.28)', pointerEvents: 'none', zIndex: 5 }} />
+      <div style={{ position: 'absolute', inset: 0, borderRadius: 14, boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.28)', pointerEvents: 'none', zIndex: 6 }} />
     </motion.div>
   )
 }
@@ -353,29 +357,36 @@ export default function BinderScreen() {
       <div style={{ position: 'relative', zIndex: 1, height: '100dvh', maxWidth: 430, margin: '0 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
         {/* ヘッダー */}
-        <header style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 14px 10px', background: 'linear-gradient(135deg, rgba(255,55,170,0.9) 0%, rgba(125,35,215,0.9) 100%)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,215,0,0.22)', boxShadow: '0 4px 22px rgba(170,20,170,0.32)' }}>
-          <motion.button whileTap={{ scale: 0.92 }} onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'white', fontFamily: ZEN, fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', textShadow: TEXT_SHADOW }}>
+        <header style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 14px 10px', position: 'relative', background: ['repeating-linear-gradient(45deg, rgba(255,215,0,0.055) 0px, rgba(255,215,0,0.055) 1px, transparent 1px, transparent 7px)', 'repeating-linear-gradient(-45deg, rgba(255,215,0,0.055) 0px, rgba(255,215,0,0.055) 1px, transparent 1px, transparent 7px)', 'linear-gradient(135deg, rgba(255,55,170,0.93) 0%, rgba(125,35,215,0.93) 100%)'].join(', '), backdropFilter: 'blur(16px)', borderBottom: '2px solid rgba(255,215,0,0.52)', boxShadow: '0 4px 22px rgba(170,20,170,0.32), inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 0 rgba(255,215,0,0.18)' }}>
+          {/* ゴールドコーナーブラケット */}
+          <div style={{ position: 'absolute', top: 5, left: 5, width: 11, height: 11, borderTop: '2px solid rgba(255,215,0,0.78)', borderLeft: '2px solid rgba(255,215,0,0.78)', borderRadius: '3px 0 0 0', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: 5, right: 5, width: 11, height: 11, borderTop: '2px solid rgba(255,215,0,0.78)', borderRight: '2px solid rgba(255,215,0,0.78)', borderRadius: '0 3px 0 0', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: 7, left: 5, width: 11, height: 11, borderBottom: '2px solid rgba(255,215,0,0.55)', borderLeft: '2px solid rgba(255,215,0,0.55)', borderRadius: '0 0 0 3px', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', bottom: 7, right: 5, width: 11, height: 11, borderBottom: '2px solid rgba(255,215,0,0.55)', borderRight: '2px solid rgba(255,215,0,0.55)', borderRadius: '0 0 3px 0', pointerEvents: 'none' }} />
+          <motion.button whileTap={{ scale: 0.92 }} onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'white', fontFamily: ZEN, fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', textShadow: TEXT_SHADOW, position: 'relative', zIndex: 1 }}>
             <ChevronLeft size={17} />戻る
           </motion.button>
-          <h1 style={{ fontFamily: FREDOKA, fontWeight: 700, fontSize: '1.28rem', color: 'white', margin: 0, letterSpacing: '0.1em', textShadow: '0 2px 0 rgba(170,20,130,0.55), 0 0 24px rgba(255,215,0,0.4)', WebkitTextStroke: '0.5px rgba(255,215,0,0.4)' }}>
+          <h1 style={{ fontFamily: FREDOKA, fontWeight: 700, fontSize: '1.28rem', color: 'white', margin: 0, letterSpacing: '0.1em', textShadow: '0 2px 0 rgba(170,20,130,0.55), 0 0 24px rgba(255,215,0,0.55)', WebkitTextStroke: '0.5px rgba(255,215,0,0.5)', position: 'relative', zIndex: 1 }}>
             MY BINDER
           </h1>
           <div style={{ width: 52 }} />
         </header>
 
-        {/* ぷっくりタブ */}
-        <div style={{ flexShrink: 0, display: 'flex', gap: 8, padding: '10px 12px 0' }}>
+        {/* ぷっくりタブ — アイコンがはみ出る立体配置 */}
+        <div style={{ flexShrink: 0, display: 'flex', gap: 8, padding: '26px 12px 0' }}>
           {([
-            { key: 'coord' as MainTab, icon: '/img/tab-snap.png',    label: '完成コーデ',    emoji: '✨' },
-            { key: 'item'  as MainTab, icon: '/img/icon-binder.png', label: 'アイテムカード', emoji: '👗' },
+            { key: 'coord' as MainTab, icon: '/img/tab-snap.png',    label: '完成コーデ' },
+            { key: 'item'  as MainTab, icon: '/img/icon-binder.png', label: 'アイテムカード' },
           ]).map(tab => {
             const active = mainTab === tab.key
             return (
               <motion.button
                 key={tab.key} whileTap={{ scale: 0.97 }} onClick={() => setMainTab(tab.key)}
                 style={{
-                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  padding: '9px 6px 11px', borderRadius: '14px 14px 0 0',
+                  flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
+                  gap: 3,
+                  padding: '8px 6px 10px',
+                  borderRadius: '14px 14px 0 0',
                   border: active ? '2px solid #ffd700' : '2px solid rgba(255,255,255,0.25)',
                   borderBottom: 'none',
                   background: active
@@ -387,22 +398,25 @@ export default function BinderScreen() {
                   transform: active ? 'translateY(2px)' : 'translateY(0)',
                   transition: 'all 0.18s ease',
                   cursor: 'pointer', position: 'relative', zIndex: active ? 2 : 1,
+                  overflow: 'visible',
                 }}
               >
+                {/* アイコン — タブ枠の上にはみ出るぷっくり配置 */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={tab.icon} alt=""
                   style={{
-                    width: 32, height: 32, objectFit: 'contain',
-                    mixBlendMode: active ? 'multiply' : 'normal',
+                    position: 'absolute', top: -24, left: '50%',
+                    transform: `translateX(-50%) scale(${active ? 1.14 : 1})`,
+                    width: 56, height: 56,
+                    objectFit: 'contain',
                     filter: active
-                      ? 'drop-shadow(0 2px 6px rgba(255,60,200,0.6))'
-                      : 'brightness(10) drop-shadow(0 1px 3px rgba(0,0,0,0.25))',
-                    opacity: active ? 1 : 0.92,
-                    transition: 'all 0.18s',
+                      ? 'drop-shadow(0 5px 10px rgba(255,30,200,0.85)) drop-shadow(0 -2px 6px rgba(255,215,0,0.6))'
+                      : 'drop-shadow(0 3px 8px rgba(160,20,160,0.65)) drop-shadow(0 1px 5px rgba(0,0,0,0.35))',
+                    transition: 'all 0.18s ease',
                   }}
                 />
-                <span style={{ fontFamily: ZEN, fontSize: '0.67rem', fontWeight: 900, color: active ? '#b020d8' : 'rgba(255,255,255,0.95)', textShadow: active ? 'none' : TEXT_SHADOW, whiteSpace: 'nowrap' }}>
-                  {tab.emoji} {tab.label}
+                <span style={{ fontFamily: ZEN, fontSize: '0.8rem', fontWeight: 900, color: active ? '#b020d8' : 'rgba(255,255,255,0.95)', textShadow: active ? '0 1px 0 rgba(255,255,255,0.4)' : TEXT_SHADOW, whiteSpace: 'nowrap', letterSpacing: '0.03em' }}>
+                  {tab.label}
                 </span>
               </motion.button>
             )
@@ -430,11 +444,24 @@ export default function BinderScreen() {
                   </span>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 5, overflowX: 'auto' }}>
+              <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2 }}>
                 {CATEGORY_FILTERS.map(f => {
                   const active = catFilter === f.key
                   return (
-                    <button key={f.key} onClick={() => setCatFilter(f.key)} style={{ flexShrink: 0, padding: '4px 13px', borderRadius: 20, border: active ? '2px solid rgba(200,50,220,0.75)' : '2px solid rgba(200,140,220,0.3)', background: active ? 'linear-gradient(135deg, rgba(255,70,200,0.18), rgba(170,50,240,0.14))' : 'rgba(255,255,255,0.65)', color: active ? '#a020d0' : 'rgba(140,70,160,0.82)', fontFamily: ZEN, fontSize: '0.62rem', fontWeight: 900, cursor: 'pointer', boxShadow: active ? '0 2px 10px rgba(200,50,220,0.22)' : 'none', transition: 'all 0.15s' }}>
+                    <button key={f.key} onClick={() => setCatFilter(f.key)} style={{
+                      flexShrink: 0, padding: '5px 14px', borderRadius: 20, border: 'none',
+                      background: active
+                        ? 'linear-gradient(180deg, #ffb8ec 0%, #ff38cc 38%, #cc00a8 72%, #9c0090 100%)'
+                        : 'linear-gradient(180deg, rgba(255,248,255,0.97) 0%, rgba(242,218,255,0.95) 55%, rgba(220,192,250,0.95) 100%)',
+                      color: active ? 'white' : 'rgba(140,55,185,0.92)',
+                      fontFamily: ZEN, fontSize: '0.62rem', fontWeight: 900, cursor: 'pointer',
+                      boxShadow: active
+                        ? '0 0 0 2px rgba(255,255,255,0.82), 0 0 0 3.5px rgba(255,100,220,0.5), 0 5px 0 #7a0068, 0 7px 14px rgba(200,0,150,0.42), inset 0 2px 3px rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.22)'
+                        : '0 0 0 1.5px rgba(210,160,235,0.55), 0 3px 0 rgba(170,120,210,0.42), 0 5px 10px rgba(180,100,220,0.16), inset 0 2px 3px rgba(255,255,255,0.9)',
+                      textShadow: active ? '0 1px 3px rgba(100,0,80,0.6)' : 'none',
+                      transform: active ? 'translateY(-1px)' : 'translateY(0)',
+                      transition: 'all 0.15s',
+                    }}>
                       {f.label}
                     </button>
                   )
