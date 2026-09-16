@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation'
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
 const FREDOKA = 'var(--font-fredoka), sans-serif'
 const TEXT_SHADOW = '0 2px 4px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.9)'
+const GOLD_BORDER = '1.5px solid rgba(255,215,0,0.55)'
+const PINK_GLOW = '0 4px 20px rgba(255,80,200,0.28), 0 1px 6px rgba(0,0,0,0.12)'
 
 /* ━━━ types ━━━ */
 type SlotKey = 'tops' | 'bottoms' | 'shoes' | 'cosme' | 'bag'
@@ -80,87 +82,114 @@ const SLOT_CONFIG: { key: SlotKey; mark: string; label: string }[] = [
 ]
 
 const CATEGORY_FILTERS: { key: CategoryFilter; label: string }[] = [
-  { key: 'ALL', label: 'ALL' },
-  { key: 'tops', label: 'TOPS' },
+  { key: 'ALL',     label: 'ALL'  },
+  { key: 'tops',    label: 'TOPS' },
   { key: 'bottoms', label: 'BTMS' },
-  { key: 'shoes', label: 'SHOE' },
-  { key: 'cosme', label: 'CSME' },
-  { key: 'bag', label: 'BAG' },
+  { key: 'shoes',   label: 'SHOE' },
+  { key: 'cosme',   label: 'CSME' },
+  { key: 'bag',     label: 'BAG'  },
 ]
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Coord Snap Card (2-col grid)
+   Coord Snap Card — holographic deco card style
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
   return (
     <motion.div
-      whileTap={{ scale: 0.96 }}
+      whileTap={{ scale: 0.95 }}
       onClick={onTap}
       style={{
         position: 'relative',
-        borderRadius: 14,
+        borderRadius: 16,
         overflow: 'hidden',
-        background: 'rgba(255,255,255,0.96)',
-        border: '2px solid rgba(255,200,230,0.7)',
-        boxShadow: '0 4px 18px rgba(200,80,200,0.18), 0 1px 4px rgba(0,0,0,0.1)',
+        border: GOLD_BORDER,
+        boxShadow: `${PINK_GLOW}, inset 0 0 0 1px rgba(255,255,255,0.25)`,
         cursor: 'pointer',
         aspectRatio: '3/4',
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
-      {/* Image area */}
-      <div style={{ position: 'relative', flex: '0 0 66%', overflow: 'hidden' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={coord.image} alt={coord.theme} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        {coord.aiArt && (
-          <div style={{
-            position: 'absolute', top: 6, left: 6,
-            background: 'linear-gradient(135deg, #ff69b4, #ffd700)',
-            borderRadius: 8, padding: '2px 8px',
-            fontSize: '0.48rem', fontWeight: 900, color: 'white', fontFamily: ZEN,
-            textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-            boxShadow: '0 2px 6px rgba(255,100,0,0.35)',
-          }}>
-            ✨ AI ART
-          </div>
-        )}
-        {/* Gradient overlay at bottom of image */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(transparent, rgba(255,230,245,0.6))' }} />
-      </div>
+      {/* Full-bleed ai-art image */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={coord.image}
+        alt={coord.theme}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+      />
 
-      {/* Info area */}
-      <div style={{ flex: 1, padding: '6px 8px 7px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <div>
-          <p style={{ fontFamily: ZEN, fontSize: '0.58rem', fontWeight: 900, color: '#c040e0', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            💎 {coord.theme}
-          </p>
-          <p style={{ fontFamily: ZEN, fontSize: '0.44rem', color: 'rgba(140,60,140,0.65)', margin: '2px 0 0' }}>
-            {coord.date}
-          </p>
+      {/* Holographic shimmer overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(135deg, rgba(255,200,255,0.14) 0%, rgba(200,240,255,0.10) 30%, rgba(255,255,200,0.10) 60%, rgba(220,200,255,0.14) 100%)',
+        mixBlendMode: 'screen',
+        pointerEvents: 'none',
+      }} />
+
+      {/* AI ART badge */}
+      {coord.aiArt && (
+        <div style={{
+          position: 'absolute', top: 7, left: 7,
+          background: 'linear-gradient(135deg, #ff4da6, #ffd700)',
+          borderRadius: 10,
+          padding: '3px 9px',
+          fontSize: '0.5rem', fontWeight: 900, color: 'white', fontFamily: FREDOKA,
+          letterSpacing: '0.06em',
+          textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+          boxShadow: '0 2px 8px rgba(255,60,0,0.4), 0 0 0 1px rgba(255,255,255,0.3)',
+          zIndex: 3,
+        }}>
+          ✨ AI ART
         </div>
-        {/* Mini deck stamp icons */}
-        <div style={{ display: 'flex', gap: 2, alignItems: 'center', marginTop: 4 }}>
+      )}
+
+      {/* Bottom gradient + info */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        background: 'linear-gradient(transparent, rgba(20,0,50,0.85) 50%, rgba(10,0,30,0.95))',
+        padding: '28px 8px 8px',
+        zIndex: 2,
+      }}>
+        <p style={{
+          fontFamily: ZEN, fontSize: '0.62rem', fontWeight: 900,
+          color: 'white', margin: 0,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          textShadow: TEXT_SHADOW,
+        }}>
+          💎 {coord.theme}
+        </p>
+        <p style={{ fontFamily: ZEN, fontSize: '0.44rem', color: 'rgba(255,210,235,0.75)', margin: '2px 0 6px' }}>
+          {coord.date}
+        </p>
+
+        {/* Mini deck stamp dots */}
+        <div style={{ display: 'flex', gap: 3, alignItems: 'center' }}>
           {SLOT_CONFIG.map(slot => {
             const has = !!coord.deck[slot.key]
             return (
               <div key={slot.key} style={{
-                width: 20, height: 20, borderRadius: '50%',
-                background: has ? 'rgba(255,220,240,0.9)' : 'rgba(200,180,210,0.25)',
-                border: has ? '1.5px solid rgba(255,180,230,0.8)' : '1.5px solid rgba(200,180,210,0.3)',
+                width: 18, height: 18, borderRadius: '50%',
+                background: has ? 'rgba(255,240,248,0.92)' : 'rgba(255,255,255,0.15)',
+                border: has ? '1.5px solid rgba(255,215,0,0.7)' : '1.5px solid rgba(255,255,255,0.2)',
+                boxShadow: has ? '0 0 6px rgba(255,180,220,0.5)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={slot.mark} alt={slot.label}
-                  style={{ width: '75%', height: '75%', objectFit: 'contain', mixBlendMode: 'multiply', opacity: has ? 0.85 : 0.25 }}
+                  style={{ width: '78%', height: '78%', objectFit: 'contain', mixBlendMode: 'multiply', opacity: has ? 1 : 0.3 }}
                 />
               </div>
             )
           })}
         </div>
       </div>
+
+      {/* Outer gold glow border frame */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 16,
+        boxShadow: 'inset 0 0 0 1.5px rgba(255,215,0,0.35)',
+        pointerEvents: 'none', zIndex: 4,
+      }} />
     </motion.div>
   )
 }
@@ -171,15 +200,15 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
 function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
   return (
     <motion.div
-      whileTap={{ scale: 0.94 }}
+      whileTap={{ scale: 0.93 }}
       onClick={onTap}
       style={{
         position: 'relative',
-        borderRadius: 10,
+        borderRadius: 12,
         overflow: 'hidden',
         background: card.color,
-        border: '2px solid rgba(255,255,255,0.85)',
-        boxShadow: '0 3px 12px rgba(0,0,0,0.18)',
+        border: GOLD_BORDER,
+        boxShadow: `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.18)`,
         cursor: 'pointer',
         aspectRatio: '2/3',
       }}
@@ -210,26 +239,24 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
       exit={{ opacity: 0 }}
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
-        background: 'rgba(20,5,40,0.82)',
-        backdropFilter: 'blur(10px)',
+        background: 'rgba(20,5,40,0.85)',
+        backdropFilter: 'blur(12px)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '24px 28px',
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      {/* Close */}
       <button onClick={onClose} style={{ position: 'absolute', top: 20, right: 20, color: 'rgba(255,255,255,0.75)', lineHeight: 0, cursor: 'pointer' }}>
         <X size={24} />
       </button>
 
-      {/* Hint */}
       <p style={{ fontFamily: ZEN, fontSize: '0.68rem', color: 'rgba(255,200,240,0.8)', marginBottom: 18, textShadow: TEXT_SHADOW }}>
         {flipped ? '🃏 タップで表に戻す' : '🃏 タップで裏面を見る'}
       </p>
 
       {/* 3D flip card */}
       <div
-        style={{ width: '100%', maxWidth: 256, aspectRatio: '3/4', perspective: '900px', cursor: 'pointer' }}
+        style={{ width: '100%', maxWidth: 260, aspectRatio: '3/4', perspective: '1000px', cursor: 'pointer' }}
         onClick={() => setFlipped(f => !f)}
       >
         <motion.div
@@ -240,69 +267,99 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
           {/* ── Front face ── */}
           <div style={{
             position: 'absolute', inset: 0,
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            borderRadius: 18, overflow: 'hidden',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+            backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
+            borderRadius: 20, overflow: 'hidden',
+            border: GOLD_BORDER,
+            boxShadow: '0 16px 50px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(255,215,0,0.3)',
           }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={coord.image} alt={coord.theme} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {/* holographic overlay */}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,200,255,0.1) 0%, rgba(200,240,255,0.08) 50%, rgba(255,255,200,0.08) 100%)', mixBlendMode: 'screen', pointerEvents: 'none' }} />
             {coord.aiArt && (
-              <div style={{ position: 'absolute', top: 12, left: 12, background: 'linear-gradient(135deg, #ff69b4, #ffd700)', borderRadius: 10, padding: '3px 10px', fontSize: '0.55rem', fontWeight: 900, color: 'white', fontFamily: ZEN, textShadow: '0 1px 2px rgba(0,0,0,0.5)', boxShadow: '0 2px 8px rgba(255,100,0,0.5)' }}>
+              <div style={{ position: 'absolute', top: 13, left: 13, background: 'linear-gradient(135deg, #ff4da6, #ffd700)', borderRadius: 12, padding: '4px 11px', fontSize: '0.58rem', fontWeight: 900, color: 'white', fontFamily: FREDOKA, letterSpacing: '0.06em', textShadow: '0 1px 3px rgba(0,0,0,0.5)', boxShadow: '0 2px 10px rgba(255,60,0,0.55), 0 0 0 1px rgba(255,255,255,0.3)', zIndex: 2 }}>
                 ✨ AI ART
               </div>
             )}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 14px 14px', background: 'linear-gradient(transparent, rgba(30,5,60,0.85))' }}>
-              <p style={{ fontFamily: ZEN, color: 'rgba(255,215,200,0.75)', fontSize: '0.6rem', margin: 0 }}>{coord.date}</p>
-              <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.88rem', fontWeight: 900, margin: '3px 0 0', textShadow: TEXT_SHADOW }}>💎 {coord.theme}</p>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '32px 16px 16px', background: 'linear-gradient(transparent, rgba(15,3,40,0.9))' }}>
+              <p style={{ fontFamily: ZEN, color: 'rgba(255,210,235,0.8)', fontSize: '0.58rem', margin: 0 }}>{coord.date}</p>
+              <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.95rem', fontWeight: 900, margin: '3px 0 0', textShadow: TEXT_SHADOW }}>💎 {coord.theme}</p>
             </div>
           </div>
 
           {/* ── Back face ── */}
           <div style={{
             position: 'absolute', inset: 0,
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
+            backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            borderRadius: 18, overflow: 'hidden',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.6)',
+            borderRadius: 20, overflow: 'hidden',
+            border: GOLD_BORDER,
+            boxShadow: '0 16px 50px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(255,215,0,0.3)',
           }}>
+            {/* ard-back.png as full background */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/ard-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,0,30,0.22)', display: 'flex', flexDirection: 'column', padding: '18px 14px 14px' }}>
-              {/* Record header */}
-              <div style={{ textAlign: 'center', marginBottom: 10 }}>
-                <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.6rem', fontWeight: 700, margin: 0, letterSpacing: '0.12em', textShadow: '0 0 10px rgba(255,215,0,0.7)' }}>✦ COORD RECORD ✦</p>
-                <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.95rem', fontWeight: 900, margin: '4px 0 2px', textShadow: TEXT_SHADOW }}>💎 {coord.theme}</p>
-                <p style={{ fontFamily: ZEN, color: 'rgba(255,220,200,0.8)', fontSize: '0.58rem', margin: 0 }}>{coord.date}</p>
+
+            {/* overlay */}
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,0,25,0.35)' }} />
+
+            <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', padding: '16px 12px 14px' }}>
+              {/* Header */}
+              <div style={{ textAlign: 'center', marginBottom: 8 }}>
+                <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.6rem', fontWeight: 700, margin: 0, letterSpacing: '0.15em', textShadow: '0 0 12px rgba(255,215,0,0.8)' }}>
+                  ✦ COORD RECORD ✦
+                </p>
+                <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.92rem', fontWeight: 900, margin: '4px 0 2px', textShadow: TEXT_SHADOW }}>
+                  💎 {coord.theme}
+                </p>
+                <p style={{ fontFamily: ZEN, color: 'rgba(255,210,235,0.8)', fontSize: '0.55rem', margin: 0 }}>{coord.date}</p>
               </div>
+
               {/* Divider */}
-              <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.5), transparent)', marginBottom: 10 }} />
-              {/* Deck slots */}
-              <p style={{ fontFamily: ZEN, color: 'rgba(255,215,0,0.85)', fontSize: '0.52rem', fontWeight: 900, margin: '0 0 7px', letterSpacing: '0.08em', textShadow: '0 1px 4px rgba(0,0,0,0.7)' }}>TODAY&apos;S DECK</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.6), transparent)', margin: '6px 0 10px' }} />
+
+              {/* Deck label */}
+              <p style={{ fontFamily: ZEN, color: 'rgba(255,215,0,0.9)', fontSize: '0.5rem', fontWeight: 900, margin: '0 0 8px', letterSpacing: '0.1em', textShadow: '0 1px 4px rgba(0,0,0,0.7)', textAlign: 'center' }}>
+                ✦ TODAY&apos;S DECK ✦
+              </p>
+
+              {/* 5 mini card thumbnails */}
+              <div style={{ display: 'flex', gap: 5, justifyContent: 'center', flex: 1, alignItems: 'center' }}>
                 {SLOT_CONFIG.map(slot => {
                   const item = coord.deck[slot.key]
                   return (
-                    <div key={slot.key} style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'rgba(255,255,255,0.12)', borderRadius: 8, padding: '4px 8px', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={slot.mark} alt={slot.label} style={{ width: 20, height: 20, objectFit: 'contain', mixBlendMode: 'multiply', flexShrink: 0 }} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontFamily: ZEN, fontSize: '0.42rem', fontWeight: 700, color: 'rgba(255,200,220,0.65)', margin: 0 }}>{slot.label}</p>
-                        <p style={{ fontFamily: ZEN, fontSize: '0.6rem', fontWeight: 900, color: 'white', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
-                          {item ? item.name : '—'}
-                        </p>
+                    <div key={slot.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1 }}>
+                      {/* Mini card */}
+                      <div style={{
+                        width: '100%',
+                        aspectRatio: '2/3',
+                        borderRadius: 7,
+                        overflow: 'hidden',
+                        border: item ? '1.5px solid rgba(255,215,0,0.6)' : '1.5px solid rgba(255,255,255,0.18)',
+                        background: item ? 'rgba(255,240,248,0.92)' : 'rgba(255,255,255,0.08)',
+                        boxShadow: item ? '0 3px 10px rgba(255,100,200,0.35)' : 'none',
+                        position: 'relative',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {item ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        ) : (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img src={slot.mark} alt={slot.label} style={{ width: '65%', height: '65%', objectFit: 'contain', opacity: 0.25 }} />
+                        )}
                       </div>
-                      {item && (
-                        <div style={{ width: 26, height: 34, borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.3)', flexShrink: 0, background: 'rgba(255,255,255,0.15)' }}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'multiply' }} />
-                        </div>
-                      )}
+                      {/* Slot label */}
+                      <p style={{ fontFamily: ZEN, fontSize: '0.36rem', fontWeight: 700, color: item ? 'rgba(255,220,240,0.9)' : 'rgba(255,255,255,0.3)', margin: 0, textAlign: 'center', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
+                        {slot.label}
+                      </p>
                     </div>
                   )
                 })}
               </div>
+
+              {/* Bottom gold line */}
+              <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.4), transparent)', marginTop: 12 }} />
             </div>
           </div>
         </motion.div>
@@ -327,8 +384,8 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
       exit={{ opacity: 0 }}
       style={{
         position: 'fixed', inset: 0, zIndex: 100,
-        background: 'rgba(20,5,40,0.82)',
-        backdropFilter: 'blur(10px)',
+        background: 'rgba(20,5,40,0.85)',
+        backdropFilter: 'blur(12px)',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '24px 40px',
       }}
@@ -343,7 +400,7 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
       </p>
 
       <div
-        style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', perspective: '900px', cursor: 'pointer' }}
+        style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', perspective: '1000px', cursor: 'pointer' }}
         onClick={() => setFlipped(f => !f)}
       >
         <motion.div
@@ -355,9 +412,10 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
           <div style={{
             position: 'absolute', inset: 0,
             backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-            borderRadius: 14, overflow: 'hidden',
+            borderRadius: 16, overflow: 'hidden',
             background: card.color,
-            boxShadow: `0 12px 40px ${card.color}88, 0 4px 16px rgba(0,0,0,0.4)`,
+            border: GOLD_BORDER,
+            boxShadow: `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45), 0 0 0 1.5px rgba(255,215,0,0.3)`,
           }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
@@ -370,22 +428,26 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
             position: 'absolute', inset: 0,
             backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            borderRadius: 14, overflow: 'hidden',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
+            borderRadius: 16, overflow: 'hidden',
+            border: GOLD_BORDER,
+            boxShadow: '0 14px 44px rgba(0,0,0,0.6), 0 0 0 1.5px rgba(255,215,0,0.3)',
           }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/img/ard-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,0,30,0.18)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', gap: 14 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/img/mark-${card.category}.png`} alt={card.category} style={{ width: 56, height: 56, objectFit: 'contain', mixBlendMode: 'multiply', filter: 'drop-shadow(0 0 8px rgba(255,180,220,0.8))' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,0,25,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', gap: 14 }}>
+              {/* Mark on light circle */}
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(255,245,252,0.92)', border: '2px solid rgba(255,215,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(255,100,200,0.4)' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/img/mark-${card.category}.png`} alt={card.category} style={{ width: 42, height: 42, objectFit: 'contain', mixBlendMode: 'multiply' }} />
+              </div>
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.58rem', fontWeight: 700, margin: '0 0 5px', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(255,215,0,0.7)' }}>
+                <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.6rem', fontWeight: 700, margin: '0 0 5px', letterSpacing: '0.12em', textShadow: '0 0 12px rgba(255,215,0,0.7)' }}>
                   {card.category.toUpperCase()}
                 </p>
                 <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.88rem', fontWeight: 900, margin: 0, textShadow: TEXT_SHADOW }}>
                   {card.name}
                 </p>
-                <p style={{ fontFamily: ZEN, color: 'rgba(255,215,200,0.75)', fontSize: '0.62rem', margin: '6px 0 0' }}>
+                <p style={{ fontFamily: ZEN, color: 'rgba(255,210,235,0.8)', fontSize: '0.62rem', margin: '6px 0 0' }}>
                   {rarityMap[card.category]}
                 </p>
               </div>
@@ -411,12 +473,11 @@ export default function BinderScreen() {
     ? ITEM_CARDS
     : ITEM_CARDS.filter(c => c.category === catFilter)
 
-  /* バインダーリフィル風グリッドBG */
   const binderBg = {
     background: [
-      'linear-gradient(rgba(255,245,252,0.93) 0%, rgba(250,240,255,0.93) 100%)',
-      'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,150,210,0.13) 23px, rgba(255,150,210,0.13) 24px)',
-      'repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(255,150,210,0.13) 23px, rgba(255,150,210,0.13) 24px)',
+      'linear-gradient(rgba(255,245,253,0.94) 0%, rgba(250,238,255,0.94) 100%)',
+      'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,140,210,0.11) 23px, rgba(255,140,210,0.11) 24px)',
+      'repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(255,140,210,0.11) 23px, rgba(255,140,210,0.11) 24px)',
     ].join(', '),
   }
 
@@ -445,9 +506,10 @@ export default function BinderScreen() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '14px 14px 10px',
-          background: 'linear-gradient(135deg, rgba(255,80,180,0.82) 0%, rgba(140,50,220,0.82) 100%)',
-          backdropFilter: 'blur(14px)',
-          borderBottom: '1px solid rgba(255,180,255,0.3)',
+          background: 'linear-gradient(135deg, rgba(255,60,175,0.86) 0%, rgba(130,40,220,0.86) 100%)',
+          backdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(255,215,0,0.25)',
+          boxShadow: '0 4px 20px rgba(180,30,180,0.3)',
         }}>
           <motion.button
             whileTap={{ scale: 0.92 }}
@@ -458,16 +520,15 @@ export default function BinderScreen() {
             戻る
           </motion.button>
 
-          {/* MY BINDER タイトル */}
           <h1 style={{
             fontFamily: FREDOKA,
             fontWeight: 700,
-            fontSize: '1.25rem',
+            fontSize: '1.28rem',
             color: 'white',
             margin: 0,
             letterSpacing: '0.1em',
-            textShadow: '0 2px 0 rgba(200,40,160,0.5), 0 0 20px rgba(255,215,0,0.4), 2px 2px 0 rgba(180,30,140,0.35)',
-            WebkitTextStroke: '0.5px rgba(255,215,0,0.4)',
+            textShadow: '0 2px 0 rgba(180,30,140,0.55), 0 0 24px rgba(255,215,0,0.45), 2px 2px 0 rgba(160,20,120,0.4)',
+            WebkitTextStroke: '0.5px rgba(255,215,0,0.45)',
           }}>
             MY BINDER
           </h1>
@@ -475,7 +536,7 @@ export default function BinderScreen() {
           <div style={{ width: 52 }} />
         </header>
 
-        {/* ━━━ ② インデックスシール風タブ ━━━ */}
+        {/* ━━━ ② タブ ━━━ */}
         <div style={{
           flexShrink: 0,
           display: 'flex',
@@ -483,7 +544,7 @@ export default function BinderScreen() {
           padding: '10px 12px 0',
         }}>
           {([
-            { key: 'coord' as MainTab, icon: '/img/tab-snap.png', label: '完成コーデ', emoji: '✨' },
+            { key: 'coord' as MainTab, icon: '/img/tab-snap.png',    label: '完成コーデ',   emoji: '✨' },
             { key: 'item'  as MainTab, icon: '/img/icon-binder.png', label: 'アイテムカード', emoji: '👗' },
           ]).map(tab => {
             const active = mainTab === tab.key
@@ -498,33 +559,40 @@ export default function BinderScreen() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 7,
-                  padding: '8px 6px 10px',
-                  borderRadius: '12px 12px 0 0',
-                  border: active ? '2px solid rgba(255,215,0,0.7)' : '2px solid rgba(255,255,255,0.18)',
-                  borderBottom: active ? '2px solid rgba(255,245,252,0)' : '2px solid rgba(255,255,255,0.18)',
-                  background: active ? 'rgba(255,250,255,0.95)' : 'rgba(255,255,255,0.22)',
-                  boxShadow: active ? '0 -4px 16px rgba(255,80,200,0.25), 0 0 0 1px rgba(255,215,0,0.15)' : 'none',
-                  transform: active ? 'scale(1.04) translateY(1px)' : 'scale(1)',
+                  padding: '9px 6px 11px',
+                  borderRadius: '14px 14px 0 0',
+                  border: active ? '2px solid #ffd700' : '2px solid rgba(255,255,255,0.2)',
+                  borderBottom: active ? '2px solid transparent' : '2px solid rgba(255,255,255,0.2)',
+                  background: active
+                    ? 'linear-gradient(160deg, rgba(255,248,255,0.98) 0%, rgba(255,252,240,0.98) 100%)'
+                    : 'rgba(255,255,255,0.2)',
+                  boxShadow: active
+                    ? '0 -6px 22px rgba(255,80,200,0.3), 0 -2px 8px rgba(255,215,0,0.15), inset 0 1px 0 rgba(255,255,255,0.85)'
+                    : 'none',
+                  transform: active ? 'translateY(2px)' : 'translateY(0)',
                   transition: 'all 0.18s ease',
                   cursor: 'pointer',
-                  backdropFilter: active ? 'none' : 'blur(6px)',
+                  backdropFilter: active ? 'none' : 'blur(8px)',
                   position: 'relative',
                   zIndex: active ? 2 : 1,
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={tab.icon} alt={tab.label}
+                  src={tab.icon} alt=""
                   style={{
-                    width: 24, height: 24, objectFit: 'contain',
+                    width: 32, height: 32, objectFit: 'contain',
                     mixBlendMode: 'multiply',
-                    filter: active ? 'drop-shadow(0 0 4px rgba(255,100,220,0.6))' : undefined,
-                    opacity: active ? 1 : 0.7,
+                    filter: active
+                      ? 'drop-shadow(0 2px 6px rgba(255,60,200,0.65)) drop-shadow(0 0 3px rgba(255,215,0,0.5))'
+                      : 'brightness(10)',
+                    opacity: active ? 1 : 0.85,
+                    transition: 'filter 0.18s',
                   }}
                 />
                 <span style={{
-                  fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 900,
-                  color: active ? '#c040e0' : 'white',
+                  fontFamily: ZEN, fontSize: '0.68rem', fontWeight: 900,
+                  color: active ? '#b020d8' : 'rgba(255,255,255,0.92)',
                   textShadow: active ? 'none' : TEXT_SHADOW,
                   whiteSpace: 'nowrap',
                 }}>
@@ -535,20 +603,19 @@ export default function BinderScreen() {
           })}
         </div>
 
-        {/* ━━━ ③ バインダー・グリッドエリア ━━━ */}
+        {/* ━━━ ③ バインダーグリッドエリア ━━━ */}
         <div style={{
           flex: 1,
           minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
-          borderRadius: '0 0 0 0',
           ...binderBg,
-          borderTop: '2px solid rgba(255,215,0,0.35)',
-          boxShadow: 'inset 0 2px 20px rgba(255,150,200,0.08)',
+          borderTop: '2px solid rgba(255,215,0,0.3)',
+          boxShadow: 'inset 0 3px 20px rgba(255,130,200,0.07)',
           overflow: 'hidden',
         }}>
 
-          {/* ━━ アイテムカード タブ: カテゴリフィルター ━━ */}
+          {/* カテゴリフィルター (アイテムタブのみ) */}
           {mainTab === 'item' && (
             <div style={{
               flexShrink: 0,
@@ -556,9 +623,7 @@ export default function BinderScreen() {
               gap: 5,
               padding: '10px 12px 8px',
               overflowX: 'auto',
-            }}
-              className="overflow-x-auto"
-            >
+            }}>
               {CATEGORY_FILTERS.map(f => {
                 const active = catFilter === f.key
                 return (
@@ -567,14 +632,16 @@ export default function BinderScreen() {
                     onClick={() => setCatFilter(f.key)}
                     style={{
                       flexShrink: 0,
-                      padding: '4px 12px',
+                      padding: '4px 13px',
                       borderRadius: 20,
-                      border: active ? '2px solid rgba(200,60,220,0.7)' : '2px solid rgba(200,150,220,0.35)',
-                      background: active ? 'linear-gradient(135deg, rgba(255,80,200,0.18), rgba(180,60,240,0.15))' : 'rgba(255,255,255,0.55)',
-                      color: active ? '#a020d0' : 'rgba(140,80,160,0.8)',
+                      border: active ? '2px solid rgba(200,50,220,0.75)' : '2px solid rgba(200,140,220,0.3)',
+                      background: active
+                        ? 'linear-gradient(135deg, rgba(255,70,200,0.16), rgba(170,50,240,0.13))'
+                        : 'rgba(255,255,255,0.6)',
+                      color: active ? '#a020d0' : 'rgba(140,70,160,0.8)',
                       fontFamily: ZEN, fontSize: '0.62rem', fontWeight: 900,
                       cursor: 'pointer',
-                      boxShadow: active ? '0 2px 8px rgba(200,60,220,0.22)' : 'none',
+                      boxShadow: active ? '0 2px 10px rgba(200,50,220,0.2)' : 'none',
                       transition: 'all 0.15s',
                     }}
                   >
@@ -585,40 +652,30 @@ export default function BinderScreen() {
             </div>
           )}
 
-          {/* ━━ Grid ━━ */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px 16px' }}>
+          {/* Grid */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px 20px' }}>
             <AnimatePresence mode="wait">
               {mainTab === 'coord' ? (
-                /* 完成コーデ: 2-col grid */
                 <motion.div
                   key="coord"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: 10,
-                  }}
+                  style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}
                 >
                   {COORD_SNAPS.map(coord => (
                     <CoordCard key={coord.id} coord={coord} onTap={() => setSelectedCoord(coord)} />
                   ))}
                 </motion.div>
               ) : (
-                /* アイテムカード: 3-col grid */
                 <motion.div
                   key="item"
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: 8,
-                  }}
+                  style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 9 }}
                 >
                   {filteredItems.map(card => (
                     <ItemCardThumb key={card.id} card={card} onTap={() => setSelectedItem(card)} />
