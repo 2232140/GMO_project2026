@@ -188,7 +188,7 @@ function CoordFlipModal({ coord, onClose }: { coord: CoordSnap; onClose: () => v
           {/* 裏面 */}
           <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: 20, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.65)', boxShadow: '0 16px 50px rgba(0,0,0,0.72)' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/img/ard-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="/img/card-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,0,20,0.45)' }} />
 
             <div
@@ -289,7 +289,7 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
           {/* 裏面 */}
           <div style={{ position: 'absolute', inset: 0, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)', borderRadius: 16, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.6)', boxShadow: '0 14px 44px rgba(0,0,0,0.6)' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/img/ard-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="/img/card-back.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,0,20,0.35)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 16px', gap: 12 }}>
               <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(255,245,252,0.94)', border: '2px solid rgba(255,215,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 18px rgba(255,100,200,0.45)' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}

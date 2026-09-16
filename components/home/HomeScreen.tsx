@@ -231,7 +231,7 @@ export default function HomeScreen() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.39, type: 'spring', stiffness: 180 }}
               whileTap={{ scale: 0.95, y: 2 }}
-              onClick={() => router.push('/album')}
+              onClick={() => router.push('/binder')}
               style={{ position: 'relative', width: '100%' }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
