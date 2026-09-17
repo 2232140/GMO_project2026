@@ -459,11 +459,11 @@ export default function CreatePage() {
               <motion.button whileTap={{ scale: 0.97 }} onClick={() => setStep(3)} style={{
                 flexShrink: 0, width: '100%', padding: '17px', border: 'none', borderRadius: 16, cursor: 'pointer', outline: 'none', marginTop: 4,
                 fontFamily: ZEN, fontSize: '1.08rem', fontWeight: 900, color: 'white',
-                background: 'linear-gradient(90deg,#ff1493 0%,#ff8fd8 14%,#d8a0ff 28%,#7eb6ff 42%,#00e5ff 56%,#00ff99 70%,#ffd700 84%,#ff1493 100%)',
+                background: 'linear-gradient(90deg,#ffb3d9 0%,#ffd6f0 14%,#e8c8ff 28%,#c0d8ff 42%,#c0f0ff 56%,#c0ffe8 70%,#fff0c0 84%,#ffb3d9 100%)',
                 backgroundSize: '300% 100%',
                 animation: 'holoShimmer 3s ease-in-out infinite',
-                boxShadow: '0 0 28px rgba(255,20,147,0.55),inset 0 2px 4px rgba(255,255,255,0.25),0 4px 0 rgba(120,0,60,0.8)',
-                textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+                boxShadow: '0 0 22px rgba(255,160,220,0.55),inset 0 2px 6px rgba(255,255,255,0.55),0 4px 0 rgba(160,80,140,0.6)',
+                textShadow: '0 1px 3px rgba(120,0,80,0.4)',
               }}>
                 ✨ カードを発行する！
               </motion.button>
