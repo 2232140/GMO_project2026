@@ -149,7 +149,7 @@ function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
+      <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
       {/* MY badge for user-created cards */}
       {card.isUserCreated && (
         <div style={{ position: 'absolute', top: 3, right: 3, zIndex: 4, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 5px', boxShadow: '0 0 6px rgba(255,20,147,0.7)' }}>
@@ -320,7 +320,7 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
+            <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
           </>
         ) : (
           /* 裏面 */

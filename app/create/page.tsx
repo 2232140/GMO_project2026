@@ -215,7 +215,7 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
               />
               {/* Card frame overlay */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
+              <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
 
               {/* SR badge */}
               <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '2px 8px', boxShadow: '0 0 8px rgba(255,215,0,0.7)' }}>
@@ -369,6 +369,7 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
 }
 
 /* ─────────── ProcessingOverlay ─────────── */
+/* Uses CSS animations only — compositor-driven, not blocked by WASM main-thread load */
 function ProcessingOverlay() {
   return (
     <motion.div
@@ -379,58 +380,71 @@ function ProcessingOverlay() {
       style={{
         position: 'absolute', inset: 0, zIndex: 70,
         background: 'radial-gradient(ellipse at 50% 46%, rgba(140,0,120,0.97) 0%, rgba(60,0,160,0.98) 50%, rgba(5,0,20,0.99) 100%)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28,
       }}
     >
-      {/* Spinning card placeholder */}
-      <div style={{ perspective: 600 }}>
-        <motion.div
-          animate={{ rotateY: [0, 360] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: 'linear' }}
-          style={{
-            width: 100, aspectRatio: '2/3', borderRadius: 12,
-            background: 'linear-gradient(135deg, rgba(255,80,200,0.4), rgba(120,40,220,0.4))',
-            border: '2px solid rgba(255,150,220,0.6)',
-            boxShadow: '0 0 24px rgba(255,80,200,0.5)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          <motion.span
-            animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-            style={{ fontSize: 32 }}
-          >✂️</motion.span>
-        </motion.div>
+      {/* Double-ring CSS spinner — never freezes */}
+      <div style={{ position: 'relative', width: 100, height: 100, flexShrink: 0 }}>
+        <div style={{
+          position: 'absolute', inset: 0, borderRadius: '50%',
+          border: '4px solid rgba(255,100,200,0.15)',
+          borderTopColor: '#ff1493',
+          borderRightColor: 'rgba(255,80,180,0.45)',
+          animation: 'spin 1.3s linear infinite',
+        }} />
+        <div style={{
+          position: 'absolute', inset: 12, borderRadius: '50%',
+          border: '3px solid rgba(180,80,255,0.15)',
+          borderBottomColor: '#c040e0',
+          borderLeftColor: 'rgba(160,60,240,0.45)',
+          animation: 'spinReverse 0.9s linear infinite',
+        }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 30,
+        }}>✂️</div>
       </div>
 
-      <div style={{ textAlign: 'center', padding: '0 32px' }}>
-        <motion.p
-          animate={{ opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 1.4, repeat: Infinity }}
-          style={{ fontFamily: FREDOKA, fontSize: '1.15rem', fontWeight: 700, color: '#ff8fd8', margin: '0 0 8px', textShadow: '0 0 16px rgba(255,100,200,0.9)' }}
-        >
-          ✨ AIが魔法をかけ中…
-        </motion.p>
-        <p style={{ fontFamily: ZEN, fontSize: '0.75rem', color: 'rgba(255,180,230,0.65)', margin: 0 }}>
-          背景を自動で切り抜いています
+      {/* Pulsing card silhouette (CSS) */}
+      <div style={{
+        width: 68, aspectRatio: '2/3', borderRadius: 10,
+        background: 'linear-gradient(135deg, rgba(255,80,200,0.22), rgba(120,40,220,0.22))',
+        border: '1.5px solid rgba(255,150,220,0.38)',
+        animation: 'processPulse 2.4s ease-in-out infinite',
+        flexShrink: 0,
+      }} />
+
+      {/* Static text */}
+      <div style={{ textAlign: 'center', padding: '0 36px' }}>
+        <p style={{
+          fontFamily: FREDOKA, fontSize: '1.1rem', fontWeight: 700,
+          color: '#ff8fd8', margin: '0 0 10px',
+          textShadow: '0 0 16px rgba(255,100,200,0.9)',
+        }}>
+          ✨ AIが魔法をかけ中
+        </p>
+        <p style={{
+          fontFamily: ZEN, fontSize: '0.72rem',
+          color: 'rgba(255,180,230,0.65)', margin: 0, lineHeight: 1.75,
+        }}>
+          背景を自動で切り抜いています<br />
+          <span style={{ fontSize: '0.6rem', color: 'rgba(255,150,210,0.45)' }}>
+            初回はモデル読み込みで少し時間がかかります
+          </span>
         </p>
       </div>
 
-      {/* Animated stars */}
-      {[...Array(8)].map((_, i) => (
-        <motion.div key={`ps-${i}`}
-          animate={{
-            x: [0, Math.cos(i * 45 * Math.PI / 180) * 60, 0],
-            y: [0, Math.sin(i * 45 * Math.PI / 180) * 60, 0],
-            opacity: [0.4, 1, 0.4],
-          }}
-          transition={{ duration: 2 + i * 0.25, repeat: Infinity, delay: i * 0.2 }}
-          style={{
-            position: 'absolute', fontSize: 16 + (i % 3) * 4,
-            userSelect: 'none', pointerEvents: 'none',
-          }}
-        >{['✨', '⭐', '💫', '✦'][i % 4]}</motion.div>
-      ))}
+      {/* Bouncing dots (CSS) */}
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
+        {[0, 1, 2].map(i => (
+          <div key={i} style={{
+            width: 9, height: 9, borderRadius: '50%',
+            background: 'linear-gradient(135deg,#ff69b4,#c040e0)',
+            animation: `processDot 1.4s ease-in-out ${i * 0.23}s infinite`,
+          }} />
+        ))}
+      </div>
     </motion.div>
   )
 }
@@ -804,7 +818,7 @@ export default function CreatePage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cardImg} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75, pointerEvents: 'none' }} />
+                  <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75, pointerEvents: 'none' }} />
                   {bgRemovedOk && (
                     <div style={{ position: 'absolute', top: 5, left: 5, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 6px' }}>
                       <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: 'white' }}>AI ✂</span>
