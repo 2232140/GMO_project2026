@@ -1,113 +1,532 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useRef, useCallback } from 'react'
+import { motion, AnimatePresence, useAnimate } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { Camera, Upload, Link2, X, Check, ChevronLeft, Loader2 } from 'lucide-react'
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
 const FREDOKA = 'var(--font-fredoka), sans-serif'
 
+/* ─────────── constants ─────────── */
 const THEMES = [
-  {
-    id: 'yumekawa', label: 'ゆめかわ',
-    cardBg: 'linear-gradient(135deg,#ffe4f8,#ffbce8,#ffa0de)',
-    border: '#ff60c0', glow: 'rgba(255,80,190,0.55)',
-    btnBg: 'linear-gradient(180deg,#ffe0f5,#ff80c8 45%,#d03090 85%,#a01060 100%)',
-    btnShadow: '#801050',
-  },
-  {
-    id: 'gyaru', label: 'ギャル',
-    cardBg: 'linear-gradient(135deg,#fff8c0,#ffe060,#ffc020)',
-    border: '#e0a000', glow: 'rgba(255,190,0,0.55)',
-    btnBg: 'linear-gradient(180deg,#fff8d0,#ffd040 45%,#c08000 85%,#906000 100%)',
-    btnShadow: '#705000',
-  },
-  {
-    id: 'chic', label: 'シック',
-    cardBg: 'linear-gradient(135deg,#d8e0ff,#b8c8f0,#9ab0e0)',
-    border: '#6080e0', glow: 'rgba(100,120,220,0.48)',
-    btnBg: 'linear-gradient(180deg,#e0e8ff,#8090e0 45%,#4060b0 85%,#2040a0 100%)',
-    btnShadow: '#203090',
-  },
-  {
-    id: 'custom', label: '✨ カスタム',
-    cardBg: 'linear-gradient(135deg,#1a0035,#300060,#1a0035)',
-    border: '#c060ff', glow: 'rgba(180,80,255,0.6)',
-    btnBg: 'linear-gradient(90deg,#ff1493 0%,#d040e0 33%,#7040ff 66%,#ff1493 100%)',
-    btnShadow: '#600090',
-  },
+  { id: 'yumekawa', label: 'ゆめかわ',   cardBg: 'linear-gradient(135deg,#ffe4f8,#ffbce8,#ffa0de)', border: '#ff60c0', hex: '#ffa0de', glow: 'rgba(255,80,190,0.55)', btnBg: 'linear-gradient(180deg,#ffe0f5,#ff80c8 45%,#d03090 85%,#a01060 100%)', btnShadow: '#801050' },
+  { id: 'gyaru',    label: 'ギャル',      cardBg: 'linear-gradient(135deg,#fff8c0,#ffe060,#ffc020)', border: '#e0a000', hex: '#ffc020', glow: 'rgba(255,190,0,0.55)',  btnBg: 'linear-gradient(180deg,#fff8d0,#ffd040 45%,#c08000 85%,#906000 100%)', btnShadow: '#705000' },
+  { id: 'chic',     label: 'シック',      cardBg: 'linear-gradient(135deg,#d8e0ff,#b8c8f0,#9ab0e0)', border: '#6080e0', hex: '#9ab0e0', glow: 'rgba(100,120,220,0.48)', btnBg: 'linear-gradient(180deg,#e0e8ff,#8090e0 45%,#4060b0 85%,#2040a0 100%)', btnShadow: '#203090' },
+  { id: 'custom',   label: '✨ カスタム', cardBg: 'linear-gradient(135deg,#1a0035,#300060,#1a0035)', border: '#c060ff', hex: '#c060ff', glow: 'rgba(180,80,255,0.6)',  btnBg: 'linear-gradient(90deg,#ff1493 0%,#d040e0 33%,#7040ff 66%,#ff1493 100%)', btnShadow: '#600090' },
 ]
 
 const CATS = [
-  { key: 'tops',    label: 'TOPS', grad: 'linear-gradient(180deg,#ffd0d8,#ff5878 40%,#d01838 80%,#980030 100%)', shadow: 'rgba(210,20,50,0.55)' },
-  { key: 'bottoms', label: 'BTMS', grad: 'linear-gradient(180deg,#d0d8ff,#6080f0 40%,#3050c0 80%,#1030a0 100%)', shadow: 'rgba(50,80,200,0.55)' },
-  { key: 'shoes',   label: 'SHOE', grad: 'linear-gradient(180deg,#d0ffd8,#40c860 40%,#209040 80%,#106020 100%)', shadow: 'rgba(20,140,60,0.55)' },
-  { key: 'cosme',   label: 'CSME', grad: 'linear-gradient(180deg,#ffd0f8,#e060c8 40%,#b020a0 80%,#800080 100%)', shadow: 'rgba(180,20,160,0.55)' },
-  { key: 'bag',     label: 'BAG',  grad: 'linear-gradient(180deg,#fff0d0,#f0b040 40%,#c07010 80%,#904000 100%)', shadow: 'rgba(180,100,0,0.55)' },
+  { key: 'tops',    label: 'TOPS', grad: 'linear-gradient(180deg,#ffd0d8,#ff5878 40%,#d01838 80%,#980030 100%)', shadow: 'rgba(210,20,50,0.55)'   },
+  { key: 'bottoms', label: 'BTMS', grad: 'linear-gradient(180deg,#d0d8ff,#6080f0 40%,#3050c0 80%,#1030a0 100%)', shadow: 'rgba(50,80,200,0.55)'   },
+  { key: 'shoes',   label: 'SHOE', grad: 'linear-gradient(180deg,#d0ffd8,#40c860 40%,#209040 80%,#106020 100%)', shadow: 'rgba(20,140,60,0.55)'   },
+  { key: 'cosme',   label: 'CSME', grad: 'linear-gradient(180deg,#ffd0f8,#e060c8 40%,#b020a0 80%,#800080 100%)', shadow: 'rgba(180,20,160,0.55)'  },
+  { key: 'bag',     label: 'BAG',  grad: 'linear-gradient(180deg,#fff0d0,#f0b040 40%,#c07010 80%,#904000 100%)', shadow: 'rgba(180,100,0,0.55)'   },
 ]
 
-const ALL_TAGS = ['#PINK', '#フリル', '#量産型', '#Y2K', '#ギャル', '#清楚系', '#ラベンダー', '#ホワイト', '#オルチャン', '#盛り', '#ゆめかわ', '#V系']
+const ALL_TAGS = ['#Y2K', '#ギャル', '#PINK', '#フリル', '#量産型', '#清楚系', '#ラベンダー', '#ホワイト', '#オルチャン', '#盛り', '#ゆめかわ', '#V系', '#ホロ', '#パール']
 
 const CORNER_DEFS: [boolean, boolean][] = [[true, true], [true, false], [false, true], [false, false]]
 
-const SPARKS = [
-  { sym: '✨', dx: 140, dy: -65, size: 28, delay: 0 },
-  { sym: '⭐', dx: 110, dy: 118, size: 22, delay: 0.05 },
-  { sym: '💫', dx: -22, dy: 148, size: 24, delay: 0.08 },
-  { sym: '✦',  dx: -138, dy: 92, size: 20, delay: 0.10 },
-  { sym: '★',  dx: -152, dy: -32, size: 22, delay: 0.12 },
-  { sym: '💕', dx: -118, dy: -122, size: 24, delay: 0.04 },
-  { sym: '✨', dx: 32,  dy: -158, size: 28, delay: 0.07 },
-  { sym: '⭐', dx: 138, dy: -98, size: 20, delay: 0.02 },
-  { sym: '💫', dx: 92,  dy: 132, size: 22, delay: 0.14 },
-  { sym: '💎', dx: -68, dy: 158, size: 24, delay: 0.09 },
-  { sym: '⭐', dx: -158, dy: 62, size: 24, delay: 0.11 },
-  { sym: '💗', dx: 62,  dy: -152, size: 26, delay: 0.06 },
-  { sym: '✨', dx: -78, dy: -148, size: 20, delay: 0.03 },
-  { sym: '💫', dx: 158, dy: 32,  size: 22, delay: 0.13 },
-  { sym: '✦',  dx: -148, dy: -82, size: 18, delay: 0.01 },
-  { sym: '💕', dx: 82,  dy: -142, size: 20, delay: 0.15 },
+/* Sparkle burst particles for issuance */
+const BURST_SPARKS = [
+  { sym: '✨', dx: 148, dy: -68,  sz: 32, d: 0.00 },
+  { sym: '💗', dx: -128, dy: -118, sz: 28, d: 0.04 },
+  { sym: '⭐', dx: 106, dy: 122,  sz: 24, d: 0.06 },
+  { sym: '💫', dx: -22,  dy: 162,  sz: 26, d: 0.08 },
+  { sym: '✦',  dx: -152, dy: 88,  sz: 22, d: 0.10 },
+  { sym: '★',  dx: -148, dy: -38,  sz: 24, d: 0.12 },
+  { sym: '💕', dx: 36,   dy: -168, sz: 28, d: 0.05 },
+  { sym: '✨', dx: 152,  dy: -94,  sz: 20, d: 0.02 },
+  { sym: '💎', dx: -68,  dy: 162,  sz: 26, d: 0.09 },
+  { sym: '⭐', dx: -162, dy: 58,   sz: 22, d: 0.11 },
+  { sym: '💫', dx: 88,   dy: 138,  sz: 24, d: 0.14 },
+  { sym: '💗', dx: 62,   dy: -158, sz: 28, d: 0.07 },
+  { sym: '✨', dx: -82,  dy: -152, sz: 20, d: 0.03 },
+  { sym: '💫', dx: 162,  dy: 28,   sz: 22, d: 0.13 },
+  { sym: '✦',  dx: -152, dy: -88,  sz: 20, d: 0.01 },
+  { sym: '💕', dx: 78,   dy: -148, sz: 24, d: 0.15 },
+  { sym: '⭐', dx: -42,  dy: -172, sz: 22, d: 0.16 },
+  { sym: '✨', dx: 172,  dy: -48,  sz: 30, d: 0.17 },
 ]
 
-/* ── input / label shared styles ── */
-const INPUT_STYLE: React.CSSProperties = {
+/* Rain particles for idle state */
+const RAIN_SPARKS = ['✨','💗','⭐','💕','✦','💫','⭐','✨','💎','💗'] as const
+
+/* ─────────── shared styles ─────────── */
+const INPUT: React.CSSProperties = {
   width: '100%', padding: '10px 14px', boxSizing: 'border-box',
-  background: 'rgba(10,0,30,0.65)',
-  border: '2px solid #ff69b4', borderRadius: 14, outline: 'none',
-  fontFamily: ZEN, fontSize: '0.82rem', color: 'white',
+  background: 'rgba(10,0,30,0.65)', border: '2px solid #ff69b4',
+  borderRadius: 14, outline: 'none', fontFamily: ZEN, fontSize: '0.82rem', color: 'white',
   boxShadow: '0 0 12px rgba(255,100,200,0.35),inset 0 1px 0 rgba(255,255,255,0.1),0 3px 0 #88004a',
 }
-const LABEL_STYLE: React.CSSProperties = {
-  margin: '0 0 5px', fontFamily: ZEN, fontSize: '0.72rem', fontWeight: 900,
-  color: 'rgba(255,180,230,0.85)',
+const LBL: React.CSSProperties = { margin: '0 0 5px', fontFamily: ZEN, fontSize: '0.72rem', fontWeight: 900, color: 'rgba(255,180,230,0.85)' }
+
+/* ─────────── IssuanceOverlay ─────────── */
+type IssuanceProps = {
+  processedImage: string | null
+  cardName: string
+  brand: string
+  colorName: string
+  theme: typeof THEMES[0]
+  category: string
+  selectedTags: string[]
+  onClose: () => void
+  onSave: () => void
 }
 
+function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, selectedTags, onClose, onSave }: IssuanceProps) {
+  const router = useRouter()
+  const [settled, setSettled] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [cardScope, animateCard] = useAnimate()
+  const didSettle = useRef(false)
+
+  const handleSettle = useCallback(() => {
+    if (didSettle.current) return
+    didSettle.current = true
+    // small bounce
+    animateCard(cardScope.current, { scale: [1, 1.08, 0.97, 1] }, { duration: 0.35, ease: 'easeOut' }).then(() => {
+      setSettled(true)
+    })
+  }, [animateCard, cardScope])
+
+  const handleSave = () => {
+    setSaved(true)
+    onSave()
+    setTimeout(() => router.push('/binder'), 1200)
+  }
+
+  return (
+    <motion.div
+      key="issue-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: 'absolute', inset: 0, zIndex: 80,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        background: 'radial-gradient(ellipse at 50% 40%, rgba(180,0,150,0.95) 0%, rgba(75,0,180,0.97) 45%, rgba(5,0,20,0.99) 100%)',
+        overflowY: 'auto', padding: '20px 16px 32px', boxSizing: 'border-box',
+      }}
+    >
+      {/* ambient star field */}
+      {[...Array(24)].map((_, i) => (
+        <div key={`star-${i}`} style={{
+          position: 'absolute',
+          top: `${(i * 41 + 7) % 100}%`,
+          left: `${(i * 67 + 13) % 100}%`,
+          width: i % 4 === 0 ? 3 : 2, height: i % 4 === 0 ? 3 : 2,
+          borderRadius: '50%',
+          background: `rgba(255,255,255,${0.15 + (i % 5) * 0.1})`,
+          pointerEvents: 'none',
+        }} />
+      ))}
+
+      {/* Close button (top-right, appears after settle) */}
+      <AnimatePresence>
+        {settled && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.3 }}
+            onClick={onClose}
+            style={{
+              position: 'absolute', top: 16, right: 16, zIndex: 90,
+              width: 36, height: 36, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.15)',
+              border: '2px solid rgba(255,255,255,0.4)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <X size={16} color="white" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Spin-in card */}
+      <div style={{ perspective: 900, position: 'relative', flexShrink: 0 }}>
+        {/* Glow beam behind card */}
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 240, height: 360,
+          background: `radial-gradient(ellipse, ${theme.glow} 0%, transparent 70%)`,
+          pointerEvents: 'none', zIndex: 0,
+        }} />
+
+        <motion.div
+          ref={cardScope}
+          initial={{ scale: 0.04, rotateY: 1080, rotateZ: 22, opacity: 0 }}
+          animate={{ scale: 1, rotateY: 0, rotateZ: 0, opacity: 1 }}
+          transition={{
+            scale:   { type: 'spring', stiffness: 48, damping: 13, delay: 0.15 },
+            rotateY: { duration: 1.5, ease: [0.15, 0.0, 0.2, 1.0], delay: 0.15 },
+            rotateZ: { duration: 1.5, ease: [0.15, 0.0, 0.2, 1.0], delay: 0.15 },
+            opacity: { duration: 0.2, delay: 0.15 },
+          }}
+          onAnimationComplete={handleSettle}
+          style={{ position: 'relative', zIndex: 1 }}
+        >
+          {/* Floating idle animation (after settle) */}
+          <motion.div
+            animate={settled ? { y: [0, -10, 0], rotateY: [0, 6, -6, 0] } : {}}
+            transition={settled ? { y: { duration: 3, repeat: Infinity, ease: 'easeInOut' }, rotateY: { duration: 4, repeat: Infinity, ease: 'easeInOut' } } : {}}
+          >
+            <div style={{
+              width: 200, aspectRatio: '2/3', borderRadius: 18,
+              background: theme.cardBg,
+              border: `3px solid ${theme.border}`,
+              boxShadow: `0 0 48px ${theme.glow}, 0 24px 64px rgba(0,0,0,0.8), inset 0 1.5px 0 rgba(255,255,255,0.22)`,
+              position: 'relative', overflow: 'hidden',
+              // holo shimmer effect on card surface
+              animation: settled ? 'holoShimmer 3s ease-in-out infinite' : 'none',
+              backgroundSize: '300% 100%',
+            }}>
+              {/* Item image */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={processedImage ?? '/img/dress.png'}
+                alt={cardName}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+              />
+              {/* Card frame overlay */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
+
+              {/* SR badge */}
+              <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '2px 8px', boxShadow: '0 0 8px rgba(255,215,0,0.7)' }}>
+                <span style={{ fontFamily: FREDOKA, fontSize: '0.58rem', fontWeight: 700, color: '#3a1800' }}>SR ✦</span>
+              </div>
+
+              {/* AI CUT badge (if bg removed) */}
+              {processedImage && (
+                <div style={{ position: 'absolute', top: 8, left: 8, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '2px 8px' }}>
+                  <span style={{ fontFamily: FREDOKA, fontSize: '0.52rem', fontWeight: 700, color: 'white' }}>AI ✂</span>
+                </div>
+              )}
+
+              {/* Name overlay */}
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.82))', padding: '24px 8px 10px' }}>
+                <p style={{ margin: 0, fontFamily: ZEN, fontSize: '0.72rem', fontWeight: 900, color: 'white', textAlign: 'center', textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+                  {cardName || 'MY ITEM'}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Sparkle burst (after settle) */}
+      <AnimatePresence>
+        {settled && BURST_SPARKS.map((s, i) => (
+          <motion.div key={`sp-${i}`}
+            initial={{ opacity: 1, x: 0, y: 0, scale: 1.2 }}
+            animate={{ opacity: 0, x: s.dx, y: s.dy, scale: 0 }}
+            transition={{ duration: 0.9, delay: s.d, ease: 'easeOut' }}
+            style={{ position: 'absolute', fontSize: s.sz, userSelect: 'none', pointerEvents: 'none', zIndex: 2 }}
+          >{s.sym}</motion.div>
+        ))}
+      </AnimatePresence>
+
+      {/* Rain sparks idle animation */}
+      {settled && RAIN_SPARKS.map((sym, i) => (
+        <motion.div key={`rain-${i}`}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: [0, 0.8, 0], y: ['−5%', '105%'] }}
+          transition={{ duration: 2.5 + i * 0.4, delay: 1.2 + i * 0.3, repeat: Infinity, ease: 'linear' }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: `${(i * 11 + 5) % 100}%`,
+            fontSize: 14 + (i % 3) * 4,
+            pointerEvents: 'none', userSelect: 'none', zIndex: 1,
+          }}
+        >{sym}</motion.div>
+      ))}
+
+      {/* Success text + info + buttons */}
+      <AnimatePresence>
+        {settled && (
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, type: 'spring', stiffness: 180 }}
+            style={{ marginTop: 20, textAlign: 'center', width: '100%', maxWidth: 340, flexShrink: 0 }}
+          >
+            <motion.p
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{ delay: 0.7, duration: 0.4 }}
+              style={{
+                fontFamily: FREDOKA, fontSize: '1.6rem', fontWeight: 700,
+                color: 'white', margin: '0 0 4px',
+                textShadow: '0 0 28px rgba(255,150,220,1), 0 0 12px rgba(255,20,147,0.9)',
+              }}
+            >
+              💗 カード発行完了！
+            </motion.p>
+
+            {/* Card info */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 8 }}>
+              {brand && (
+                <p style={{ fontFamily: ZEN, fontSize: '0.72rem', color: 'rgba(255,200,240,0.8)', margin: 0 }}>
+                  {brand}
+                </p>
+              )}
+              {colorName && (
+                <p style={{ fontFamily: ZEN, fontSize: '0.68rem', color: 'rgba(255,180,220,0.65)', margin: 0 }}>
+                  {colorName}
+                </p>
+              )}
+              {selectedTags.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center', marginTop: 4 }}>
+                  {selectedTags.map(tag => (
+                    <span key={tag} style={{
+                      fontFamily: ZEN, fontSize: '0.58rem', fontWeight: 700,
+                      padding: '2px 7px', borderRadius: 20,
+                      background: 'rgba(255,20,147,0.35)',
+                      border: '1px solid rgba(255,100,180,0.5)',
+                      color: 'rgba(255,200,230,0.9)',
+                    }}>{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 9, padding: '0 4px' }}>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSave}
+                disabled={saved}
+                style={{
+                  width: '100%', padding: '14px', borderRadius: 16, border: 'none', cursor: saved ? 'default' : 'pointer',
+                  fontFamily: ZEN, fontSize: '1rem', fontWeight: 900, color: 'white',
+                  background: saved
+                    ? 'linear-gradient(135deg,#4ca, #2a8)'
+                    : 'linear-gradient(180deg,#ff8fd8,#ff1493 50%,#b8004a 100%)',
+                  boxShadow: saved
+                    ? '0 0 20px rgba(0,200,120,0.5), 0 4px 0 #006040'
+                    : '0 0 32px rgba(255,20,147,0.8), 0 4px 0 #6a0030',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                }}
+              >
+                {saved ? <><Check size={18} />バインダーに保存済み！</> : <>✨ バインダーに保存する</>}
+              </motion.button>
+
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={onClose}
+                style={{
+                  width: '100%', padding: '12px', borderRadius: 14,
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                  fontFamily: ZEN, fontSize: '0.88rem', fontWeight: 900, color: 'rgba(255,220,240,0.9)',
+                  cursor: 'pointer', textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+                }}
+              >
+                もう一枚つくる
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+/* ─────────── ProcessingOverlay ─────────── */
+function ProcessingOverlay() {
+  return (
+    <motion.div
+      key="processing"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: 'absolute', inset: 0, zIndex: 70,
+        background: 'radial-gradient(ellipse at 50% 46%, rgba(140,0,120,0.97) 0%, rgba(60,0,160,0.98) 50%, rgba(5,0,20,0.99) 100%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20,
+      }}
+    >
+      {/* Spinning card placeholder */}
+      <div style={{ perspective: 600 }}>
+        <motion.div
+          animate={{ rotateY: [0, 360] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'linear' }}
+          style={{
+            width: 100, aspectRatio: '2/3', borderRadius: 12,
+            background: 'linear-gradient(135deg, rgba(255,80,200,0.4), rgba(120,40,220,0.4))',
+            border: '2px solid rgba(255,150,220,0.6)',
+            boxShadow: '0 0 24px rgba(255,80,200,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <motion.span
+            animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+            style={{ fontSize: 32 }}
+          >✂️</motion.span>
+        </motion.div>
+      </div>
+
+      <div style={{ textAlign: 'center', padding: '0 32px' }}>
+        <motion.p
+          animate={{ opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 1.4, repeat: Infinity }}
+          style={{ fontFamily: FREDOKA, fontSize: '1.15rem', fontWeight: 700, color: '#ff8fd8', margin: '0 0 8px', textShadow: '0 0 16px rgba(255,100,200,0.9)' }}
+        >
+          ✨ AIが魔法をかけ中…
+        </motion.p>
+        <p style={{ fontFamily: ZEN, fontSize: '0.75rem', color: 'rgba(255,180,230,0.65)', margin: 0 }}>
+          背景を自動で切り抜いています
+        </p>
+      </div>
+
+      {/* Animated stars */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div key={`ps-${i}`}
+          animate={{
+            x: [0, Math.cos(i * 45 * Math.PI / 180) * 60, 0],
+            y: [0, Math.sin(i * 45 * Math.PI / 180) * 60, 0],
+            opacity: [0.4, 1, 0.4],
+          }}
+          transition={{ duration: 2 + i * 0.25, repeat: Infinity, delay: i * 0.2 }}
+          style={{
+            position: 'absolute', fontSize: 16 + (i % 3) * 4,
+            userSelect: 'none', pointerEvents: 'none',
+          }}
+        >{['✨', '⭐', '💫', '✦'][i % 4]}</motion.div>
+      ))}
+    </motion.div>
+  )
+}
+
+/* ─────────── main ─────────── */
 export default function CreatePage() {
   const router = useRouter()
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+
+  /* step state */
+  const [step, setStep] = useState<1 | 2>(1)
   const [flash, setFlash] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [showIssue, setShowIssue] = useState(false)
+
+  /* image state */
+  const [sourceImage, setSourceImage] = useState<string | null>(null)
+  const [processedImage, setProcessedImage] = useState<string | null>(null)
+  const [urlInput, setUrlInput] = useState('')
+  const [isFetchingUrl, setIsFetchingUrl] = useState(false)
+  const [bgRemovedOk, setBgRemovedOk] = useState(false)
+
+  /* card metadata */
   const [cardName, setCardName] = useState('')
   const [brand, setBrand] = useState('')
+  const [colorName, setColorName] = useState('')
   const [category, setCategory] = useState('tops')
   const [theme, setTheme] = useState('yumekawa')
   const [customThemeText, setCustomThemeText] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [issued, setIssued] = useState(false)
 
-  const currentTheme = THEMES.find(t => t.id === theme)!
+  /* refs */
+  const cameraRef = useRef<HTMLInputElement>(null)
+  const uploadRef  = useRef<HTMLInputElement>(null)
 
-  const handleShutter = () => {
+  const currentTheme = THEMES.find(t => t.id === theme) ?? THEMES[0]
+
+  /* ── handlers ── */
+  const handleImageFile = useCallback((file: File) => {
+    const reader = new FileReader()
+    reader.onload = e => {
+      setSourceImage(e.target?.result as string)
+      setProcessedImage(null)
+      setBgRemovedOk(false)
+    }
+    reader.readAsDataURL(file)
+  }, [])
+
+  const handleCamera = () => {
     setFlash(true)
-    setTimeout(() => { setFlash(false); setStep(2) }, 380)
+    setTimeout(() => setFlash(false), 200)
+    cameraRef.current?.click()
+  }
+
+  const handleFetchUrl = async () => {
+    const trimmed = urlInput.trim()
+    if (!trimmed) return
+    setIsFetchingUrl(true)
+    try {
+      const res = await fetch(`/api/fetch-image?url=${encodeURIComponent(trimmed)}`)
+      if (!res.ok) throw new Error('Fetch failed')
+      const blob = await res.blob()
+      const reader = new FileReader()
+      reader.onload = e => {
+        setSourceImage(e.target?.result as string)
+        setProcessedImage(null)
+        setBgRemovedOk(false)
+      }
+      reader.readAsDataURL(blob)
+    } catch {
+      alert('画像の取得に失敗しました。URLを確認してください。')
+    } finally {
+      setIsFetchingUrl(false)
+    }
+  }
+
+  const handleProcess = async () => {
+    if (!sourceImage) return
+    setIsProcessing(true)
+    try {
+      // TODO: Replace with server-side remove.bg or Replicate API for better quality
+      // const res = await fetch('/api/remove-bg', { method: 'POST', body: formData })
+      const { removeBackground } = await import('@imgly/background-removal')
+      const srcRes = await fetch(sourceImage)
+      const blob = await srcRes.blob()
+      const result = await removeBackground(blob)
+      const url = URL.createObjectURL(result)
+      setProcessedImage(url)
+      setBgRemovedOk(true)
+    } catch {
+      // Fallback: use original image without bg removal
+      setProcessedImage(sourceImage)
+      setBgRemovedOk(false)
+    } finally {
+      setIsProcessing(false)
+      setStep(2)
+    }
+  }
+
+  const handleIssue = () => setShowIssue(true)
+
+  const handleIssueClose = () => {
+    setShowIssue(false)
+    // reset form
+    setStep(1)
+    setSourceImage(null)
+    setProcessedImage(null)
+    setBgRemovedOk(false)
+    setCardName('')
+    setBrand('')
+    setColorName('')
+    setCategory('tops')
+    setTheme('yumekawa')
+    setCustomThemeText('')
+    setSelectedTags([])
   }
 
   const toggleTag = (tag: string) =>
     setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])
 
+  /* card preview image = processedImage ?? sourceImage ?? placeholder */
+  const cardImg = processedImage ?? sourceImage ?? '/img/dress.png'
+
   return (
     <div style={{ position: 'fixed', inset: 0 }}>
 
-      {/* White flash */}
+      {/* Flash */}
       <AnimatePresence>
         {flash && (
           <motion.div key="flash"
@@ -119,124 +538,55 @@ export default function CreatePage() {
         )}
       </AnimatePresence>
 
-      {/* ═══ Inner container — dark neon arcade bg ═══ */}
+      {/* Hidden file inputs */}
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment"
+        style={{ display: 'none' }}
+        onChange={e => { if (e.target.files?.[0]) handleImageFile(e.target.files[0]) }}
+      />
+      <input ref={uploadRef} type="file" accept="image/*"
+        style={{ display: 'none' }}
+        onChange={e => { if (e.target.files?.[0]) handleImageFile(e.target.files[0]) }}
+      />
+
+      {/* ═══ Inner container ═══ */}
       <div style={{
         position: 'relative', height: '100dvh', maxWidth: 430, margin: '0 auto',
         overflow: 'hidden', display: 'flex', flexDirection: 'column',
         background: 'linear-gradient(180deg,#0a0018 0%,#120028 60%,#0a0018 100%)',
       }}>
 
-        {/* ── STEP 3: Card ejection overlay ── */}
+        {/* Processing overlay */}
+        <AnimatePresence>{isProcessing && <ProcessingOverlay />}</AnimatePresence>
+
+        {/* Issuance overlay */}
         <AnimatePresence>
-          {step === 3 && (
-            <motion.div key="step3"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              style={{
-                position: 'absolute', inset: 0, zIndex: 50,
-                background: 'radial-gradient(ellipse at 50% 38%,rgba(150,0,120,0.92) 0%,rgba(70,0,150,0.96) 42%,rgba(8,0,24,0.99) 100%)',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              {/* Ambient star field */}
-              {[...Array(20)].map((_, i) => (
-                <div key={`star-${i}`} style={{
-                  position: 'absolute',
-                  top: `${(i * 37 + 11) % 100}%`,
-                  left: `${(i * 53 + 7) % 100}%`,
-                  width: i % 3 === 0 ? 3 : 2,
-                  height: i % 3 === 0 ? 3 : 2,
-                  borderRadius: '50%',
-                  background: `rgba(255,255,255,${0.2 + (i % 4) * 0.15})`,
-                  pointerEvents: 'none',
-                }} />
-              ))}
-
-              {/* 3D card — scale+spin entrance from depth */}
-              <div style={{ perspective: 600 }}>
-                <motion.div
-                  initial={{ scale: 0.04, opacity: 0, rotateY: -720, rotateZ: 18 }}
-                  animate={{ scale: 1, opacity: 1, rotateY: 0, rotateZ: 0 }}
-                  transition={{
-                    scale:   { type: 'spring', stiffness: 55, damping: 16, delay: 0.1 },
-                    rotateY: { type: 'spring', stiffness: 65, damping: 18, delay: 0.1 },
-                    rotateZ: { type: 'spring', stiffness: 75, damping: 20, delay: 0.1 },
-                    opacity: { duration: 0.25, delay: 0.1 },
-                  }}
-                  onAnimationComplete={() => setIssued(true)}
-                  style={{
-                    width: 190, aspectRatio: '2/3', borderRadius: 18,
-                    background: currentTheme.cardBg,
-                    border: `3px solid ${currentTheme.border}`,
-                    boxShadow: `0 0 40px ${currentTheme.glow},0 24px 64px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.2)`,
-                    position: 'relative', overflow: 'hidden',
-                  }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/dress.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
-                  <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '2px 8px' }}>
-                    <span style={{ fontFamily: FREDOKA, fontSize: '0.58rem', fontWeight: 700, color: 'white' }}>AI CUT ✦</span>
-                  </div>
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent,rgba(0,0,0,0.78))', padding: '22px 10px 10px' }}>
-                    <p style={{ margin: 0, fontFamily: ZEN, fontSize: '0.75rem', fontWeight: 900, color: 'white', textAlign: 'center' }}>
-                      {cardName || 'マイアイテム'}
-                    </p>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Sparkle burst + success modal */}
-              <AnimatePresence>
-                {issued && (
-                  <>
-                    {SPARKS.map((s, i) => (
-                      <motion.div key={`sp-${i}`}
-                        initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-                        animate={{ opacity: 0, x: s.dx, y: s.dy, scale: 0 }}
-                        transition={{ duration: 0.8, delay: s.delay, ease: 'easeOut' }}
-                        style={{ position: 'absolute', fontSize: s.size, userSelect: 'none', pointerEvents: 'none' }}
-                      >{s.sym}</motion.div>
-                    ))}
-                    <motion.div
-                      initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.65, type: 'spring', stiffness: 200 }}
-                      style={{ marginTop: 30, textAlign: 'center', padding: '0 24px' }}
-                    >
-                      <p style={{
-                        fontFamily: FREDOKA, fontSize: '1.55rem', fontWeight: 700, color: 'white', margin: '0 0 6px',
-                        textShadow: '0 0 28px rgba(255,150,220,1),0 0 12px rgba(255,20,147,0.9)',
-                      }}>
-                        💗 カード発行完了！
-                      </p>
-                      <p style={{ fontFamily: ZEN, fontSize: '0.82rem', color: 'rgba(255,200,240,0.75)', margin: '0 0 24px' }}>
-                        MY BINDER に保存しました！
-                      </p>
-                      <motion.button whileTap={{ scale: 0.95 }} onClick={() => router.push('/binder')} style={{
-                        fontFamily: ZEN, fontSize: '1rem', fontWeight: 900, color: 'white',
-                        background: 'linear-gradient(180deg,#ff8fd8,#ff1493 50%,#b8004a 100%)',
-                        border: 'none', borderRadius: 40, padding: '13px 44px',
-                        boxShadow: '0 0 32px rgba(255,20,147,0.8),0 4px 0 #6a0030', cursor: 'pointer',
-                      }}>
-                        ✨ バインダーを見る
-                      </motion.button>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </motion.div>
+          {showIssue && (
+            <IssuanceOverlay
+              processedImage={processedImage}
+              cardName={cardName}
+              brand={brand}
+              colorName={colorName}
+              theme={currentTheme}
+              category={category}
+              selectedTags={selectedTags}
+              onClose={handleIssueClose}
+              onSave={() => {/* localStorage / DB save would go here */}}
+            />
           )}
         </AnimatePresence>
 
-        {/* Back + step dots */}
-        {step < 3 && (
+        {/* Header */}
+        {!showIssue && !isProcessing && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 0', flexShrink: 0 }}>
             <motion.button whileTap={{ scale: 0.93 }}
               onClick={() => step === 1 ? router.push('/') : setStep(1)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', gap: 4 }}
             >
-              <span style={{ fontFamily: ZEN, fontSize: '0.8rem', color: 'rgba(255,180,220,0.7)', fontWeight: 700 }}>← 戻る</span>
+              <ChevronLeft size={16} color="rgba(255,180,220,0.7)" />
+              <span style={{ fontFamily: ZEN, fontSize: '0.8rem', color: 'rgba(255,180,220,0.7)', fontWeight: 700 }}>戻る</span>
             </motion.button>
+
+            {/* Step dots */}
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
               {[1, 2].map(s => (
                 <div key={s} style={{
@@ -246,108 +596,199 @@ export default function CreatePage() {
                 }} />
               ))}
             </div>
-            <div style={{ width: 48 }} />
+            <div style={{ width: 56 }} />
           </div>
         )}
 
         <AnimatePresence mode="wait">
 
-          {/* ══ STEP 1: Camera ══ */}
-          {step === 1 && (
+          {/* ══ STEP 1: 撮影・選択 ══ */}
+          {step === 1 && !isProcessing && (
             <motion.div key="s1"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -40 }}
               style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 20px 16px', gap: 10, overflow: 'hidden' }}
             >
-              {/* Neon glow title */}
               <p style={{
                 fontFamily: FREDOKA, fontSize: 'clamp(0.9rem,5vw,1.2rem)', fontWeight: 700,
                 margin: 0, color: '#ff1493', letterSpacing: 2,
-                textShadow: '0 0 16px rgba(255,20,147,0.95),0 0 32px rgba(255,20,147,0.55),0 2px 4px rgba(0,0,0,0.9)',
+                textShadow: '0 0 16px rgba(255,20,147,0.95),0 0 32px rgba(255,20,147,0.55)',
               }}>
                 ✨ NEW CARD CREATOR
               </p>
 
-              {/* Camera viewfinder — dark with pink corner jewels */}
+              {/* Image preview / camera viewfinder */}
               <div style={{
                 position: 'relative', width: '78%', aspectRatio: '3/4', flexShrink: 0,
                 background: '#050010', borderRadius: 18, overflow: 'hidden',
                 border: '2px solid rgba(255,215,0,0.6)',
-                boxShadow: '0 0 24px rgba(255,100,180,0.3),inset 0 0 20px rgba(255,20,147,0.06)',
+                boxShadow: '0 0 24px rgba(255,100,180,0.3)',
               }}>
-                <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.025) 3px,rgba(255,255,255,0.025) 4px)' }} />
-                {[80, 120].map((sz, ri) => (
-                  <div key={ri} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: sz, height: sz, borderRadius: '50%', border: `1px solid rgba(255,215,0,${ri === 0 ? 0.4 : 0.2})`, zIndex: 3, pointerEvents: 'none' }} />
-                ))}
-                <div style={{ position: 'absolute', top: '50%', left: '50%', width: 26, height: 2, background: 'rgba(255,215,0,0.65)', transform: 'translate(-50%,-50%)', zIndex: 3 }} />
-                <div style={{ position: 'absolute', top: '50%', left: '50%', width: 2, height: 26, background: 'rgba(255,215,0,0.65)', transform: 'translate(-50%,-50%)', zIndex: 3 }} />
-                {CORNER_DEFS.map(([isTop, isLeft], ci) => (
-                  <div key={ci} style={{ position: 'absolute', zIndex: 4, top: isTop ? 10 : 'auto', bottom: isTop ? 'auto' : 10, left: isLeft ? 10 : 'auto', right: isLeft ? 'auto' : 10, width: 30, height: 30 }}>
-                    <div style={{ position: 'absolute', inset: 0, borderTop: isTop ? '3px solid rgba(255,215,0,0.9)' : 'none', borderBottom: isTop ? 'none' : '3px solid rgba(255,215,0,0.9)', borderLeft: isLeft ? '3px solid rgba(255,215,0,0.9)' : 'none', borderRight: isLeft ? 'none' : '3px solid rgba(255,215,0,0.9)', borderTopLeftRadius: isTop && isLeft ? 7 : 0, borderTopRightRadius: isTop && !isLeft ? 7 : 0, borderBottomLeftRadius: !isTop && isLeft ? 7 : 0, borderBottomRightRadius: !isTop && !isLeft ? 7 : 0 }} />
-                    <div style={{ position: 'absolute', top: isTop ? -9 : 'auto', bottom: isTop ? 'auto' : -9, left: isLeft ? -9 : 'auto', right: isLeft ? 'auto' : -9, width: 18, height: 18, borderRadius: '50%', background: 'radial-gradient(circle at 38% 28%,#ff80d0,#ff1493 60%,#7a0040)', boxShadow: '0 0 8px rgba(255,20,147,0.85),0 0 0 2px rgba(255,255,255,0.3)' }} />
+                {sourceImage ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={sourceImage} alt="selected" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                ) : (
+                  /* Viewfinder placeholder */
+                  <>
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.022) 3px,rgba(255,255,255,0.022) 4px)' }} />
+                    {[80, 120].map((sz, ri) => (
+                      <div key={ri} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: sz, height: sz, borderRadius: '50%', border: `1px solid rgba(255,215,0,${ri === 0 ? 0.4 : 0.18})`, zIndex: 3, pointerEvents: 'none' }} />
+                    ))}
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', width: 26, height: 2, background: 'rgba(255,215,0,0.65)', transform: 'translate(-50%,-50%)', zIndex: 3 }} />
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', width: 2, height: 26, background: 'rgba(255,215,0,0.65)', transform: 'translate(-50%,-50%)', zIndex: 3 }} />
+                    {CORNER_DEFS.map(([isTop, isLeft], ci) => (
+                      <div key={ci} style={{ position: 'absolute', zIndex: 4, top: isTop ? 10 : 'auto', bottom: isTop ? 'auto' : 10, left: isLeft ? 10 : 'auto', right: isLeft ? 'auto' : 10, width: 30, height: 30 }}>
+                        <div style={{ position: 'absolute', inset: 0, borderTop: isTop ? '3px solid rgba(255,215,0,0.9)' : 'none', borderBottom: isTop ? 'none' : '3px solid rgba(255,215,0,0.9)', borderLeft: isLeft ? '3px solid rgba(255,215,0,0.9)' : 'none', borderRight: isLeft ? 'none' : '3px solid rgba(255,215,0,0.9)', borderTopLeftRadius: isTop && isLeft ? 7 : 0, borderTopRightRadius: isTop && !isLeft ? 7 : 0, borderBottomLeftRadius: !isTop && isLeft ? 7 : 0, borderBottomRightRadius: !isTop && !isLeft ? 7 : 0 }} />
+                        <div style={{ position: 'absolute', top: isTop ? -9 : 'auto', bottom: isTop ? 'auto' : -9, left: isLeft ? -9 : 'auto', right: isLeft ? 'auto' : -9, width: 18, height: 18, borderRadius: '50%', background: 'radial-gradient(circle at 38% 28%,#ff80d0,#ff1493 60%,#7a0040)', boxShadow: '0 0 8px rgba(255,20,147,0.85),0 0 0 2px rgba(255,255,255,0.3)' }} />
+                      </div>
+                    ))}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/img/dress.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', opacity: 0.18, zIndex: 1 }} />
+                    <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.7)', borderRadius: 20, padding: '3px 14px', zIndex: 5 }}>
+                      <span style={{ fontFamily: FREDOKA, fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)', letterSpacing: 1.5 }}>服・コスメを映してね</span>
+                    </div>
+                  </>
+                )}
+
+                {/* "Selected" check */}
+                {sourceImage && (
+                  <div style={{ position: 'absolute', top: 8, right: 8, width: 24, height: 24, borderRadius: '50%', background: '#ff1493', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                    <Check size={13} color="white" strokeWidth={3} />
                   </div>
-                ))}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/dress.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', opacity: 0.25, zIndex: 1 }} />
-                <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.7)', borderRadius: 20, padding: '3px 14px', zIndex: 5 }}>
-                  <span style={{ fontFamily: FREDOKA, fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', letterSpacing: 1.5 }}>DEMO MODE</span>
-                </div>
+                )}
               </div>
 
-              {/* Shutter + floating deco */}
-              <div style={{ position: 'relative', flexShrink: 0, width: 120, height: 96, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <motion.span animate={{ rotate: [0,15,-10,5,0], scale: [1,1.25,0.9,1.1,1] }} transition={{ duration: 2.4, repeat: Infinity }} style={{ position: 'absolute', top: 0, left: 4, fontSize: 18, userSelect: 'none', pointerEvents: 'none' }}>⭐</motion.span>
-                <motion.span animate={{ rotate: [0,-12,8,0], y: [0,-5,2,0] }} transition={{ duration: 2, repeat: Infinity }} style={{ position: 'absolute', top: 2, right: 2, fontSize: 16, userSelect: 'none', pointerEvents: 'none' }}>💗</motion.span>
-                <motion.span animate={{ scale: [1,1.35,0.85,1.1,1], opacity: [0.8,1,0.6,1,0.8] }} transition={{ duration: 2.8, repeat: Infinity }} style={{ position: 'absolute', bottom: 4, left: 2, fontSize: 14, userSelect: 'none', pointerEvents: 'none' }}>✨</motion.span>
-                <motion.span animate={{ rotate: [0,20,-15,5,0] }} transition={{ duration: 3, repeat: Infinity }} style={{ position: 'absolute', bottom: 2, right: 4, fontSize: 16, userSelect: 'none', pointerEvents: 'none' }}>💕</motion.span>
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1, transition: { delay: 0.2, type: 'spring', stiffness: 200 } }}
-                  whileTap={{ scale: 0.88 }} onClick={handleShutter}
-                  style={{ width: 76, height: 76, borderRadius: '50%', border: 'none', cursor: 'pointer', background: 'radial-gradient(circle at 38% 28%,#ff80d0,#ff1493 55%,#8a0050 85%,#4a0028 100%)', boxShadow: '0 0 0 5px rgba(255,255,255,0.2),0 0 0 9px rgba(255,20,147,0.2),0 0 30px rgba(255,20,147,0.65),0 5px 0 #3a0020', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              {/* 3 input buttons row */}
+              <div style={{ display: 'flex', gap: 7, width: '100%', flexShrink: 0 }}>
+                <motion.button whileTap={{ scale: 0.92, y: 2 }} onClick={handleCamera}
+                  style={{
+                    flex: 1, padding: '10px 4px', borderRadius: 12, cursor: 'pointer', border: 'none',
+                    background: 'linear-gradient(180deg,#ff80c8,#ff1493 50%,#880040 100%)',
+                    boxShadow: '0 0 14px rgba(255,20,147,0.5),inset 0 2px 4px rgba(255,255,255,0.3),0 3px 0 #55002a',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                    fontFamily: ZEN, fontWeight: 900, color: 'white', fontSize: '0.7rem',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                  }}
                 >
-                  <div style={{ width: 54, height: 54, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
-                  </div>
+                  <Camera size={18} />
+                  カメラ
+                </motion.button>
+                <motion.button whileTap={{ scale: 0.92, y: 2 }} onClick={() => uploadRef.current?.click()}
+                  style={{
+                    flex: 1, padding: '10px 4px', borderRadius: 12, cursor: 'pointer', border: 'none',
+                    background: 'linear-gradient(180deg,#b080ff,#7040d0 50%,#400090 100%)',
+                    boxShadow: '0 0 14px rgba(120,40,220,0.5),inset 0 2px 4px rgba(255,255,255,0.25),0 3px 0 #280060',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                    fontFamily: ZEN, fontWeight: 900, color: 'white', fontSize: '0.7rem',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                  }}
+                >
+                  <Upload size={18} />
+                  アップ
+                </motion.button>
+                <motion.button whileTap={{ scale: 0.92, y: 2 }} onClick={() => document.getElementById('url-input')?.focus()}
+                  style={{
+                    flex: 1, padding: '10px 4px', borderRadius: 12, cursor: 'pointer', border: 'none',
+                    background: 'linear-gradient(180deg,#60d0ff,#0090e0 50%,#003090 100%)',
+                    boxShadow: '0 0 14px rgba(0,140,255,0.45),inset 0 2px 4px rgba(255,255,255,0.25),0 3px 0 #001870',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                    fontFamily: ZEN, fontWeight: 900, color: 'white', fontSize: '0.7rem',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                  }}
+                >
+                  <Link2 size={18} />
+                  URL
                 </motion.button>
               </div>
 
-              <p style={{ fontFamily: ZEN, fontSize: '0.72rem', color: 'rgba(255,150,200,0.55)', margin: 0, fontWeight: 700 }}>
-                タップして撮影 ／ デモモードで体験
-              </p>
+              {/* URL input */}
+              <div style={{ width: '100%', flexShrink: 0, display: 'flex', gap: 7, alignItems: 'center' }}>
+                <input
+                  id="url-input"
+                  type="url"
+                  value={urlInput}
+                  onChange={e => setUrlInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') handleFetchUrl() }}
+                  placeholder="商品ページの画像URLをペースト..."
+                  style={{ ...INPUT, flex: 1, borderColor: '#4080ff', boxShadow: '0 0 10px rgba(60,120,255,0.3),0 3px 0 #001870' }}
+                />
+                <motion.button
+                  whileTap={{ scale: 0.92 }}
+                  onClick={handleFetchUrl}
+                  disabled={!urlInput.trim() || isFetchingUrl}
+                  style={{
+                    flexShrink: 0, width: 48, height: 48, borderRadius: 12,
+                    background: 'linear-gradient(180deg,#60d0ff,#0090e0 60%,#003090 100%)',
+                    border: 'none', cursor: urlInput.trim() ? 'pointer' : 'default',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 3px 0 #001870',
+                    opacity: urlInput.trim() && !isFetchingUrl ? 1 : 0.5,
+                  }}
+                >
+                  {isFetchingUrl
+                    ? <Loader2 size={18} color="white" style={{ animation: 'spin 1s linear infinite' }} />
+                    : <Link2 size={18} color="white" />
+                  }
+                </motion.button>
+              </div>
+
+              {/* Proceed button */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={sourceImage ? handleProcess : handleCamera}
+                style={{
+                  flexShrink: 0, width: '100%', padding: '15px',
+                  borderRadius: 16, cursor: 'pointer',
+                  fontFamily: ZEN, fontSize: '1rem', fontWeight: 900, color: 'white',
+                  background: sourceImage
+                    ? 'linear-gradient(90deg,#ff4da6 0%,#c040e0 40%,#7040ff 100%)'
+                    : 'rgba(255,255,255,0.1)',
+                  boxShadow: sourceImage
+                    ? '0 0 24px rgba(200,40,200,0.6),inset 0 2px 4px rgba(255,255,255,0.25),0 4px 0 #500060'
+                    : 'none',
+                  border: sourceImage ? 'none' : '2px solid rgba(255,255,255,0.15)',
+                  textShadow: sourceImage ? '0 1px 3px rgba(0,0,0,0.5)' : 'none',
+                }}
+              >
+                {sourceImage ? '✂️ AIで背景を切り抜く' : '📷 写真を選ぶか撮影する'}
+              </motion.button>
             </motion.div>
           )}
 
-          {/* ══ STEP 2: Edit + Tags ══ */}
-          {step === 2 && (
+          {/* ══ STEP 2: 編集 & タグ ══ */}
+          {step === 2 && !isProcessing && !showIssue && (
             <motion.div key="s2"
               initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
               style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 28px', display: 'flex', flexDirection: 'column', gap: 12 }}
             >
-              {/* Title — clean neon glow, no WebkitTextStroke */}
               <p style={{
                 fontFamily: FREDOKA, fontSize: '1.15rem', fontWeight: 700, letterSpacing: 3,
                 color: '#ff8fd8', margin: 0, textAlign: 'center', flexShrink: 0,
-                textShadow: '0 0 16px rgba(255,100,200,0.95),0 0 32px rgba(255,20,147,0.65),0 2px 4px rgba(0,0,0,0.8)',
+                textShadow: '0 0 16px rgba(255,100,200,0.95),0 0 32px rgba(255,20,147,0.65)',
               }}>
                 ✨ カードを編集 ✨
               </p>
 
               {/* Card preview */}
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ width: 100, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: currentTheme.cardBg, border: `3px solid ${currentTheme.border}`, boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
+                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: currentTheme.cardBg, border: `3px solid ${currentTheme.border}`, boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/dress.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <img src={cardImg} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7, pointerEvents: 'none' }} />
-                  <div style={{ position: 'absolute', top: 6, right: 6, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '2px 6px' }}>
-                    <span style={{ fontFamily: FREDOKA, fontSize: '0.5rem', fontWeight: 700, color: 'white' }}>AI CUT ✦</span>
+                  <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75, pointerEvents: 'none' }} />
+                  {bgRemovedOk && (
+                    <div style={{ position: 'absolute', top: 5, left: 5, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 6px' }}>
+                      <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: 'white' }}>AI ✂</span>
+                    </div>
+                  )}
+                  <div style={{ position: 'absolute', top: 5, right: 5, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '1px 6px' }}>
+                    <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: '#3a1800' }}>SR</span>
                   </div>
                 </div>
               </div>
 
-              {/* Theme — 2×2 grid, 4th = ✨ カスタム with gold-glow when selected */}
+              {/* Theme */}
               <div style={{ flexShrink: 0 }}>
-                <p style={LABEL_STYLE}>✦ テーマ</p>
+                <p style={LBL}>✦ テーマ</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
                   {THEMES.map(th => {
                     const sel = theme === th.id
@@ -375,43 +816,34 @@ export default function CreatePage() {
                     )
                   })}
                 </div>
-
-                {/* Custom theme text input — visible only when custom is selected */}
                 {theme === 'custom' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{ marginTop: 8 }}
-                  >
-                    <input
-                      type="text" value={customThemeText}
-                      onChange={e => setCustomThemeText(e.target.value)}
-                      placeholder="例: 姫ギャル、地雷系..."
-                      style={{
-                        ...INPUT_STYLE,
-                        border: '2px solid #c060ff',
-                        boxShadow: '0 0 12px rgba(180,80,255,0.4),inset 0 1px 0 rgba(255,255,255,0.1),0 3px 0 #600090',
-                      }}
-                    />
+                  <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 8 }}>
+                    <input type="text" value={customThemeText} onChange={e => setCustomThemeText(e.target.value)} placeholder="例: 姫ギャル、地雷系…" style={{ ...INPUT, borderColor: '#c060ff', boxShadow: '0 0 12px rgba(180,80,255,0.4),0 3px 0 #600090' }} />
                   </motion.div>
                 )}
               </div>
 
-              {/* Item name */}
+              {/* Name */}
               <div style={{ flexShrink: 0 }}>
-                <p style={LABEL_STYLE}>✦ アイテム名</p>
-                <input type="text" value={cardName} onChange={e => setCardName(e.target.value)} placeholder="例：ピンクのフリルブラウス" style={INPUT_STYLE} />
+                <p style={LBL}>✦ アイテム名</p>
+                <input type="text" value={cardName} onChange={e => setCardName(e.target.value)} placeholder="例: ピンクのフリルブラウス" style={INPUT} />
               </div>
 
               {/* Brand */}
               <div style={{ flexShrink: 0 }}>
-                <p style={LABEL_STYLE}>✦ ブランド</p>
-                <input type="text" value={brand} onChange={e => setBrand(e.target.value)} placeholder="例：WEGO / SPINNS" style={INPUT_STYLE} />
+                <p style={LBL}>✦ ブランド</p>
+                <input type="text" value={brand} onChange={e => setBrand(e.target.value)} placeholder="例: WEGO / SPINNS" style={INPUT} />
               </div>
 
-              {/* Category — jewel 3D on dark */}
+              {/* Color */}
               <div style={{ flexShrink: 0 }}>
-                <p style={LABEL_STYLE}>✦ カテゴリ</p>
+                <p style={LBL}>✦ カラー</p>
+                <input type="text" value={colorName} onChange={e => setColorName(e.target.value)} placeholder="例: ミルクピンク、ラベンダー" style={INPUT} />
+              </div>
+
+              {/* Category */}
+              <div style={{ flexShrink: 0 }}>
+                <p style={LBL}>✦ カテゴリ</p>
                 <div style={{ display: 'flex', gap: 5 }}>
                   {CATS.map(cat => {
                     const sel = category === cat.key
@@ -421,9 +853,7 @@ export default function CreatePage() {
                         fontFamily: FREDOKA, fontSize: '0.62rem', fontWeight: 700,
                         background: sel ? cat.grad : 'rgba(255,255,255,0.07)',
                         color: sel ? 'white' : 'rgba(255,255,255,0.45)',
-                        boxShadow: sel
-                          ? `0 0 14px ${cat.shadow},inset 0 2px 3px rgba(255,255,255,0.22),0 3px 0 rgba(0,0,0,0.55)`
-                          : 'inset 0 0 0 1px rgba(255,255,255,0.1),0 2px 0 rgba(0,0,0,0.3)',
+                        boxShadow: sel ? `0 0 14px ${cat.shadow},inset 0 2px 3px rgba(255,255,255,0.22),0 3px 0 rgba(0,0,0,0.55)` : 'inset 0 0 0 1px rgba(255,255,255,0.1),0 2px 0 rgba(0,0,0,0.3)',
                         textShadow: sel ? '0 1px 2px rgba(0,0,0,0.6)' : 'none',
                       }}>
                         {cat.label}
@@ -435,15 +865,14 @@ export default function CreatePage() {
 
               {/* Tags */}
               <div style={{ flexShrink: 0 }}>
-                <p style={LABEL_STYLE}>✦ タグ</p>
+                <p style={LBL}>✦ タグ</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {ALL_TAGS.map(tag => {
                     const active = selectedTags.includes(tag)
                     return (
                       <motion.button key={tag} whileTap={{ scale: 0.91 }} onClick={() => toggleTag(tag)} style={{
-                        fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 700,
+                        fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 700, borderRadius: 20, padding: '5px 11px', cursor: 'pointer', outline: 'none',
                         border: active ? 'none' : '1px solid rgba(255,255,255,0.15)',
-                        borderRadius: 20, padding: '5px 11px', cursor: 'pointer', outline: 'none',
                         background: active ? 'linear-gradient(135deg,#ff8fd8,#ff1493)' : 'rgba(255,255,255,0.07)',
                         color: active ? 'white' : 'rgba(255,255,255,0.5)',
                         boxShadow: active ? '0 0 10px rgba(255,20,147,0.55),0 2px 0 #880040' : '0 2px 0 rgba(0,0,0,0.3)',
@@ -455,8 +884,8 @@ export default function CreatePage() {
                 </div>
               </div>
 
-              {/* Publish — rainbow holoShimmer */}
-              <motion.button whileTap={{ scale: 0.97 }} onClick={() => setStep(3)} style={{
+              {/* Publish button */}
+              <motion.button whileTap={{ scale: 0.97 }} onClick={handleIssue} style={{
                 flexShrink: 0, width: '100%', padding: '17px', border: 'none', borderRadius: 16, cursor: 'pointer', outline: 'none', marginTop: 4,
                 fontFamily: ZEN, fontSize: '1.08rem', fontWeight: 900, color: 'white',
                 background: 'linear-gradient(90deg,#ffb3d9 0%,#ffd6f0 14%,#e8c8ff 28%,#c0d8ff 42%,#c0f0ff 56%,#c0ffe8 70%,#fff0c0 84%,#ffb3d9 100%)',
