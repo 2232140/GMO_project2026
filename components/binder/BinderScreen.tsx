@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useAnimate } from 'framer-motion'
 import { ChevronLeft, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { getStoredCards } from '@/lib/cardStore'
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
 const FREDOKA = 'var(--font-fredoka), sans-serif'
@@ -22,6 +23,7 @@ interface CoordSnap {
 interface ItemCard {
   id: string; category: SlotKey; name: string; image: string
   color: string; brand: string; rarity: string
+  colorName?: string; tags?: string[]; isUserCreated?: boolean
 }
 
 const COORD_SNAPS: CoordSnap[] = [
@@ -143,11 +145,17 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
 /* ── ItemCardThumb ── */
 function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
   return (
-    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', background: card.color, border: '1.5px solid rgba(255,215,0,0.5)', boxShadow: `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '2/3' }}>
+    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', background: card.color, border: card.isUserCreated ? '2px solid rgba(255,20,147,0.75)' : '1.5px solid rgba(255,215,0,0.5)', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '2/3' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/img/Card_Frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
+      {/* MY badge for user-created cards */}
+      {card.isUserCreated && (
+        <div style={{ position: 'absolute', top: 3, right: 3, zIndex: 4, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 5px', boxShadow: '0 0 6px rgba(255,20,147,0.7)' }}>
+          <span style={{ fontFamily: FREDOKA, fontSize: '0.38rem', fontWeight: 700, color: 'white' }}>MY</span>
+        </div>
+      )}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2px 3px 3px', background: 'rgba(0,0,0,0.62)', zIndex: 3 }}>
         <p style={{ fontFamily: ZEN, fontSize: '0.38rem', fontWeight: 900, color: 'white', margin: 0, textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{card.name}</p>
       </div>
@@ -328,7 +336,17 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
                 <p style={{ fontFamily: FREDOKA, color: '#ffd700', fontSize: '0.58rem', fontWeight: 700, margin: '0 0 4px', letterSpacing: '0.12em', textShadow: '0 0 12px rgba(255,215,0,0.7)' }}>{card.category.toUpperCase()}</p>
                 <p style={{ fontFamily: ZEN, color: 'white', fontSize: '0.86rem', fontWeight: 900, margin: 0, textShadow: TEXT_SHADOW }}>{card.name}</p>
                 <p style={{ fontFamily: FREDOKA, color: 'rgba(255,220,180,0.85)', fontSize: '0.58rem', margin: '3px 0 0' }}>{card.brand}</p>
+                {card.colorName && (
+                  <p style={{ fontFamily: ZEN, color: 'rgba(255,210,240,0.75)', fontSize: '0.56rem', margin: '3px 0 0' }}>{card.colorName}</p>
+                )}
                 <p style={{ fontFamily: ZEN, color: 'rgba(255,210,240,0.75)', fontSize: '0.6rem', margin: '5px 0 0' }}>{card.rarity}</p>
+                {card.tags && card.tags.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', marginTop: 7 }}>
+                    {card.tags.map(tag => (
+                      <span key={tag} style={{ fontFamily: ZEN, fontSize: '0.46rem', fontWeight: 700, padding: '1px 6px', borderRadius: 20, background: 'rgba(255,20,147,0.3)', border: '1px solid rgba(255,100,180,0.45)', color: 'rgba(255,200,230,0.9)' }}>{tag}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </>
@@ -345,8 +363,28 @@ export default function BinderScreen() {
   const [catFilter, setCatFilter] = useState<CategoryFilter>('ALL')
   const [selectedCoord, setSelectedCoord] = useState<CoordSnap | null>(null)
   const [selectedItem, setSelectedItem] = useState<ItemCard | null>(null)
+  const [userCards, setUserCards] = useState<ItemCard[]>([])
 
-  const filteredItems = catFilter === 'ALL' ? ITEM_CARDS : ITEM_CARDS.filter(c => c.category === catFilter)
+  // Load user-created cards from localStorage
+  useEffect(() => {
+    const stored = getStoredCards()
+    setUserCards(stored.map(c => ({
+      id: c.id,
+      category: c.category as SlotKey,
+      name: c.name,
+      image: c.image,
+      color: c.color,
+      brand: c.brand,
+      rarity: c.rarity,
+      colorName: c.colorName,
+      tags: c.tags,
+      isUserCreated: true,
+    })))
+  }, [])
+
+  // User-created cards appear first, built-in cards follow
+  const allItemCards = [...userCards, ...ITEM_CARDS]
+  const filteredItems = catFilter === 'ALL' ? allItemCards : allItemCards.filter(c => c.category === catFilter)
 
   return (
     <div style={{ position: 'fixed', inset: 0, backgroundImage: "url('/img/wall.jpeg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -435,7 +473,7 @@ export default function BinderScreen() {
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 6 }}>
                 <div style={{ background: 'linear-gradient(135deg, rgba(255,80,200,0.14), rgba(180,60,240,0.11))', border: '1.5px solid rgba(255,215,0,0.5)', borderRadius: 20, padding: '3px 12px' }}>
                   <span style={{ fontFamily: FREDOKA, fontSize: '0.56rem', fontWeight: 700, color: '#b020d8', letterSpacing: '0.06em' }}>
-                    ✦ COLLECTION: {ITEM_CARDS.length}/{TOTAL_COLLECTION}
+                    ✦ COLLECTION: {allItemCards.length}/{TOTAL_COLLECTION}
                   </span>
                 </div>
               </div>

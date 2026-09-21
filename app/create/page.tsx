@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useAnimate } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { Camera, Upload, Link2, X, Check, ChevronLeft, Loader2 } from 'lucide-react'
+import { saveStoredCard, compressImageToDataUrl } from '@/lib/cardStore'
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
 const FREDOKA = 'var(--font-fredoka), sans-serif'
@@ -75,26 +76,46 @@ type IssuanceProps = {
   onSave: () => void
 }
 
-function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, selectedTags, onClose, onSave }: IssuanceProps) {
+function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, category, selectedTags, onClose, onSave }: IssuanceProps) {
   const router = useRouter()
   const [settled, setSettled] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [cardScope, animateCard] = useAnimate()
   const didSettle = useRef(false)
 
   const handleSettle = useCallback(() => {
     if (didSettle.current) return
     didSettle.current = true
-    // small bounce
     animateCard(cardScope.current, { scale: [1, 1.08, 0.97, 1] }, { duration: 0.35, ease: 'easeOut' }).then(() => {
       setSettled(true)
     })
   }, [animateCard, cardScope])
 
-  const handleSave = () => {
-    setSaved(true)
-    onSave()
-    setTimeout(() => router.push('/binder'), 1200)
+  const handleSave = async () => {
+    if (saved || saving) return
+    setSaving(true)
+    try {
+      const imgSrc = processedImage ?? '/img/dress.png'
+      const compressed = await compressImageToDataUrl(imgSrc)
+      saveStoredCard({
+        id: `user_${Date.now()}`,
+        category,
+        name: cardName || 'MY ITEM',
+        image: compressed,
+        color: theme.hex,
+        brand: brand || '自作',
+        colorName,
+        rarity: 'SR ★★★★',
+        tags: selectedTags,
+        createdAt: new Date().toISOString(),
+      })
+      setSaved(true)
+      onSave()
+      setTimeout(() => router.push('/binder'), 1200)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -300,21 +321,30 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, se
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSave}
-                disabled={saved}
+                disabled={saved || saving}
                 style={{
-                  width: '100%', padding: '14px', borderRadius: 16, border: 'none', cursor: saved ? 'default' : 'pointer',
+                  width: '100%', padding: '14px', borderRadius: 16, border: 'none',
+                  cursor: saved || saving ? 'default' : 'pointer',
                   fontFamily: ZEN, fontSize: '1rem', fontWeight: 900, color: 'white',
                   background: saved
-                    ? 'linear-gradient(135deg,#4ca, #2a8)'
-                    : 'linear-gradient(180deg,#ff8fd8,#ff1493 50%,#b8004a 100%)',
+                    ? 'linear-gradient(135deg,#4ca,#2a8)'
+                    : saving
+                      ? 'linear-gradient(135deg,#9966cc,#cc6699)'
+                      : 'linear-gradient(180deg,#ff8fd8,#ff1493 50%,#b8004a 100%)',
                   boxShadow: saved
-                    ? '0 0 20px rgba(0,200,120,0.5), 0 4px 0 #006040'
-                    : '0 0 32px rgba(255,20,147,0.8), 0 4px 0 #6a0030',
+                    ? '0 0 20px rgba(0,200,120,0.5),0 4px 0 #006040'
+                    : '0 0 32px rgba(255,20,147,0.8),0 4px 0 #6a0030',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                  opacity: saving ? 0.8 : 1,
                 }}
               >
-                {saved ? <><Check size={18} />バインダーに保存済み！</> : <>✨ バインダーに保存する</>}
+                {saved
+                  ? <><Check size={18} />バインダーに保存済み！</>
+                  : saving
+                    ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />保存中…</>
+                    : <>✨ バインダーに保存する</>
+                }
               </motion.button>
 
               <motion.button
