@@ -140,7 +140,7 @@ function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
             {!showBack ? (
               /* 表面 */
               <>
-                <div style={{ position: 'absolute', inset: 0, background: card.color, borderRadius: 12 }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'white', borderRadius: 12 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -250,7 +250,7 @@ function Slot({ cat, card, locked, isShuffling, onTap, onRemove, onLock, onFlip 
           >
             {card ? (
               <>
-                <div style={{ position: 'absolute', inset: 0, background: card.color, zIndex: 0 }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'white', zIndex: 0 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={card.image} alt={card.name}
@@ -347,7 +347,7 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
         aspectRatio: '2/3',
         borderRadius: 8,
         overflow: 'hidden',
-        background: card.color,
+        background: 'white',
         border: selected ? '2.5px solid #ffd700' : '2px solid rgba(255,255,255,0.8)',
         boxShadow: selected
           ? `0 0 14px ${card.color}, 0 3px 12px rgba(0,0,0,0.45)`

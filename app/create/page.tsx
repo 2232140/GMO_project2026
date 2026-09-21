@@ -198,13 +198,10 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
           >
             <div style={{
               width: 200, aspectRatio: '2/3', borderRadius: 18,
-              background: theme.cardBg,
+              background: 'white',
               border: `3px solid ${theme.border}`,
               boxShadow: `0 0 48px ${theme.glow}, 0 24px 64px rgba(0,0,0,0.8), inset 0 1.5px 0 rgba(255,255,255,0.22)`,
               position: 'relative', overflow: 'hidden',
-              // holo shimmer effect on card surface
-              animation: settled ? 'holoShimmer 3s ease-in-out infinite' : 'none',
-              backgroundSize: '300% 100%',
             }}>
               {/* Item image */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -814,7 +811,7 @@ export default function CreatePage() {
 
               {/* Card preview */}
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: currentTheme.cardBg, border: `3px solid ${currentTheme.border}`, boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
+                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: 'white', border: `3px solid ${currentTheme.border}`, boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cardImg} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}

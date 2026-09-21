@@ -145,7 +145,7 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
 /* ── ItemCardThumb ── */
 function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
   return (
-    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', background: card.color, border: card.isUserCreated ? '2px solid rgba(255,20,147,0.75)' : '1.5px solid rgba(255,215,0,0.5)', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '2/3' }}>
+    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', background: 'white', border: card.isUserCreated ? '2px solid rgba(255,20,147,0.75)' : '1.5px solid rgba(255,215,0,0.5)', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '2/3' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -312,7 +312,7 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
       <div
         ref={cardScope}
         onClick={handleFlip}
-        style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.6)', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', background: !showBack ? card.color : undefined }}
+        style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', border: '2px solid rgba(255,215,0,0.6)', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', background: !showBack ? 'white' : undefined }}
       >
         {!showBack ? (
           /* 表面 */
