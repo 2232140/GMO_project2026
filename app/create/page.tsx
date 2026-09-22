@@ -197,7 +197,7 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
             transition={settled ? { y: { duration: 3, repeat: Infinity, ease: 'easeInOut' }, rotateY: { duration: 4, repeat: Infinity, ease: 'easeInOut' } } : {}}
           >
             <div style={{
-              width: 200, aspectRatio: '2/3', borderRadius: 18,
+              width: 200, aspectRatio: '373 / 669', borderRadius: 14,
               backgroundImage: 'url("/img/Card_Frame2.png")',
               backgroundSize: '100% 100%',
               backgroundRepeat: 'no-repeat',
@@ -908,7 +908,7 @@ export default function CreatePage() {
 
               {/* Card preview */}
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', backgroundImage: 'url("/img/Card_Frame2.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
+                <div style={{ width: 110, aspectRatio: '373 / 669', borderRadius: 8, position: 'relative', overflow: 'hidden', backgroundImage: 'url("/img/Card_Frame2.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
                   {/* アイテム画像 */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cardImg} alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '82%', height: '76%', objectFit: 'contain' }} />
