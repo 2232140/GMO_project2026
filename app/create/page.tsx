@@ -198,23 +198,19 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
           >
             <div style={{
               width: 200, aspectRatio: '2/3', borderRadius: 18,
-              background: 'transparent',
+              backgroundImage: 'url("/img/Card_Frame2.png")',
+              backgroundSize: '100% 100%',
+              backgroundRepeat: 'no-repeat',
               boxShadow: `0 0 48px ${theme.glow}, 0 24px 64px rgba(0,0,0,0.8), inset 0 1.5px 0 rgba(255,255,255,0.22)`,
               position: 'relative', overflow: 'hidden',
             }}>
-              {/* 最下層: 白背景 */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/img/white000.png" alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }} />
-              {/* 中間層: アイテム画像 */}
+              {/* アイテム画像 */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={processedImage ?? '/img/dress.png'}
                 alt={cardName}
                 style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '82%', height: '76%', objectFit: 'contain', display: 'block' }}
               />
-              {/* 最上層: カードフレーム */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }} />
 
               {/* SR badge */}
               <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '2px 8px', boxShadow: '0 0 8px rgba(255,215,0,0.7)' }}>
@@ -912,16 +908,10 @@ export default function CreatePage() {
 
               {/* Card preview */}
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: 'transparent', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
-                  {/* 最下層: 白背景 */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/white000.png" alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }} />
-                  {/* 中間層: アイテム画像 */}
+                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', backgroundImage: 'url("/img/Card_Frame2.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
+                  {/* アイテム画像 */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cardImg} alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '82%', height: '76%', objectFit: 'contain' }} />
-                  {/* 最上層: カードフレーム */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }} />
                   {bgRemovedOk && (
                     <div style={{ position: 'absolute', top: 5, left: 5, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 6px' }}>
                       <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: 'white' }}>AI ✂</span>
