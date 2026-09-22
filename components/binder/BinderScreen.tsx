@@ -145,7 +145,7 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
 /* ── ItemCardThumb ── */
 function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
   return (
-    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', backgroundImage: 'url("/img/white000.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '373 / 669' }}>
+    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', backgroundColor: 'white', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '373 / 669' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -312,7 +312,7 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
       <div
         ref={cardScope}
         onClick={handleFlip}
-        style={{ width: '100%', maxWidth: 220, aspectRatio: '373 / 669', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', backgroundImage: !showBack ? 'url("/img/white000.png")' : 'none', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat' }}
+        style={{ width: '100%', maxWidth: 220, aspectRatio: '373 / 669', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', backgroundColor: !showBack ? 'white' : 'transparent' }}
       >
         {!showBack ? (
           /* 表面 */

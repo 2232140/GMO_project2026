@@ -139,8 +139,10 @@ function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
           >
             {!showBack ? (
               /* 表面 */
-              <>
-                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("/img/white000.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', borderRadius: 12 }} />
+              <div style={{
+                position: 'absolute', inset: 0, borderRadius: 12, overflow: 'hidden',
+                backgroundColor: 'white',
+              }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -154,15 +156,14 @@ function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
                 }}>
                   {card.rarity}
                 </div>
-              </>
+              </div>
             ) : (
               /* 裏面 */
-              <>
+              <div style={{ position: 'absolute', inset: 0, borderRadius: 12, overflow: 'hidden' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/card-back.png" alt="card back" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12, zIndex: 1 }} />
+                <img src="/img/card-back.png" alt="card back" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }} />
                 <div style={{
                   position: 'absolute', inset: 0, zIndex: 2,
-                  borderRadius: 12,
                   background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.82) 100%)',
                   display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                   padding: '10px 10px 12px',
@@ -182,7 +183,7 @@ function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
                     ))}
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>
@@ -347,9 +348,7 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
         aspectRatio: '373 / 669',
         borderRadius: 8,
         overflow: 'hidden',
-        backgroundImage: 'url("/img/white000.png")',
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'white',
         border: selected ? '2.5px solid #ffd700' : '2px solid rgba(255,255,255,0.8)',
         boxShadow: selected
           ? `0 0 14px ${card.color}, 0 3px 12px rgba(0,0,0,0.45)`
