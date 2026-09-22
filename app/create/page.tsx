@@ -202,16 +202,16 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
               boxShadow: `0 0 48px ${theme.glow}, 0 24px 64px rgba(0,0,0,0.8), inset 0 1.5px 0 rgba(255,255,255,0.22)`,
               position: 'relative', overflow: 'hidden',
             }}>
-              {/* Item image */}
+              {/* Item image - centered */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={processedImage ?? '/img/dress.png'}
                 alt={cardName}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '85%', height: '80%', objectFit: 'contain', display: 'block' }}
               />
               {/* Card frame overlay */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', pointerEvents: 'none' }} />
+              <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }} />
 
               {/* SR badge */}
               <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '2px 8px', boxShadow: '0 0 8px rgba(255,215,0,0.7)' }}>
@@ -667,73 +667,119 @@ export default function CreatePage() {
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={sourceImage} alt="selected" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 ) : (
-                  /* Viewfinder placeholder — 平成デコガラケー液晶風 */
+                  /* Viewfinder — Y2K ピクセルアートアニメーション */
                   <>
-                    {/* ドット感のある液晶背景 */}
-                    <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(160deg,#1e003a 0%,#140028 55%,#1a0032 100%)' }} />
-                    <div style={{
-                      position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
-                      backgroundImage: 'radial-gradient(circle,rgba(255,170,255,0.25) 1px,transparent 1px)',
-                      backgroundSize: '10px 10px',
-                    }} />
-                    {/* ラメきらきら装飾 */}
-                    {[
-                      { top: '11%', left: '13%' }, { top: '17%', left: '83%' },
-                      { top: '66%', left: '9%'  }, { top: '70%', left: '87%' },
-                      { top: '38%', left: '5%'  }, { top: '43%', left: '93%' },
-                      { top: '28%', left: '50%' }, { top: '55%', left: '50%' },
-                    ].map((pos, i) => (
-                      <div key={i} style={{
-                        position: 'absolute', zIndex: 3, pointerEvents: 'none',
-                        top: pos.top, left: pos.left,
-                        color: `rgba(255,200,255,${0.45 + (i % 3) * 0.12})`,
-                        fontSize: i % 2 === 0 ? '0.55rem' : '0.42rem',
-                        textShadow: '0 0 5px rgba(255,150,255,0.75)',
-                      }}>✦</div>
+                    {/* 暗いLCD背景 */}
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg,#08001a 0%,#04000e 55%,#08001a 100%)' }} />
+                    {/* スキャンライン */}
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', backgroundImage: 'repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,0.22) 3px,rgba(0,0,0,0.22) 4px)' }} />
+                    {/* ピンクドットグリッド */}
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', backgroundImage: 'radial-gradient(circle,rgba(255,100,220,0.12) 1px,transparent 1px)', backgroundSize: '7px 7px' }} />
+
+                    {/* ── ハート (左上, ビート) ── */}
+                    <motion.div
+                      style={{ position: 'absolute', top: '10%', left: '12%', zIndex: 5, pointerEvents: 'none', filter: 'drop-shadow(0 0 8px rgba(255,40,140,1)) drop-shadow(0 0 18px rgba(255,0,100,0.5))' }}
+                      animate={{ scale: [1, 1.28, 1], y: [0, -5, 0] }}
+                      transition={{ scale: { duration: 0.82, repeat: Infinity, ease: 'easeInOut' }, y: { duration: 1.7, repeat: Infinity, ease: 'easeInOut' } }}
+                    >
+                      <svg width={42} height={36} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                        {([[1,0],[2,0],[4,0],[5,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[1,3],[2,3],[3,3],[4,3],[5,3],[2,4],[3,4],[4,4],[3,5]] as [number,number][]).map(([x,y],i) => <rect key={i} x={x*6} y={y*6} width={6} height={6} fill="#ff4da6" />)}
+                      </svg>
+                    </motion.div>
+
+                    {/* ── 4ポイントスター (右上, 回転+浮遊) ── */}
+                    <motion.div
+                      style={{ position: 'absolute', top: '8%', right: '12%', zIndex: 5, pointerEvents: 'none', filter: 'drop-shadow(0 0 9px rgba(255,215,0,1)) drop-shadow(0 0 20px rgba(255,180,0,0.55))' }}
+                      animate={{ rotate: [0, 360], y: [0, -8, 0] }}
+                      transition={{ rotate: { duration: 3.5, repeat: Infinity, ease: 'linear' }, y: { duration: 2.1, repeat: Infinity, ease: 'easeInOut', delay: 0.5 } }}
+                    >
+                      <svg width={35} height={35} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                        {([[3,0],[3,1],[1,2],[2,2],[3,2],[4,2],[5,2],[0,3],[1,3],[2,3],[3,3],[4,3],[5,3],[6,3],[1,4],[2,4],[3,4],[4,4],[5,4],[3,5],[3,6]] as [number,number][]).map(([x,y],i) => <rect key={i} x={x*5} y={y*5} width={5} height={5} fill="#ffe040" />)}
+                      </svg>
+                    </motion.div>
+
+                    {/* ── リボン (中央, 浮遊) ── */}
+                    <div style={{ position: 'absolute', top: '36%', left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 5, pointerEvents: 'none' }}>
+                      <motion.div
+                        style={{ filter: 'drop-shadow(0 0 10px rgba(200,80,255,1)) drop-shadow(0 0 22px rgba(160,40,220,0.55))' }}
+                        animate={{ y: [0, -12, 0], scale: [1, 1.07, 1] }}
+                        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+                      >
+                        <svg width={45} height={25} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                          {([[0,0],[1,0],[2,0],[6,0],[7,0],[8,0],[0,1],[1,1],[2,1],[4,1],[6,1],[7,1],[8,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[7,2],[8,2],[0,3],[1,3],[2,3],[4,3],[6,3],[7,3],[8,3],[0,4],[1,4],[2,4],[6,4],[7,4],[8,4]] as [number,number][]).map(([x,y],i) => <rect key={i} x={x*5} y={y*5} width={5} height={5} fill="#e060ff" />)}
+                          {([[4,1],[4,2],[4,3]] as [number,number][]).map(([x,y],i) => <rect key={`k${i}`} x={x*5} y={y*5} width={5} height={5} fill="#f8b0ff" />)}
+                        </svg>
+                      </motion.div>
+                    </div>
+
+                    {/* ── ジェム/ダイヤ (右下, 揺れ) ── */}
+                    <motion.div
+                      style={{ position: 'absolute', bottom: '22%', right: '14%', zIndex: 5, pointerEvents: 'none', filter: 'drop-shadow(0 0 9px rgba(0,220,255,1)) drop-shadow(0 0 18px rgba(0,160,255,0.55))' }}
+                      animate={{ y: [0, -9, 0], rotate: [-6, 6, -6] }}
+                      transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
+                    >
+                      <svg width={35} height={30} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                        {([[2,0],[3,0],[4,0],[1,1],[2,1],[3,1],[4,1],[5,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[1,3],[2,3],[3,3],[4,3],[5,3],[2,4],[3,4],[4,4],[3,5]] as [number,number][]).map(([x,y],i) => <rect key={i} x={x*5} y={y*5} width={5} height={5} fill="#40e0ff" />)}
+                        {([[3,0],[2,1],[1,2]] as [number,number][]).map(([x,y],i) => <rect key={`h${i}`} x={x*5} y={y*5} width={5} height={5} fill="#a8f4ff" />)}
+                      </svg>
+                    </motion.div>
+
+                    {/* ── ミニハート (左下, パルス) ── */}
+                    <motion.div
+                      style={{ position: 'absolute', bottom: '19%', left: '13%', zIndex: 5, pointerEvents: 'none', filter: 'drop-shadow(0 0 6px rgba(255,150,200,0.9))' }}
+                      animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
+                      transition={{ duration: 1.25, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }}
+                    >
+                      <svg width={20} height={20} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                        {([[1,0],[3,0],[0,1],[1,1],[2,1],[3,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[2,4]] as [number,number][]).map(([x,y],i) => <rect key={i} x={x*4} y={y*4} width={4} height={4} fill="#ff80c0" />)}
+                      </svg>
+                    </motion.div>
+
+                    {/* ── ピクセルクラウン (左中, 浮遊) ── */}
+                    <motion.div
+                      style={{ position: 'absolute', top: '58%', left: '10%', zIndex: 5, pointerEvents: 'none', filter: 'drop-shadow(0 0 7px rgba(255,215,0,0.9))' }}
+                      animate={{ y: [0, -7, 0], rotate: [-3, 3, -3] }}
+                      transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+                    >
+                      <svg width={30} height={20} style={{ imageRendering: 'pixelated', display: 'block' }}>
+                        {([[0,0],[2,0],[3,0],[4,0],[6,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[0,3],[1,3],[2,3],[3,3],[4,3],[5,3],[6,3]] as [number,number][]).map(([x,y],i) => <rect key={i} x={x*4+2} y={y*4} width={4} height={4} fill="#ffd700" />)}
+                        {([[1,0],[5,0]] as [number,number][]).map(([x,y],i) => <rect key={`g${i}`} x={x*4+2} y={y*4} width={4} height={4} fill="#ff4da6" />)}
+                      </svg>
+                    </motion.div>
+
+                    {/* ── スパークル散りばめ ── */}
+                    {([
+                      { top: '6%',  left: '42%', color: '#ffd700', delay: 0.0 },
+                      { top: '23%', left: '8%',  color: '#ff80c8', delay: 0.5 },
+                      { top: '20%', left: '82%', color: '#c080ff', delay: 0.8 },
+                      { top: '48%', left: '88%', color: '#ffd700', delay: 0.3 },
+                      { top: '70%', left: '8%',  color: '#ff80c8', delay: 1.1 },
+                      { top: '75%', left: '42%', color: '#a0e0ff', delay: 0.6 },
+                      { top: '82%', left: '64%', color: '#ffd700', delay: 0.9 },
+                      { top: '32%', left: '50%', color: '#ff80c8', delay: 1.4 },
+                      { top: '90%', left: '28%', color: '#c080ff', delay: 0.2 },
+                    ] as { top: string; left: string; color: string; delay: number }[]).map((s, i) => (
+                      <motion.span key={i}
+                        style={{ position: 'absolute', top: s.top, left: s.left, zIndex: 4, fontSize: i % 2 === 0 ? '0.55rem' : '0.42rem', color: s.color, textShadow: `0 0 6px ${s.color}`, pointerEvents: 'none' }}
+                        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.4, 0.5] }}
+                        transition={{ duration: 1.4 + i * 0.18, repeat: Infinity, delay: s.delay, ease: 'easeInOut' }}
+                      >
+                        {i % 3 === 0 ? '✦' : i % 3 === 1 ? '★' : '✨'}
+                      </motion.span>
                     ))}
-                    {/* 中央：ぷっくりハート宝石アイコン + ドット絵テキスト */}
-                    <div style={{
-                      position: 'absolute', top: '22%', left: '50%',
-                      zIndex: 4, textAlign: 'center',
-                      animation: 'floatBob 2.8s ease-in-out infinite',
-                    }}>
-                      <div style={{
-                        fontSize: '3.4rem', lineHeight: 1,
-                        filter: 'drop-shadow(0 0 12px rgba(255,80,200,0.95)) drop-shadow(0 0 6px rgba(255,20,147,1))',
-                      }}>
-                        💗
-                      </div>
-                      <p style={{
-                        fontFamily: FREDOKA, fontSize: '0.62rem', fontWeight: 700,
-                        color: 'rgba(255,205,255,0.95)', letterSpacing: '0.12em',
-                        margin: '7px 0 0',
-                        textShadow: '0 0 10px rgba(255,100,230,1), 0 0 4px rgba(255,50,180,0.9)',
-                      }}>✨ PHO-TO READY ✨</p>
+
+                    {/* ── 点滅テキスト ── */}
+                    <div style={{ position: 'absolute', bottom: 10, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 6 }}>
+                      <motion.span
+                        style={{ fontFamily: FREDOKA, fontSize: '0.68rem', fontWeight: 700, color: '#ff80c8', letterSpacing: '0.14em', textShadow: '0 0 8px rgba(255,80,180,0.9)', whiteSpace: 'nowrap' }}
+                        animate={{ opacity: [1, 0.4, 1] }}
+                        transition={{ duration: 1.0, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        ♡ PHOTO MODE ♡
+                      </motion.span>
                     </div>
-                    {/* 下部バルーン吹き出し */}
-                    <div style={{
-                      position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
-                      zIndex: 5, whiteSpace: 'nowrap',
-                    }}>
-                      <div style={{
-                        background: 'rgba(255,234,250,0.97)',
-                        border: '2px solid rgba(255,110,215,0.9)',
-                        borderRadius: 22, padding: '5px 14px',
-                        position: 'relative',
-                        boxShadow: '0 3px 12px rgba(255,60,200,0.38),inset 0 1px 0 rgba(255,255,255,0.9)',
-                      }}>
-                        <p style={{ fontFamily: ZEN, fontSize: '0.6rem', fontWeight: 900, color: '#c01090', margin: 0 }}>
-                          ここに服やコスメをかざしてね！
-                        </p>
-                        <div style={{
-                          position: 'absolute', bottom: -8, left: '50%', transform: 'translateX(-50%)',
-                          width: 0, height: 0,
-                          borderLeft: '6px solid transparent', borderRight: '6px solid transparent',
-                          borderTop: '8px solid rgba(255,110,215,0.9)',
-                        }} />
-                      </div>
-                    </div>
-                    {/* コーナーブラケット */}
+
+                    {/* ── コーナーブラケット ── */}
                     {CORNER_DEFS.map(([isTop, isLeft], ci) => (
                       <div key={ci} style={{ position: 'absolute', zIndex: 4, top: isTop ? 8 : 'auto', bottom: isTop ? 'auto' : 8, left: isLeft ? 8 : 'auto', right: isLeft ? 'auto' : 8, width: 22, height: 22 }}>
                         <div style={{ position: 'absolute', inset: 0, borderTop: isTop ? '2.5px solid rgba(255,170,235,0.85)' : 'none', borderBottom: isTop ? 'none' : '2.5px solid rgba(255,170,235,0.85)', borderLeft: isLeft ? '2.5px solid rgba(255,170,235,0.85)' : 'none', borderRight: isLeft ? 'none' : '2.5px solid rgba(255,170,235,0.85)', borderTopLeftRadius: isTop && isLeft ? 5 : 0, borderTopRightRadius: isTop && !isLeft ? 5 : 0, borderBottomLeftRadius: !isTop && isLeft ? 5 : 0, borderBottomRightRadius: !isTop && !isLeft ? 5 : 0 }} />
@@ -865,9 +911,9 @@ export default function CreatePage() {
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
                 <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: 'white', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={cardImg} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <img src={cardImg} alt="" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '85%', height: '80%', objectFit: 'contain' }} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', pointerEvents: 'none' }} />
+                  <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }} />
                   {bgRemovedOk && (
                     <div style={{ position: 'absolute', top: 5, left: 5, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 6px' }}>
                       <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: 'white' }}>AI ✂</span>
