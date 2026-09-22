@@ -364,15 +364,26 @@ export default function SettingsPage() {
               {diagResult && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                  className="glass-holo rounded-2xl p-4 flex flex-col gap-3"
+                  style={{
+                    borderRadius: 16, padding: 16,
+                    background: 'rgba(255, 246, 252, 0.97)',
+                    border: '1.5px solid rgba(220, 140, 200, 0.55)',
+                    boxShadow: '0 4px 18px rgba(200,80,180,0.14)',
+                    display: 'flex', flexDirection: 'column', gap: 10,
+                  }}
                 >
-                  <div className="flex items-start gap-2">
-                    <span className="text-2xl flex-shrink-0">🤖</span>
-                    <p className="text-white/85 text-sm font-medium leading-relaxed">{diagResult.description}</p>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                    <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>🤖</span>
+                    <p style={{ color: '#3d1050', fontSize: '0.84rem', fontWeight: 500, lineHeight: 1.65, margin: 0 }}>{diagResult.description}</p>
                   </div>
-                  <div className="flex gap-2 flex-wrap">
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     {diagResult.tips.map(tip => (
-                      <span key={tip} className="text-xs px-2.5 py-1 rounded-full glass text-white/70">{tip}</span>
+                      <span key={tip} style={{
+                        fontSize: '0.72rem', padding: '3px 10px', borderRadius: 20,
+                        background: 'rgba(200,130,225,0.16)',
+                        border: '1px solid rgba(190,110,215,0.35)',
+                        color: '#5a2080', fontWeight: 700,
+                      }}>{tip}</span>
                     ))}
                   </div>
                   <button
@@ -450,18 +461,28 @@ export default function SettingsPage() {
             {roleModelInfo && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-                className="mb-4 glass-holo rounded-2xl p-4"
+                style={{
+                  marginBottom: 16, borderRadius: 16, padding: 16,
+                  background: 'rgba(255, 246, 252, 0.97)',
+                  border: '1.5px solid rgba(220, 140, 200, 0.55)',
+                  boxShadow: '0 4px 18px rgba(200,80,180,0.14)',
+                }}
               >
-                <div className="flex items-start gap-2 mb-2">
-                  <span className="text-xl flex-shrink-0">🤖</span>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
+                  <span style={{ fontSize: '1.25rem', flexShrink: 0 }}>🤖</span>
                   <div>
-                    <p className="text-white font-black text-sm mb-1">「{roleModelInfo.name}」を学習しました</p>
-                    <p className="text-white/75 text-xs leading-relaxed">{roleModelInfo.description}</p>
+                    <p style={{ color: '#3d1050', fontWeight: 900, fontSize: '0.84rem', margin: '0 0 4px' }}>「{roleModelInfo.name}」を学習しました</p>
+                    <p style={{ color: '#6b3080', fontSize: '0.76rem', lineHeight: 1.6, margin: 0 }}>{roleModelInfo.description}</p>
                   </div>
                 </div>
-                <div className="flex gap-1.5 flex-wrap mt-2">
+                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 4 }}>
                   {roleModelInfo.styleKeywords.map(kw => (
-                    <span key={kw} className="text-xs px-2 py-0.5 rounded-full bg-pink-500/25 text-pink-200 border border-pink-400/30">{kw}</span>
+                    <span key={kw} style={{
+                      fontSize: '0.7rem', padding: '2px 8px', borderRadius: 20,
+                      background: 'rgba(200,130,225,0.18)',
+                      border: '1px solid rgba(190,110,215,0.38)',
+                      color: '#5a2080', fontWeight: 700,
+                    }}>{kw}</span>
                   ))}
                 </div>
               </motion.div>

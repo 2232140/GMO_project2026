@@ -199,7 +199,6 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
             <div style={{
               width: 200, aspectRatio: '2/3', borderRadius: 18,
               background: 'white',
-              border: `3px solid ${theme.border}`,
               boxShadow: `0 0 48px ${theme.glow}, 0 24px 64px rgba(0,0,0,0.8), inset 0 1.5px 0 rgba(255,255,255,0.22)`,
               position: 'relative', overflow: 'hidden',
             }}>
@@ -212,7 +211,7 @@ function IssuanceOverlay({ processedImage, cardName, brand, colorName, theme, ca
               />
               {/* Card frame overlay */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
+              <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', pointerEvents: 'none' }} />
 
               {/* SR badge */}
               <div style={{ position: 'absolute', top: 8, right: 8, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '2px 8px', boxShadow: '0 0 8px rgba(255,215,0,0.7)' }}>
@@ -668,25 +667,78 @@ export default function CreatePage() {
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={sourceImage} alt="selected" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 ) : (
-                  /* Viewfinder placeholder */
+                  /* Viewfinder placeholder — 平成デコガラケー液晶風 */
                   <>
-                    <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.022) 3px,rgba(255,255,255,0.022) 4px)' }} />
-                    {[80, 120].map((sz, ri) => (
-                      <div key={ri} style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: sz, height: sz, borderRadius: '50%', border: `1px solid rgba(255,215,0,${ri === 0 ? 0.4 : 0.18})`, zIndex: 3, pointerEvents: 'none' }} />
+                    {/* ドット感のある液晶背景 */}
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(160deg,#1e003a 0%,#140028 55%,#1a0032 100%)' }} />
+                    <div style={{
+                      position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+                      backgroundImage: 'radial-gradient(circle,rgba(255,170,255,0.25) 1px,transparent 1px)',
+                      backgroundSize: '10px 10px',
+                    }} />
+                    {/* ラメきらきら装飾 */}
+                    {[
+                      { top: '11%', left: '13%' }, { top: '17%', left: '83%' },
+                      { top: '66%', left: '9%'  }, { top: '70%', left: '87%' },
+                      { top: '38%', left: '5%'  }, { top: '43%', left: '93%' },
+                      { top: '28%', left: '50%' }, { top: '55%', left: '50%' },
+                    ].map((pos, i) => (
+                      <div key={i} style={{
+                        position: 'absolute', zIndex: 3, pointerEvents: 'none',
+                        top: pos.top, left: pos.left,
+                        color: `rgba(255,200,255,${0.45 + (i % 3) * 0.12})`,
+                        fontSize: i % 2 === 0 ? '0.55rem' : '0.42rem',
+                        textShadow: '0 0 5px rgba(255,150,255,0.75)',
+                      }}>✦</div>
                     ))}
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', width: 26, height: 2, background: 'rgba(255,215,0,0.65)', transform: 'translate(-50%,-50%)', zIndex: 3 }} />
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', width: 2, height: 26, background: 'rgba(255,215,0,0.65)', transform: 'translate(-50%,-50%)', zIndex: 3 }} />
+                    {/* 中央：ぷっくりハート宝石アイコン + ドット絵テキスト */}
+                    <div style={{
+                      position: 'absolute', top: '22%', left: '50%',
+                      zIndex: 4, textAlign: 'center',
+                      animation: 'floatBob 2.8s ease-in-out infinite',
+                    }}>
+                      <div style={{
+                        fontSize: '3.4rem', lineHeight: 1,
+                        filter: 'drop-shadow(0 0 12px rgba(255,80,200,0.95)) drop-shadow(0 0 6px rgba(255,20,147,1))',
+                      }}>
+                        💗
+                      </div>
+                      <p style={{
+                        fontFamily: FREDOKA, fontSize: '0.62rem', fontWeight: 700,
+                        color: 'rgba(255,205,255,0.95)', letterSpacing: '0.12em',
+                        margin: '7px 0 0',
+                        textShadow: '0 0 10px rgba(255,100,230,1), 0 0 4px rgba(255,50,180,0.9)',
+                      }}>✨ PHO-TO READY ✨</p>
+                    </div>
+                    {/* 下部バルーン吹き出し */}
+                    <div style={{
+                      position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
+                      zIndex: 5, whiteSpace: 'nowrap',
+                    }}>
+                      <div style={{
+                        background: 'rgba(255,234,250,0.97)',
+                        border: '2px solid rgba(255,110,215,0.9)',
+                        borderRadius: 22, padding: '5px 14px',
+                        position: 'relative',
+                        boxShadow: '0 3px 12px rgba(255,60,200,0.38),inset 0 1px 0 rgba(255,255,255,0.9)',
+                      }}>
+                        <p style={{ fontFamily: ZEN, fontSize: '0.6rem', fontWeight: 900, color: '#c01090', margin: 0 }}>
+                          ここに服やコスメをかざしてね！
+                        </p>
+                        <div style={{
+                          position: 'absolute', bottom: -8, left: '50%', transform: 'translateX(-50%)',
+                          width: 0, height: 0,
+                          borderLeft: '6px solid transparent', borderRight: '6px solid transparent',
+                          borderTop: '8px solid rgba(255,110,215,0.9)',
+                        }} />
+                      </div>
+                    </div>
+                    {/* コーナーブラケット */}
                     {CORNER_DEFS.map(([isTop, isLeft], ci) => (
-                      <div key={ci} style={{ position: 'absolute', zIndex: 4, top: isTop ? 10 : 'auto', bottom: isTop ? 'auto' : 10, left: isLeft ? 10 : 'auto', right: isLeft ? 'auto' : 10, width: 30, height: 30 }}>
-                        <div style={{ position: 'absolute', inset: 0, borderTop: isTop ? '3px solid rgba(255,215,0,0.9)' : 'none', borderBottom: isTop ? 'none' : '3px solid rgba(255,215,0,0.9)', borderLeft: isLeft ? '3px solid rgba(255,215,0,0.9)' : 'none', borderRight: isLeft ? 'none' : '3px solid rgba(255,215,0,0.9)', borderTopLeftRadius: isTop && isLeft ? 7 : 0, borderTopRightRadius: isTop && !isLeft ? 7 : 0, borderBottomLeftRadius: !isTop && isLeft ? 7 : 0, borderBottomRightRadius: !isTop && !isLeft ? 7 : 0 }} />
-                        <div style={{ position: 'absolute', top: isTop ? -9 : 'auto', bottom: isTop ? 'auto' : -9, left: isLeft ? -9 : 'auto', right: isLeft ? 'auto' : -9, width: 18, height: 18, borderRadius: '50%', background: 'radial-gradient(circle at 38% 28%,#ff80d0,#ff1493 60%,#7a0040)', boxShadow: '0 0 8px rgba(255,20,147,0.85),0 0 0 2px rgba(255,255,255,0.3)' }} />
+                      <div key={ci} style={{ position: 'absolute', zIndex: 4, top: isTop ? 8 : 'auto', bottom: isTop ? 'auto' : 8, left: isLeft ? 8 : 'auto', right: isLeft ? 'auto' : 8, width: 22, height: 22 }}>
+                        <div style={{ position: 'absolute', inset: 0, borderTop: isTop ? '2.5px solid rgba(255,170,235,0.85)' : 'none', borderBottom: isTop ? 'none' : '2.5px solid rgba(255,170,235,0.85)', borderLeft: isLeft ? '2.5px solid rgba(255,170,235,0.85)' : 'none', borderRight: isLeft ? 'none' : '2.5px solid rgba(255,170,235,0.85)', borderTopLeftRadius: isTop && isLeft ? 5 : 0, borderTopRightRadius: isTop && !isLeft ? 5 : 0, borderBottomLeftRadius: !isTop && isLeft ? 5 : 0, borderBottomRightRadius: !isTop && !isLeft ? 5 : 0 }} />
                       </div>
                     ))}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/img/dress.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', opacity: 0.18, zIndex: 1 }} />
-                    <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.7)', borderRadius: 20, padding: '3px 14px', zIndex: 5 }}>
-                      <span style={{ fontFamily: FREDOKA, fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)', letterSpacing: 1.5 }}>服・コスメを映してね</span>
-                    </div>
                   </>
                 )}
 
@@ -811,11 +863,11 @@ export default function CreatePage() {
 
               {/* Card preview */}
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: 'white', border: `3px solid ${currentTheme.border}`, boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
+                <div style={{ width: 110, aspectRatio: '2/3', borderRadius: 14, position: 'relative', overflow: 'hidden', background: 'white', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cardImg} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75, pointerEvents: 'none' }} />
+                  <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', pointerEvents: 'none' }} />
                   {bgRemovedOk && (
                     <div style={{ position: 'absolute', top: 5, left: 5, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 6px' }}>
                       <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: 'white' }}>AI ✂</span>
@@ -929,11 +981,9 @@ export default function CreatePage() {
               <motion.button whileTap={{ scale: 0.97 }} onClick={handleIssue} style={{
                 flexShrink: 0, width: '100%', padding: '17px', border: 'none', borderRadius: 16, cursor: 'pointer', outline: 'none', marginTop: 4,
                 fontFamily: ZEN, fontSize: '1.08rem', fontWeight: 900, color: 'white',
-                background: 'linear-gradient(90deg,#ffb3d9 0%,#ffd6f0 14%,#e8c8ff 28%,#c0d8ff 42%,#c0f0ff 56%,#c0ffe8 70%,#fff0c0 84%,#ffb3d9 100%)',
-                backgroundSize: '300% 100%',
-                animation: 'holoShimmer 3s ease-in-out infinite',
-                boxShadow: '0 0 22px rgba(255,160,220,0.55),inset 0 2px 6px rgba(255,255,255,0.55),0 4px 0 rgba(160,80,140,0.6)',
-                textShadow: '0 1px 3px rgba(120,0,80,0.4)',
+                background: 'linear-gradient(180deg,#c060f0 0%,#8020c0 50%,#4a0090 100%)',
+                boxShadow: '0 0 22px rgba(160,40,220,0.55),inset 0 2px 5px rgba(255,255,255,0.28),0 4px 0 #220050',
+                textShadow: '0 1px 3px rgba(0,0,0,0.5)',
               }}>
                 ✨ カードを発行する！
               </motion.button>

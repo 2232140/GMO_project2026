@@ -144,7 +144,7 @@ function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
+                <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
                 <div style={{
                   position: 'absolute', top: 6, left: 6, zIndex: 3,
                   padding: '2px 6px', borderRadius: 4,
@@ -359,7 +359,7 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
+      <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
       {selected && (
         <div style={{ position: 'absolute', top: 4, right: 4, zIndex: 4, width: 16, height: 16, borderRadius: '50%', background: '#ffd700', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Check size={9} color="#5030a0" strokeWidth={3} />
