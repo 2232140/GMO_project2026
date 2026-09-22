@@ -145,11 +145,9 @@ function CoordCard({ coord, onTap }: { coord: CoordSnap; onTap: () => void }) {
 /* ── ItemCardThumb ── */
 function ItemCardThumb({ card, onTap }: { card: ItemCard; onTap: () => void }) {
   return (
-    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', background: 'white', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '2/3' }}>
+    <motion.div whileTap={{ scale: 0.92 }} onClick={onTap} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', backgroundImage: 'url("/img/Card_Frame2.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', boxShadow: card.isUserCreated ? `0 0 12px rgba(255,20,147,0.5), 0 4px 14px ${card.color}80` : `0 4px 14px ${card.color}80, 0 1px 4px rgba(0,0,0,0.16)`, cursor: 'pointer', aspectRatio: '373 / 669' }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
       {/* MY badge for user-created cards */}
       {card.isUserCreated && (
         <div style={{ position: 'absolute', top: 3, right: 3, zIndex: 4, background: 'linear-gradient(135deg,#ff1493,#c040e0)', borderRadius: 20, padding: '1px 5px', boxShadow: '0 0 6px rgba(255,20,147,0.7)' }}>
@@ -312,15 +310,13 @@ function ItemFlipModal({ card, onClose }: { card: ItemCard; onClose: () => void 
       <div
         ref={cardScope}
         onClick={handleFlip}
-        style={{ width: '100%', maxWidth: 220, aspectRatio: '2/3', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', background: !showBack ? 'white' : undefined }}
+        style={{ width: '100%', maxWidth: 220, aspectRatio: '373 / 669', cursor: 'pointer', borderRadius: 16, overflow: 'hidden', boxShadow: !showBack ? `0 14px 44px ${card.color}99, 0 4px 16px rgba(0,0,0,0.45)` : '0 14px 44px rgba(0,0,0,0.6)', position: 'relative', backgroundImage: !showBack ? 'url("/img/Card_Frame2.png")' : 'none', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat' }}
       >
         {!showBack ? (
           /* 表面 */
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
           </>
         ) : (
           /* 裏面 */

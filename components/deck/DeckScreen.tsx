@@ -135,16 +135,14 @@ function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
           <div
             ref={cardScope}
             onClick={handleFlip}
-            style={{ position: 'relative', width: 160, aspectRatio: '2/3', cursor: 'pointer', willChange: 'transform' }}
+            style={{ position: 'relative', width: 160, aspectRatio: '373 / 669', cursor: 'pointer', willChange: 'transform' }}
           >
             {!showBack ? (
               /* 表面 */
               <>
-                <div style={{ position: 'absolute', inset: 0, background: 'white', borderRadius: 12 }} />
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("/img/Card_Frame2.png")', backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat', borderRadius: 12 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
                 <div style={{
                   position: 'absolute', top: 6, left: 6, zIndex: 3,
                   padding: '2px 6px', borderRadius: 4,
@@ -344,10 +342,12 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
         position: 'relative',
         flexShrink: 0,
         width: w,
-        aspectRatio: '2/3',
+        aspectRatio: '373 / 669',
         borderRadius: 8,
         overflow: 'hidden',
-        background: 'white',
+        backgroundImage: 'url("/img/Card_Frame2.png")',
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
         border: selected ? '2.5px solid #ffd700' : '2px solid rgba(255,255,255,0.8)',
         boxShadow: selected
           ? `0 0 14px ${card.color}, 0 3px 12px rgba(0,0,0,0.45)`
@@ -358,8 +358,6 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', top: '-5%', left: '-5%', width: '110%', height: '110%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
       {selected && (
         <div style={{ position: 'absolute', top: 4, right: 4, zIndex: 4, width: 16, height: 16, borderRadius: '50%', background: '#ffd700', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Check size={9} color="#5030a0" strokeWidth={3} />
