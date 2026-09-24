@@ -494,6 +494,21 @@ body {
   100% { background-position: 300% 0%; }
 }
 
+@keyframes auroraShift {
+  0%, 100% { background-position: 0%   50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.95); }
+  50%      { opacity: 1.0; transform: scale(1.05); }
+}
+
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
 /* ── Processing overlay (CSS-only so WASM can't freeze them) ── */
 @keyframes spin {
   to { transform: rotate(360deg); }
