@@ -57,7 +57,10 @@ export default function HomeScreen() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '12px 16px 20px',
+          paddingTop: 'max(12px, var(--safe-top))',
+          paddingBottom: 'max(20px, calc(var(--safe-bottom) + 12px))',
+          paddingLeft: 16,
+          paddingRight: 16,
           boxSizing: 'border-box',
           overflow: 'hidden',
         }}
@@ -70,7 +73,7 @@ export default function HomeScreen() {
           transition={{ delay: 0.5 }}
           whileTap={{ scale: 0.94 }}
           onClick={() => router.push('/settings')}
-          style={{ position: 'absolute', top: 12, right: 12, zIndex: 10, width: 110 }}
+          style={{ position: 'absolute', top: 'max(12px, var(--safe-top))', right: 12, zIndex: 10, width: 110 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/img/Logo_Frame.png" alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />

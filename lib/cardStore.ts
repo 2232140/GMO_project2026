@@ -42,6 +42,51 @@ export function saveStoredCard(card: StoredCard): void {
   }
 }
 
+// ━━━ Coord (saved deck) storage ━━━
+
+export interface StoredCoordSlot {
+  cardId: string
+  name: string
+  emoji: string
+  color: string
+  category: string
+  brand: string
+  tags: string[]
+  rarity: string
+}
+
+export interface StoredCoord {
+  id: string
+  name: string
+  date: string
+  slots: Partial<Record<string, StoredCoordSlot | null>>
+  scores: { label: string; pct: number }[]
+  totalScore: number
+  theme: string
+}
+
+const COORD_KEY = 'mirror_graph_user_coords'
+
+export function getStoredCoords(): StoredCoord[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = localStorage.getItem(COORD_KEY)
+    return raw ? (JSON.parse(raw) as StoredCoord[]) : []
+  } catch {
+    return []
+  }
+}
+
+export function saveStoredCoord(coord: StoredCoord): void {
+  const coords = getStoredCoords()
+  coords.unshift(coord)
+  try {
+    localStorage.setItem(COORD_KEY, JSON.stringify(coords.slice(0, 30)))
+  } catch {
+    localStorage.setItem(COORD_KEY, JSON.stringify(coords.slice(0, 10)))
+  }
+}
+
 /** Resize & compress an image src (dataURL or blob URL) to a compact JPEG dataURL */
 export async function compressImageToDataUrl(
   src: string,

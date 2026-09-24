@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useAnimate } from 'framer-motion'
 import { ChevronLeft, Sparkles, BookOpen, Save, X, Check, Lock, Unlock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { getStoredCards, saveStoredCoord, StoredCoord, StoredCoordSlot } from '@/lib/cardStore'
 
 /* ━━━ types ━━━ */
 type SlotKey = 'tops' | 'bottoms' | 'shoes' | 'cosme' | 'bag'
@@ -43,6 +44,42 @@ const MOCK_CARDS: Card[] = [
   { id: 'g2', category: 'bag',     name: 'キルティングバッグ',brand: 'LOVEBERRY', colorName: 'レモンクリーム',color: '#fef08a', tags: ['#ガーリー','#キルティング'],        emoji: '🛍️', image: '/img/bag.png',    rarity: 'R'  },
   { id: 'g3', category: 'bag',     name: 'クリアバッグ',     brand: 'GLITTER Q',  colorName: 'クリスタル',    color: '#bae6fd', tags: ['#グリッター','#クリア'],             emoji: '💎', image: '/img/bag.png',    rarity: 'N'  },
 ]
+
+/* ━━━ coord helpers ━━━ */
+function deriveTheme(scores: StyleScore[]): string {
+  if (!scores.length) return 'マイコーデ'
+  const label = scores[0].label
+  if (label.includes('Y2K')) return 'Y2Kコーデ'
+  if (label.includes('ガーリー')) return 'ガーリーコーデ'
+  if (label.includes('ピンク')) return 'ピンクコーデ'
+  if (label.includes('パープル')) return 'パープルコーデ'
+  return 'マイコーデ'
+}
+
+function computeTotalScore(deck: Record<SlotKey, Card | null>, scores: StyleScore[]): number {
+  if (scores.length) return Math.round(scores.reduce((s, d) => s + d.pct, 0) / scores.length)
+  return Object.values(deck).filter(Boolean).length * 20
+}
+
+/* ━━━ StoredCard → Card ━━━ */
+const CATEGORY_EMOJI: Record<string, string> = {
+  tops: '👗', bottoms: '👖', shoes: '👠', cosme: '💄', bag: '👜',
+}
+
+function storedToCard(sc: ReturnType<typeof getStoredCards>[number]): Card {
+  return {
+    id: sc.id,
+    category: sc.category as SlotKey,
+    name: sc.name,
+    brand: sc.brand,
+    colorName: sc.colorName,
+    color: sc.color,
+    tags: sc.tags,
+    emoji: CATEGORY_EMOJI[sc.category] ?? '✨',
+    image: sc.image,
+    rarity: (['N', 'R', 'SR'].includes(sc.rarity) ? sc.rarity : 'N') as Card['rarity'],
+  }
+}
 
 /* ━━━ category config ━━━ */
 const CATEGORIES: { key: SlotKey; label: string; mark: string }[] = [
@@ -323,7 +360,7 @@ function Slot({ cat, card, locked, isShuffling, onTap, onRemove, onLock, onFlip 
         )}
       </div>
 
-      <span style={{ fontFamily: ZEN, fontSize: '0.5rem', fontWeight: 900, color: 'white', letterSpacing: '0.06em', textShadow: TEXT_SHADOW }}>
+      <span style={{ fontFamily: ZEN, fontSize: '0.6rem', fontWeight: 900, color: 'white', letterSpacing: '0.06em', textShadow: TEXT_SHADOW }}>
         {cat.label}
       </span>
     </div>
@@ -367,7 +404,7 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
         </div>
       )}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '3px 4px', background: 'rgba(0,0,0,0.65)', zIndex: 3 }}>
-        <p style={{ fontFamily: ZEN, fontSize: '0.48rem', fontWeight: 900, color: 'white', margin: 0, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: TEXT_SHADOW }}>
+        <p style={{ fontFamily: ZEN, fontSize: '0.58rem', fontWeight: 900, color: 'white', margin: 0, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: TEXT_SHADOW }}>
           {card.name}
         </p>
       </div>
@@ -378,6 +415,22 @@ function CardThumb({ card, selected, onSelect, size = 'sm' }: {
 /* ━━━ main ━━━ */
 export default function DeckScreen() {
   const router = useRouter()
+
+  const [userCards, setUserCards] = useState<Card[]>([])
+
+  useEffect(() => {
+    const valid: SlotKey[] = ['tops', 'bottoms', 'shoes', 'cosme', 'bag']
+    const stored = getStoredCards()
+      .filter(sc => valid.includes(sc.category as SlotKey))
+      .map(storedToCard)
+    setUserCards(stored)
+  }, [])
+
+  // ユーザー作成カードを優先し、未作成カテゴリはサンプルで補完
+  const allCards: Card[] = [
+    ...userCards,
+    ...MOCK_CARDS.filter(m => !userCards.some(u => u.id === m.id)),
+  ]
 
   const [deck, setDeck] = useState<Record<SlotKey, Card | null>>({
     tops: null, bottoms: null, shoes: null, cosme: null, bag: null,
@@ -396,7 +449,7 @@ export default function DeckScreen() {
 
   const displayScores = styleScores.length > 0 ? styleScores : computeScores(deck)
 
-  const filteredCards = MOCK_CARDS.filter(c => c.category === activeTab)
+  const filteredCards = allCards.filter(c => c.category === activeTab)
 
   const selectCard = (card: Card) => {
     setDeck(prev => ({ ...prev, [card.category]: card }))
@@ -436,7 +489,7 @@ export default function DeckScreen() {
       const newDeck = { ...deck }
       for (const key of Object.keys(data.deck) as SlotKey[]) {
         if (!locks[key]) {
-          newDeck[key] = MOCK_CARDS.find(c => c.id === data.deck[key]) ?? null
+          newDeck[key] = allCards.find(c => c.id === data.deck[key]) ?? null
         }
       }
       setDeck(newDeck)
@@ -448,7 +501,7 @@ export default function DeckScreen() {
       const newDeck = { ...deck }
       CATEGORIES.forEach(({ key }) => {
         if (!locks[key]) {
-          const pool = MOCK_CARDS.filter(c => c.category === key)
+          const pool = allCards.filter(c => c.category === key)
           newDeck[key] = pool[Math.floor(Math.random() * pool.length)]
         }
       })
@@ -459,26 +512,43 @@ export default function DeckScreen() {
     }
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (saveLoading) return
     setSaveLoading(true)
-    try {
-      await fetch('/api/deck/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deck: Object.fromEntries(Object.entries(deck).map(([k, v]) => [k, (v as Card | null)?.id ?? null])),
-          scores: displayScores,
-        }),
+
+    const dateStr = new Date().toISOString().slice(0, 10)
+    const theme = deriveTheme(displayScores)
+    const slots: StoredCoord['slots'] = Object.fromEntries(
+      CATEGORIES.map(({ key }) => {
+        const card = deck[key]
+        if (!card) return [key, null]
+        const slot: StoredCoordSlot = {
+          cardId: card.id,
+          name: card.name,
+          emoji: card.emoji,
+          color: card.color,
+          category: card.category,
+          brand: card.brand,
+          tags: card.tags,
+          rarity: card.rarity,
+        }
+        return [key, slot]
       })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2500)
-    } catch {
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2500)
-    } finally {
-      setSaveLoading(false)
+    )
+    const coord: StoredCoord = {
+      id: `coord-${Date.now()}`,
+      name: theme,
+      date: dateStr,
+      slots,
+      scores: displayScores,
+      totalScore: computeTotalScore(deck, displayScores),
+      theme,
     }
+    saveStoredCoord(coord)
+
+    setSaveLoading(false)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
   }
 
   return (
@@ -491,7 +561,10 @@ export default function DeckScreen() {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '16px 12px 24px',
+        paddingTop: 16,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingBottom: 'max(24px, calc(var(--safe-bottom) + 16px))',
         boxSizing: 'border-box',
         overflow: 'hidden',
       }}>
@@ -641,7 +714,7 @@ export default function DeckScreen() {
                     opacity: active ? 1 : 0.85,
                   }}
                 />
-                <span style={{ fontFamily: ZEN, fontSize: '0.48rem', fontWeight: 900, letterSpacing: '0.04em', color: 'white', textShadow: TEXT_SHADOW }}>
+                <span style={{ fontFamily: ZEN, fontSize: '0.58rem', fontWeight: 900, letterSpacing: '0.04em', color: 'white', textShadow: TEXT_SHADOW }}>
                   {cat.label}
                 </span>
               </motion.button>
@@ -767,7 +840,7 @@ export default function DeckScreen() {
 
               <div
                 className="overflow-y-auto"
-                style={{ flex: 1, padding: '0 12px 16px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, alignContent: 'start' }}
+                style={{ flex: 1, padding: '0 12px', paddingBottom: 'max(16px, calc(var(--safe-bottom) + 8px))', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, alignContent: 'start' }}
               >
                 {filteredCards.map(card => (
                   <CardThumb

@@ -233,16 +233,30 @@ export default function HolographicCard({
             </span>
           </div>
 
-          {/* ── 絵文字メイン ── */}
-          <div className="flex-1 flex items-center justify-center" style={{ zIndex: 5 }}>
-            <span
-              style={{
-                fontSize: EMOJI_SZ[size],
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.35)) drop-shadow(0 0 8px rgba(255,255,255,0.5))',
-              }}
-            >
-              {card.emoji}
-            </span>
+          {/* ── メイン: 画像 or 絵文字 ── */}
+          <div className="flex-1 flex items-center justify-center relative" style={{ zIndex: 5, overflow: 'hidden' }}>
+            {card.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={card.image}
+                alt={card.name}
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%',
+                  objectFit: 'cover',
+                  opacity: 0.92,
+                }}
+              />
+            ) : (
+              <span
+                style={{
+                  fontSize: EMOJI_SZ[size],
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.35)) drop-shadow(0 0 8px rgba(255,255,255,0.5))',
+                }}
+              >
+                {card.emoji}
+              </span>
+            )}
           </div>
 
           {/* ── レアリティ星 ── */}

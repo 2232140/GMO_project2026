@@ -1,20 +1,94 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, X, Star, BookOpen } from 'lucide-react'
 import { MOCK_ITEM_CARDS, MOCK_COORD_CARDS, SLOT_CONFIG } from '@/lib/mockData'
-import { ItemCard, CoordCard } from '@/lib/types'
+import { ItemCard, CoordCard, CardCategory } from '@/lib/types'
+import { getStoredCards, getStoredCoords, StoredCoord } from '@/lib/cardStore'
 import HolographicCard from '@/components/ui/HolographicCard'
 
 type Tab = 'coord' | 'items'
+
+/* ━━━ category helpers ━━━ */
+const CATEGORY_GRADIENT: Record<string, string> = {
+  tops:    'from-pink-300 via-rose-300 to-fuchsia-300',
+  bottoms: 'from-violet-300 via-purple-300 to-fuchsia-300',
+  shoes:   'from-blue-300 via-sky-300 to-cyan-300',
+  bag:     'from-amber-300 via-yellow-300 to-orange-300',
+  cosme:   'from-rose-300 via-pink-300 to-fuchsia-300',
+}
+
+const CATEGORY_EMOJI: Record<string, string> = {
+  tops: '👗', bottoms: '👖', shoes: '👠', cosme: '💄', bag: '👜',
+}
+
+const RARITY_MAP: Record<string, ItemCard['rarity']> = {
+  N: 'normal', R: 'rare', SR: 'super-rare', legend: 'legend',
+}
+
+/* ━━━ converters ━━━ */
+function storedCardToItemCard(sc: ReturnType<typeof getStoredCards>[number]): ItemCard {
+  return {
+    id: sc.id,
+    name: sc.name,
+    category: sc.category as CardCategory,
+    brand: sc.brand,
+    color: sc.color,
+    gradient: CATEGORY_GRADIENT[sc.category] ?? 'from-pink-300 to-purple-300',
+    emoji: CATEGORY_EMOJI[sc.category] ?? '✨',
+    tags: sc.tags,
+    rarity: RARITY_MAP[sc.rarity] ?? 'normal',
+    image: sc.image,
+  }
+}
+
+function storedCoordToCoordCard(sc: StoredCoord): CoordCard {
+  const deckCards = Object.fromEntries(
+    SLOT_CONFIG.map(({ key }) => {
+      const slot = sc.slots[key]
+      if (!slot) return [key, null]
+      const item: ItemCard = {
+        id: slot.cardId,
+        name: slot.name,
+        category: slot.category as CardCategory,
+        brand: slot.brand,
+        color: slot.color,
+        gradient: CATEGORY_GRADIENT[slot.category] ?? 'from-pink-300 to-purple-300',
+        emoji: slot.emoji,
+        tags: slot.tags,
+        rarity: RARITY_MAP[slot.rarity] ?? 'normal',
+      }
+      return [key, item]
+    })
+  ) as Record<CardCategory, ItemCard | null>
+
+  return {
+    id: sc.id,
+    name: sc.name,
+    date: sc.date,
+    deckCards,
+    totalScore: sc.totalScore,
+    theme: sc.theme,
+  }
+}
 
 export default function AlbumPage() {
   const router = useRouter()
   const [tab, setTab] = useState<Tab>('coord')
   const [selectedCard, setSelectedCard] = useState<ItemCard | null>(null)
   const [selectedCoord, setSelectedCoord] = useState<CoordCard | null>(null)
+  const [itemCards, setItemCards] = useState<ItemCard[]>([])
+  const [coordCards, setCoordCards] = useState<CoordCard[]>([])
+
+  useEffect(() => {
+    const stored = getStoredCards()
+    setItemCards(stored.length > 0 ? stored.map(storedCardToItemCard) : MOCK_ITEM_CARDS)
+
+    const storedCoords = getStoredCoords()
+    setCoordCards(storedCoords.length > 0 ? storedCoords.map(storedCoordToCoordCard) : MOCK_COORD_CARDS)
+  }, [])
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -67,7 +141,7 @@ export default function AlbumPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {MOCK_COORD_CARDS.length === 0 ? (
+              {coordCards.length === 0 ? (
                 <div className="text-center py-16 text-white/30">
                   <div className="text-5xl mb-3">📭</div>
                   <p>まだコーデカードがありません</p>
@@ -75,7 +149,7 @@ export default function AlbumPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  {MOCK_COORD_CARDS.map((coord, i) => (
+                  {coordCards.map((coord, i) => (
                     <motion.button
                       key={coord.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -99,7 +173,7 @@ export default function AlbumPage() {
                             key={ci}
                             className="absolute w-10 h-14 rounded-lg flex items-center justify-center text-xl"
                             style={{
-                              background: `linear-gradient(135deg, rgba(30,10,50,0.9), rgba(60,20,80,0.9))`,
+                              background: card ? `linear-gradient(135deg, ${card.color}33, ${card.color}66)` : 'rgba(30,10,50,0.9)',
                               border: '1px solid rgba(255,255,255,0.2)',
                               transform: `rotate(${(ci - 2) * 8}deg) translateX(${(ci - 2) * 12}px)`,
                               zIndex: ci,
@@ -130,7 +204,7 @@ export default function AlbumPage() {
               exit={{ opacity: 0 }}
             >
               <div className="grid grid-cols-3 gap-4">
-                {MOCK_ITEM_CARDS.map((card, i) => (
+                {itemCards.map((card, i) => (
                   <motion.div
                     key={card.id}
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -275,7 +349,7 @@ export default function AlbumPage() {
                   const card = selectedCoord.deckCards[slot.key]
                   return (
                     <div key={slot.key} className="flex flex-col items-center gap-1">
-                      <p className="text-white/40 text-xs text-center" style={{ fontSize: '0.5rem' }}>
+                      <p className="text-white/40 text-xs text-center" style={{ fontSize: '0.65rem' }}>
                         {slot.label}
                       </p>
                       {card ? (

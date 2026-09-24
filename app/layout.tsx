@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito, Fredoka, Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
 import StarField from "@/components/ui/StarField";
@@ -25,6 +25,13 @@ const zenMaruGothic = Zen_Maru_Gothic({
 export const metadata: Metadata = {
   title: "MIRROR GRAPH — 今日の私をプロデュース",
   description: "AIスタイリング × Y2Kトレカコレクション",
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
