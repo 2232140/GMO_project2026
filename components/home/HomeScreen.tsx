@@ -5,29 +5,29 @@ import { useRouter } from 'next/navigation'
 import { Settings } from 'lucide-react'
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
-const TS  = { textShadow: '0 2px 6px rgba(0,0,0,0.7), 0 0 16px rgba(255,100,200,0.3)' }
+const TS  = { textShadow: '0 2px 8px rgba(120,0,80,0.55), 0 0 18px rgba(255,120,220,0.35)' }
 
 /* ── ambient glow blobs ── */
 const GLOWS = [
-  { top: -110, left:  -110, size: 380, color: 'rgba(255,20,147,0.38)',  blur: 55 },
-  { bottom: -110, right: -110, size: 380, color: 'rgba(90,20,255,0.44)', blur: 55 },
-  { top: '38%', left: '50%', transform: 'translate(-50%,-50%)', size: 260, color: 'rgba(255,180,0,0.10)', blur: 45 },
+  { top: -110, left:  -110, size: 380, color: 'rgba(255,140,230,0.55)',  blur: 55 },
+  { bottom: -110, right: -110, size: 380, color: 'rgba(200,80,255,0.45)', blur: 55 },
+  { top: '38%', left: '50%', transform: 'translate(-50%,-50%)', size: 260, color: 'rgba(255,180,240,0.18)', blur: 45 },
 ]
 
 /* ── floating sparkle particles ── */
 const PARTS = [
-  { s:'✦', l:'5%',  sz:'1.0rem', dur:4.4, d:0.0, c:'#ffd700' },
-  { s:'★', l:'88%', sz:'0.8rem', dur:3.7, d:0.8, c:'#ff69b4' },
-  { s:'✦', l:'15%', sz:'0.72rem',dur:5.1, d:1.6, c:'#c0a0ff' },
+  { s:'✦', l:'5%',  sz:'1.0rem', dur:4.4, d:0.0, c:'#ffffff' },
+  { s:'★', l:'88%', sz:'0.8rem', dur:3.7, d:0.8, c:'#ffb8e0' },
+  { s:'✦', l:'15%', sz:'0.72rem',dur:5.1, d:1.6, c:'#e0c0ff' },
   { s:'💖',l:'93%', sz:'0.9rem', dur:4.3, d:0.4, c:'#ff69b4' },
-  { s:'✦', l:'2%',  sz:'0.9rem', dur:3.9, d:2.2, c:'#ffd700' },
-  { s:'★', l:'77%', sz:'0.75rem',dur:5.0, d:1.0, c:'#c0a0ff' },
+  { s:'✦', l:'2%',  sz:'0.9rem', dur:3.9, d:2.2, c:'#ffffff' },
+  { s:'★', l:'77%', sz:'0.75rem',dur:5.0, d:1.0, c:'#d8b0ff' },
   { s:'💫',l:'48%', sz:'0.95rem',dur:5.4, d:1.9, c:'#ffffff' },
-  { s:'✦', l:'64%', sz:'0.7rem', dur:3.4, d:3.0, c:'#ffd700' },
-  { s:'★', l:'23%', sz:'0.85rem',dur:4.0, d:0.6, c:'#ff69b4' },
-  { s:'✦', l:'96%', sz:'0.75rem',dur:4.7, d:3.4, c:'#00e5ff' },
+  { s:'✦', l:'64%', sz:'0.7rem', dur:3.4, d:3.0, c:'#ffd0ee' },
+  { s:'★', l:'23%', sz:'0.85rem',dur:4.0, d:0.6, c:'#ffb8e0' },
+  { s:'✦', l:'96%', sz:'0.75rem',dur:4.7, d:3.4, c:'#c8d8ff' },
   { s:'💖',l:'36%', sz:'0.7rem', dur:3.8, d:1.2, c:'#ff69b4' },
-  { s:'✦', l:'54%', sz:'1.1rem', dur:5.6, d:2.5, c:'#ffd700' },
+  { s:'✦', l:'54%', sz:'1.1rem', dur:5.6, d:2.5, c:'#ffffff' },
 ]
 
 /* ── logo sparkles ── */
@@ -43,13 +43,13 @@ export default function HomeScreen() {
   return (
     <div style={{
       position: 'fixed', inset: 0, overflow: 'hidden',
-      background: 'linear-gradient(160deg, #0e0032 0%, #1e0065 38%, #140040 68%, #060012 100%)',
+      background: 'linear-gradient(160deg, #f470cc 0%, #e040cc 28%, #c030d8 56%, #8020b8 100%)',
     }}>
 
       {/* ── dot grid ── */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)',
+        backgroundImage: 'radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px)',
         backgroundSize: '20px 20px',
       }} />
 
@@ -70,7 +70,7 @@ export default function HomeScreen() {
       {/* ── aurora overlay ── */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'linear-gradient(135deg, rgba(255,20,147,0.12), rgba(120,20,255,0.16), rgba(20,80,255,0.10), rgba(255,20,147,0.08))',
+        background: 'linear-gradient(135deg, rgba(255,210,245,0.22), rgba(255,100,210,0.16), rgba(210,80,255,0.14), rgba(255,210,245,0.10))',
         backgroundSize: '400% 400%',
         animation: 'auroraShift 10s ease-in-out infinite',
       }} />
@@ -119,10 +119,10 @@ export default function HomeScreen() {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '9px 18px', borderRadius: 9999,
-              background: 'rgba(255,255,255,0.11)',
+              background: 'rgba(255,220,245,0.28)',
               backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
-              border: '1.5px solid rgba(255,255,255,0.30)',
-              color: 'rgba(255,255,255,0.90)', cursor: 'pointer',
+              border: '1.5px solid rgba(255,255,255,0.55)',
+              color: 'rgba(255,255,255,0.95)', cursor: 'pointer',
               fontFamily: ZEN, fontSize: '0.82rem', fontWeight: 700,
               boxShadow: '0 2px 14px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15)',
               ...TS,
@@ -144,7 +144,7 @@ export default function HomeScreen() {
           <motion.div
             style={{
               position: 'absolute', inset: '-20px -32px',
-              background: 'radial-gradient(ellipse, rgba(255,120,220,0.65) 0%, rgba(160,30,255,0.32) 45%, transparent 70%)',
+              background: 'radial-gradient(ellipse, rgba(255,160,240,0.75) 0%, rgba(255,80,210,0.38) 45%, transparent 70%)',
               filter: 'blur(18px)', pointerEvents: 'none',
             }}
             animate={{ opacity: [0.38, 0.92, 0.38], scale: [0.91, 1.08, 0.91] }}
@@ -155,7 +155,7 @@ export default function HomeScreen() {
             src="/img/logo.png" alt="MIRROR GRAPH"
             style={{
               maxHeight: '22vh', width: 'auto', maxWidth: '100%', display: 'block', position: 'relative',
-              filter: 'drop-shadow(0 0 14px rgba(255,100,210,0.95)) drop-shadow(0 0 34px rgba(180,30,255,0.55))',
+              filter: 'drop-shadow(0 0 14px rgba(255,160,230,0.95)) drop-shadow(0 0 36px rgba(255,80,200,0.60))',
             }}
           />
           {/* Gold sparkles around logo */}
@@ -200,7 +200,7 @@ export default function HomeScreen() {
               position: 'absolute', inset: 0, borderRadius: 22, pointerEvents: 'none',
               boxShadow: '0 0 0 1.5px rgba(255,80,200,0.0)',
             }}
-            animate={{ boxShadow: ['0 0 0 1.5px rgba(255,80,200,0.3)', '0 0 0 1.5px rgba(120,80,255,0.55)', '0 0 0 1.5px rgba(255,200,0,0.35)', '0 0 0 1.5px rgba(255,80,200,0.3)'] }}
+            animate={{ boxShadow: ['0 0 0 1.5px rgba(255,120,210,0.5)', '0 0 0 1.5px rgba(220,100,255,0.65)', '0 0 0 1.5px rgba(255,180,230,0.45)', '0 0 0 1.5px rgba(255,120,210,0.5)'] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
           />
 
@@ -219,7 +219,7 @@ export default function HomeScreen() {
               fontFamily: ZEN, margin: 0, lineHeight: 1.2,
               fontSize: 'clamp(1.55rem, 8vw, 2.1rem)',
               fontWeight: 900,
-              background: 'linear-gradient(135deg, #ffd700 0%, #ff69b4 38%, #c090ff 72%, #60b0ff 100%)',
+              background: 'linear-gradient(135deg, #fff0f8 0%, #ff8fd8 28%, #ff22cc 58%, #cc60ff 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.55))',
@@ -249,7 +249,7 @@ export default function HomeScreen() {
           {/* Rainbow pulsing glow behind button */}
           <motion.div style={{
             position: 'absolute', inset: '-7px -10px', borderRadius: 24,
-            background: 'linear-gradient(135deg, #ff1493, #c040e0, #40a0ff, #ffd700, #ff1493)',
+            background: 'linear-gradient(135deg, #ff1493, #ee44cc, #cc44ff, #9944ff, #ff1493)',
             backgroundSize: '400% 400%', filter: 'blur(14px)', zIndex: 0,
           }}
             animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'], opacity: [0.45, 0.92, 0.45] }}
@@ -310,14 +310,14 @@ export default function HomeScreen() {
             transition={{ delay: 0.46, type: 'spring', stiffness: 155 }}
             whileTap={{ scale: 0.94, y: 2 }}
             onClick={() => router.push('/binder')}
-            className="btn-puffy-gold"
+            className="btn-puffy-blue"
             style={{
               padding: '15px 12px', borderRadius: 15,
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
               fontFamily: ZEN, cursor: 'pointer', overflow: 'hidden',
             }}
           >
-            <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 6px rgba(255,220,80,0.7))' }}>💖</span>
+            <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 6px rgba(255,150,220,0.7))' }}>💖</span>
             <span style={{ fontSize: '0.88rem', fontWeight: 900, color: 'white', textShadow: '0 2px 5px rgba(0,0,0,0.55)' }}>
               コレクションをみる
             </span>
