@@ -168,75 +168,76 @@ export default function HomeScreen() {
           ))}
         </motion.div>
 
-        {/* ③ キャッチコピーカード */}
+        {/* ③ キャッチコピー — ゲームタイトル風 */}
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.93 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.20, type: 'spring', stiffness: 115, damping: 16 }}
-          style={{
-            flexShrink: 0, position: 'relative',
-            borderRadius: 22,
-            padding: '20px 24px 18px',
-            background: 'rgba(255,255,255,0.07)',
-            backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
-            boxShadow: [
-              '0 0 0 1.5px rgba(255,140,220,0.45)',
-              '0 0 24px rgba(200,40,200,0.22)',
-              'inset 0 1px 0 rgba(255,255,255,0.18)',
-              '0 10px 40px rgba(0,0,0,0.45)',
-            ].join(', '),
-            overflow: 'hidden',
-          }}
+          style={{ flexShrink: 0, position: 'relative', textAlign: 'center', padding: '6px 16px', overflow: 'hidden' }}
         >
-          {/* Shine overlay */}
-          <div style={{
-            position: 'absolute', inset: 0, borderRadius: 22, pointerEvents: 'none',
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.14) 0%, transparent 55%, rgba(255,255,255,0.04) 100%)',
-          }} />
-
-          {/* Holo border glow (animating) */}
-          <motion.div
-            style={{
-              position: 'absolute', inset: 0, borderRadius: 22, pointerEvents: 'none',
-              boxShadow: '0 0 0 1.5px rgba(255,80,200,0.0)',
-            }}
-            animate={{ boxShadow: ['0 0 0 1.5px rgba(255,120,210,0.5)', '0 0 0 1.5px rgba(220,100,255,0.65)', '0 0 0 1.5px rgba(255,180,230,0.45)', '0 0 0 1.5px rgba(255,120,210,0.5)'] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-          />
-
-          {/* Corner stars */}
-          {[{t:10,l:14},{t:10,r:14},{b:10,l:14},{b:10,r:14}].map((pos, i) => (
+          {/* Decorative gems & sparkles */}
+          {[
+            { s: '💎', top: '0px',    left: '4%',   sz: '1.1rem', d: 0.0 },
+            { s: '★',  top: '-8px',   left: '22%',  sz: '1.4rem', d: 0.7, c: '#ffffff' },
+            { s: '💎', top: '6px',    right: '5%',  sz: '1.0rem', d: 1.3 },
+            { s: '★',  top: '-6px',   right: '24%', sz: '1.2rem', d: 0.2, c: '#ffd0f0' },
+            { s: '✦',  bottom: '2px', left: '12%',  sz: '1.0rem', d: 1.0, c: '#ffffff' },
+            { s: '✦',  bottom: '0px', right: '14%', sz: '0.95rem',d: 1.6, c: '#e0c0ff' },
+          ].map((gem, i) => (
             <motion.span key={i}
-              style={{ position: 'absolute', top:pos.t, left:pos.l, bottom:pos.b, right:pos.r, fontSize:'0.7rem', color:'#ffd700', filter:'drop-shadow(0 0 4px #ffd700)', lineHeight:1 }}
-              animate={{ opacity: [0.2, 1, 0.2] }}
-              transition={{ duration: 2.2, delay: i * 0.55, repeat: Infinity, ease: 'easeInOut' }}
-            >★</motion.span>
+              style={{
+                position: 'absolute',
+                top: gem.top, left: gem.left, bottom: gem.bottom, right: gem.right,
+                fontSize: gem.sz, lineHeight: 1, pointerEvents: 'none',
+                color: gem.c,
+                filter: gem.c ? `drop-shadow(0 0 5px ${gem.c})` : undefined,
+              }}
+              animate={{ opacity: [0.4, 1, 0.4], scale: [0.8, 1.3, 0.8] }}
+              transition={{ duration: 2.0 + i * 0.32, delay: gem.d, repeat: Infinity, ease: 'easeInOut' }}
+            >{gem.s}</motion.span>
           ))}
 
-          {/* Text content */}
-          <div style={{ position: 'relative', textAlign: 'center' }}>
-            <p style={{
-              fontFamily: ZEN, margin: 0, lineHeight: 1.2,
-              fontSize: 'clamp(1.55rem, 8vw, 2.1rem)',
-              fontWeight: 900,
-              background: 'linear-gradient(135deg, #fff0f8 0%, #ff8fd8 28%, #ff22cc 58%, #cc60ff 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.55))',
-            }}>
-              今日の私を<br />プロデュース
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginTop: 10 }}>
-              <span style={{ color: '#ff69b4', fontSize: '0.6rem', filter: 'drop-shadow(0 0 4px #ff69b4)' }}>✦</span>
-              <p style={{
-                fontFamily: ZEN, fontSize: '0.72rem', fontWeight: 700, margin: 0,
-                color: 'rgba(255,220,245,0.82)', letterSpacing: '0.04em', ...TS,
-              }}>
-                AIスタイリング × Y2Kトレカコレクション
-              </p>
-              <span style={{ color: '#ff69b4', fontSize: '0.6rem', filter: 'drop-shadow(0 0 4px #ff69b4)' }}>✦</span>
-            </div>
-          </div>
+          {/* 今日の */}
+          <p style={{
+            fontFamily: ZEN, margin: '0 0 -2px', lineHeight: 1.1,
+            fontSize: 'clamp(1.0rem, 5vw, 1.2rem)', fontWeight: 900,
+            color: '#ffffff',
+            WebkitTextStroke: '2px #ff88cc',
+            paintOrder: 'stroke fill',
+            filter: 'drop-shadow(0 3px 0 #cc0077)',
+            letterSpacing: '0.1em',
+          }}>今日の</p>
+
+          {/* あなたを */}
+          <p style={{
+            fontFamily: ZEN, margin: '0 0 -4px', lineHeight: 1.0,
+            fontSize: 'clamp(2.15rem, 11vw, 2.8rem)', fontWeight: 900,
+            color: '#ff69b4',
+            WebkitTextStroke: '3.5px white',
+            paintOrder: 'stroke fill',
+            filter: 'drop-shadow(0 5px 0 #aa0055) drop-shadow(0 8px 14px rgba(180,0,100,0.55))',
+          }}>あなたを</p>
+
+          {/* プロデュース */}
+          <p style={{
+            fontFamily: ZEN, margin: 0, lineHeight: 1.1,
+            fontSize: 'clamp(1.65rem, 8.5vw, 2.15rem)', fontWeight: 900,
+            color: '#ee44cc',
+            WebkitTextStroke: '3px white',
+            paintOrder: 'stroke fill',
+            filter: 'drop-shadow(0 4px 0 #880099) drop-shadow(0 7px 14px rgba(150,0,200,0.5))',
+            letterSpacing: '0.03em',
+          }}>プロデュース</p>
+
+          {/* Shimmer sweep */}
+          <motion.div
+            style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none',
+              background: 'linear-gradient(105deg, transparent 33%, rgba(255,255,255,0.42) 50%, transparent 67%)',
+            }}
+            animate={{ x: ['-130%', '230%'] }}
+            transition={{ duration: 0.85, delay: 7, repeat: Infinity, repeatDelay: 9, ease: 'easeOut' }}
+          />
         </motion.div>
 
         {/* ④ メインCTAボタン */}
