@@ -5,36 +5,84 @@ import { useRouter } from 'next/navigation'
 import { Settings } from 'lucide-react'
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
-const TS  = { textShadow: '0 2px 8px rgba(40,20,120,0.55), 0 0 18px rgba(180,160,255,0.35)' }
 
-/* ── ambient glow blobs ── */
+/* ── ambient glow blobs — 四隅レインボー ── */
 const GLOWS = [
-  { top: -90,  left:  -90,  size: 340, color: 'rgba(255,150,220,0.50)',  blur: 55 },
-  { bottom: -90, right: -90, size: 340, color: 'rgba(140,180,255,0.55)', blur: 55 },
-  { top: '40%', left: '50%', transform: 'translate(-50%,-50%)', size: 250, color: 'rgba(210,180,255,0.30)', blur: 45 },
+  { top: -80,  left:  -80,  size: 360, color: 'rgba(255,140,220,0.60)', blur: 60 },
+  { top: -80,  right: -80,  size: 300, color: 'rgba(140,180,255,0.55)', blur: 55 },
+  { bottom: -80, left:  -80, size: 300, color: 'rgba(200,140,255,0.50)', blur: 55 },
+  { bottom: -80, right: -80, size: 280, color: 'rgba(140,220,255,0.45)', blur: 50 },
 ]
 
 /* ── floating sparkle particles ── */
 const PARTS = [
-  { s:'✦', l:'5%',  sz:'1.0rem', dur:4.4, d:0.0, c:'#ffffff' },
-  { s:'💗', l:'88%', sz:'0.85rem',dur:3.7, d:0.8, c:'#ffaad4' },
-  { s:'✦', l:'15%', sz:'0.72rem',dur:5.1, d:1.6, c:'#c8d8ff' },
-  { s:'💙', l:'93%', sz:'0.8rem', dur:4.3, d:0.4, c:'#a0c0ff' },
-  { s:'✦', l:'2%',  sz:'0.9rem', dur:3.9, d:2.2, c:'#ffffff' },
-  { s:'★',  l:'77%', sz:'0.75rem',dur:5.0, d:1.0, c:'#e0d8ff' },
-  { s:'✦', l:'48%', sz:'0.95rem',dur:5.4, d:1.9, c:'#c0d8ff' },
-  { s:'💗', l:'64%', sz:'0.7rem', dur:3.4, d:3.0, c:'#ffb0d4' },
-  { s:'★',  l:'23%', sz:'0.85rem',dur:4.0, d:0.6, c:'#ffffff' },
-  { s:'✦', l:'96%', sz:'0.75rem',dur:4.7, d:3.4, c:'#b0d0ff' },
-  { s:'💙', l:'36%', sz:'0.7rem', dur:3.8, d:1.2, c:'#90c0ff' },
-  { s:'✦', l:'54%', sz:'1.1rem', dur:5.6, d:2.5, c:'#ffffff' },
+  { s:'★',  l:'5%',  sz:'1.1rem', dur:4.4, d:0.0, c:'#ffd700' },
+  { s:'💗', l:'88%', sz:'0.9rem', dur:3.7, d:0.8, c:'#ffaad4' },
+  { s:'✦',  l:'15%', sz:'0.8rem', dur:5.1, d:1.6, c:'#ffffff' },
+  { s:'★',  l:'93%', sz:'0.75rem',dur:4.3, d:0.4, c:'#ffd700' },
+  { s:'✦',  l:'2%',  sz:'0.9rem', dur:3.9, d:2.2, c:'#ffffff' },
+  { s:'💗', l:'77%', sz:'0.8rem', dur:5.0, d:1.0, c:'#ffaad4' },
+  { s:'★',  l:'48%', sz:'1.0rem', dur:5.4, d:1.9, c:'#ffd700' },
+  { s:'✦',  l:'64%', sz:'0.7rem', dur:3.4, d:3.0, c:'#c8d8ff' },
+  { s:'★',  l:'23%', sz:'0.85rem',dur:4.0, d:0.6, c:'#ffd700' },
+  { s:'💙', l:'96%', sz:'0.8rem', dur:4.7, d:3.4, c:'#a0c8ff' },
+  { s:'✦',  l:'36%', sz:'0.75rem',dur:3.8, d:1.2, c:'#ffffff' },
+  { s:'★',  l:'54%', sz:'1.1rem', dur:5.6, d:2.5, c:'#ffd700' },
 ]
 
 /* ── logo sparkles ── */
 const LOGO_S = [
-  { top:'-10px',  right:'11%', delay:0.0 },
-  { top:'-6px',   left:'13%',  delay:0.75 },
-  { bottom:'-4px',right:'20%', delay:1.5  },
+  { top:'-10px', right:'10%', delay:0.0 },
+  { top:'-8px',  left:'12%',  delay:0.75 },
+  { bottom:'-6px',right:'18%',delay:1.5 },
+]
+
+/* ── idol-game style buttons ── */
+const MENU_BTNS = [
+  {
+    label: '今日のデッキを組む',
+    sub: 'カードスロットをセットしよう',
+    emoji: '✨',
+    route: '/deck',
+    panelGrad: 'linear-gradient(135deg, #ff5599 0%, #ff88bb 100%)',
+    bodyGrad:  'linear-gradient(135deg, #ffbbdd 0%, #ff99cc 100%)',
+    shadow: '#cc0055',
+    glow:   'rgba(255,100,160,0.55)',
+    star1: '#ffd700', star2: '#ffbbdd',
+    delay: 0.30,
+  },
+  {
+    label: 'カードをつくる',
+    sub: 'あなただけのカードを',
+    emoji: '🎴',
+    route: '/create',
+    panelGrad: 'linear-gradient(135deg, #3388ff 0%, #88aaff 100%)',
+    bodyGrad:  'linear-gradient(135deg, #bbddff 0%, #aaccff 100%)',
+    shadow: '#0033cc',
+    glow:   'rgba(100,160,255,0.55)',
+    star1: '#ffd700', star2: '#bbddff',
+    delay: 0.40,
+  },
+  {
+    label: 'コレクションをみる',
+    sub: 'アルバムを開こう',
+    emoji: '💖',
+    route: '/binder',
+    panelGrad: 'linear-gradient(135deg, #aa44ff 0%, #cc88ff 100%)',
+    bodyGrad:  'linear-gradient(135deg, #ddbfff 0%, #ccaaff 100%)',
+    shadow: '#660099',
+    glow:   'rgba(170,100,255,0.55)',
+    star1: '#ffd700', star2: '#ddbfff',
+    delay: 0.50,
+  },
+]
+
+/* ── golden frame corner stars ── */
+const CORNER_STARS = [
+  { top: -12, left: 18 },
+  { top: -12, right: 18 },
+  { bottom: -12, left: 18 },
+  { bottom: -12, right: 18 },
 ]
 
 export default function HomeScreen() {
@@ -43,14 +91,14 @@ export default function HomeScreen() {
   return (
     <div style={{
       position: 'fixed', inset: 0, overflow: 'hidden',
-      background: 'linear-gradient(160deg, #cc66ee 0%, #9944ee 28%, #6655ee 56%, #3333cc 100%)',
+      background: 'linear-gradient(160deg, #ffc8ee 0%, #eec8ff 38%, #c8d8ff 68%, #c8f0ff 100%)',
     }}>
 
       {/* ── dot grid ── */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)',
-        backgroundSize: '20px 20px',
+        backgroundImage: 'radial-gradient(rgba(255,255,255,0.60) 1px, transparent 1px)',
+        backgroundSize: '22px 22px',
       }} />
 
       {/* ── ambient glows ── */}
@@ -58,19 +106,16 @@ export default function HomeScreen() {
         <div key={i} style={{
           position: 'absolute',
           top: g.top, left: g.left, bottom: g.bottom, right: g.right,
-          transform: g.transform,
-          width: g.size, height: g.size,
-          borderRadius: '50%',
-          background: `radial-gradient(circle, ${g.color} 0%, transparent 68%)`,
-          filter: `blur(${g.blur}px)`,
-          pointerEvents: 'none',
+          width: g.size, height: g.size, borderRadius: '50%',
+          background: `radial-gradient(circle, ${g.color} 0%, transparent 70%)`,
+          filter: `blur(${g.blur}px)`, pointerEvents: 'none',
         }} />
       ))}
 
       {/* ── aurora overlay ── */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'linear-gradient(135deg, rgba(255,200,240,0.18), rgba(200,180,255,0.16), rgba(180,210,255,0.15), rgba(255,200,240,0.10))',
+        background: 'linear-gradient(135deg, rgba(255,220,255,0.25), rgba(220,200,255,0.20), rgba(200,220,255,0.18), rgba(255,220,255,0.15))',
         backgroundSize: '400% 400%',
         animation: 'auroraShift 10s ease-in-out infinite',
       }} />
@@ -78,8 +123,7 @@ export default function HomeScreen() {
       {/* ── floating particles ── */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }}>
         {PARTS.map((p, i) => (
-          <motion.span
-            key={i}
+          <motion.span key={i}
             style={{
               position: 'absolute', left: p.l,
               bottom: `${6 + (i * 17) % 38}%`,
@@ -87,11 +131,9 @@ export default function HomeScreen() {
               filter: `drop-shadow(0 0 6px ${p.c})`,
               userSelect: 'none', lineHeight: 1,
             }}
-            animate={{ y: [0, -300], opacity: [0, 1, 0.75, 0] }}
+            animate={{ y: [0, -300], opacity: [0, 1, 0.8, 0] }}
             transition={{ duration: p.dur, delay: p.d, repeat: Infinity, repeatDelay: p.dur * 0.55, ease: 'easeOut' }}
-          >
-            {p.s}
-          </motion.span>
+          >{p.s}</motion.span>
         ))}
       </div>
 
@@ -100,10 +142,10 @@ export default function HomeScreen() {
         position: 'relative', zIndex: 5,
         height: '100dvh', maxWidth: 430, margin: '0 auto',
         display: 'flex', flexDirection: 'column',
-        paddingTop: 'max(14px, var(--safe-top))',
+        paddingTop: 'max(12px, var(--safe-top))',
         paddingBottom: 'max(20px, calc(var(--safe-bottom) + 12px))',
-        paddingLeft: 20, paddingRight: 20,
-        gap: 16, boxSizing: 'border-box',
+        paddingLeft: 18, paddingRight: 18,
+        gap: 10, boxSizing: 'border-box',
       }}>
 
         {/* ① 設定ボタン */}
@@ -118,14 +160,13 @@ export default function HomeScreen() {
             onClick={() => router.push('/settings')}
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              padding: '9px 18px', borderRadius: 9999,
-              background: 'rgba(255,255,255,0.22)',
-              backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
-              border: '1.5px solid rgba(255,255,255,0.50)',
-              color: 'rgba(255,255,255,0.95)', cursor: 'pointer',
-              fontFamily: ZEN, fontSize: '0.82rem', fontWeight: 700,
-              boxShadow: '0 2px 14px rgba(40,20,140,0.35), inset 0 1px 0 rgba(255,255,255,0.20)',
-              ...TS,
+              padding: '8px 16px', borderRadius: 9999,
+              background: 'rgba(255,255,255,0.60)',
+              backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              border: '1.5px solid rgba(255,255,255,0.85)',
+              color: '#9944bb', cursor: 'pointer',
+              fontFamily: ZEN, fontSize: '0.82rem', fontWeight: 900,
+              boxShadow: '0 2px 12px rgba(180,120,255,0.28), inset 0 1px 0 rgba(255,255,255,0.95)',
             }}
           >
             <Settings size={14} strokeWidth={2.5} />
@@ -135,196 +176,173 @@ export default function HomeScreen() {
 
         {/* ② ロゴ */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.82, y: -20 }}
+          initial={{ opacity: 0, scale: 0.82, y: -16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.08, type: 'spring', stiffness: 110, damping: 14 }}
           style={{ flexShrink: 0, display: 'flex', justifyContent: 'center', position: 'relative' }}
         >
-          {/* Breathing glow halo — lavender/icy-blue matching logo */}
           <motion.div
             style={{
-              position: 'absolute', inset: '-20px -32px',
-              background: 'radial-gradient(ellipse, rgba(220,190,255,0.72) 0%, rgba(180,210,255,0.40) 45%, transparent 70%)',
-              filter: 'blur(18px)', pointerEvents: 'none',
+              position: 'absolute', inset: '-16px -28px',
+              background: 'radial-gradient(ellipse, rgba(255,200,240,0.70) 0%, rgba(200,200,255,0.38) 50%, transparent 72%)',
+              filter: 'blur(16px)', pointerEvents: 'none',
             }}
-            animate={{ opacity: [0.40, 0.90, 0.40], scale: [0.91, 1.08, 0.91] }}
-            transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+            animate={{ opacity: [0.50, 1.0, 0.50], scale: [0.92, 1.06, 0.92] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/img/logo.png" alt="MIRROR GRAPH"
             style={{
-              maxHeight: '22vh', width: 'auto', maxWidth: '100%', display: 'block', position: 'relative',
-              filter: 'drop-shadow(0 0 18px rgba(220,190,255,0.90)) drop-shadow(0 0 38px rgba(180,210,255,0.55))',
+              maxHeight: '20vh', width: 'auto', maxWidth: '100%', display: 'block', position: 'relative',
+              filter: 'drop-shadow(0 0 16px rgba(255,180,240,0.85)) drop-shadow(0 0 32px rgba(200,180,255,0.55))',
             }}
           />
-          {/* Silver sparkles matching logo's star motifs */}
           {LOGO_S.map((s, i) => (
             <motion.span key={i}
-              style={{ position: 'absolute', ...s, fontSize: '1.1rem', color: '#ffffff', filter: 'drop-shadow(0 0 6px rgba(200,220,255,0.95))', pointerEvents: 'none', lineHeight: 1 }}
-              animate={{ opacity: [0, 1, 0], scale: [0.3, 1.5, 0.3], rotate: [0, 48, 0] }}
-              transition={{ duration: 2.5, delay: s.delay, repeat: Infinity, ease: 'easeInOut' }}
-            >✦</motion.span>
+              style={{ position: 'absolute', ...s, fontSize: '1.1rem', color: '#ffd700', filter: 'drop-shadow(0 0 6px #ffd700)', pointerEvents: 'none', lineHeight: 1 }}
+              animate={{ opacity: [0, 1, 0], scale: [0.3, 1.6, 0.3], rotate: [0, 60, 0] }}
+              transition={{ duration: 2.4, delay: s.delay, repeat: Infinity, ease: 'easeInOut' }}
+            >★</motion.span>
           ))}
         </motion.div>
 
-        {/* ③ キャッチコピー — バルーンメタリック */}
+        {/* ③ キャッチコピー */}
         <motion.div
-          initial={{ opacity: 0, y: 22, scale: 0.93 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.20, type: 'spring', stiffness: 115, damping: 16 }}
-          style={{ flexShrink: 0, position: 'relative', textAlign: 'center', padding: '20px 24px 16px' }}
-        >
-          {/* Gems float freely — no overflow clip here */}
-          {[
-            { s: '💎', top: '8px',    left: '0%',   sz: '1.1rem', d: 0.0 },
-            { s: '✦',  top: '-2px',   left: '18%',  sz: '1.4rem', d: 0.7, c: '#ffffff' },
-            { s: '💎', top: '14px',   right: '0%',  sz: '1.0rem', d: 1.3 },
-            { s: '✦',  top: '-4px',   right: '20%', sz: '1.2rem', d: 0.2, c: '#c8d8ff' },
-            { s: '💗', bottom: '6px', left: '5%',   sz: '1.0rem', d: 1.0, c: '#ffaad4' },
-            { s: '💙', bottom: '4px', right: '7%',  sz: '0.95rem',d: 1.6, c: '#a0c0ff' },
-          ].map((gem, i) => (
-            <motion.span key={i}
-              style={{
-                position: 'absolute',
-                top: gem.top, left: gem.left, bottom: gem.bottom, right: gem.right,
-                fontSize: gem.sz, lineHeight: 1, pointerEvents: 'none',
-                color: gem.c,
-                filter: gem.c ? `drop-shadow(0 0 5px ${gem.c})` : undefined,
-              }}
-              animate={{ opacity: [0.4, 1, 0.4], scale: [0.8, 1.3, 0.8] }}
-              transition={{ duration: 2.0 + i * 0.32, delay: gem.d, repeat: Infinity, ease: 'easeInOut' }}
-            >{gem.s}</motion.span>
-          ))}
-
-          {/* Text area — shimmer clipped inside this inner div */}
-          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 6 }}>
-            {/* 今日の */}
-            <p style={{
-              fontFamily: ZEN, margin: '0 0 8px', lineHeight: 1.3,
-              fontSize: 'clamp(1.0rem, 5vw, 1.2rem)', fontWeight: 900,
-              background: 'linear-gradient(180deg, #fff5ff 0%, #ffbbee 45%, #ccaaff 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.85)) drop-shadow(0 2px 0 rgba(120,80,200,0.65))',
-              letterSpacing: '0.1em',
-            }}>今日の</p>
-
-            {/* あなたを — big balloon */}
-            <p style={{
-              fontFamily: ZEN, margin: '0 0 6px', lineHeight: 1.15,
-              fontSize: 'clamp(2.1rem, 11vw, 2.75rem)', fontWeight: 900,
-              background: 'linear-gradient(180deg, #fff0ff 0%, #ffaaee 22%, #dd88ff 52%, #88aaff 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.90)) drop-shadow(0 4px 0 rgba(100,70,210,0.70)) drop-shadow(0 7px 12px rgba(80,60,190,0.45))',
-            }}>あなたを</p>
-
-            {/* プロデュース */}
-            <p style={{
-              fontFamily: ZEN, margin: 0, lineHeight: 1.2,
-              fontSize: 'clamp(1.65rem, 8.5vw, 2.15rem)', fontWeight: 900,
-              background: 'linear-gradient(180deg, #fff8ff 0%, #eeaaff 25%, #9988ff 60%, #77aaff 100%)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.85)) drop-shadow(0 3px 0 rgba(80,60,200,0.65)) drop-shadow(0 6px 10px rgba(60,60,180,0.40))',
-              letterSpacing: '0.03em',
-            }}>プロデュース</p>
-
-            {/* Shimmer sweep — contained within inner div */}
-            <motion.div
-              style={{
-                position: 'absolute', inset: 0, pointerEvents: 'none',
-                background: 'linear-gradient(105deg, transparent 33%, rgba(255,255,255,0.40) 50%, transparent 67%)',
-              }}
-              animate={{ x: ['-130%', '230%'] }}
-              transition={{ duration: 0.85, delay: 7, repeat: Infinity, repeatDelay: 9, ease: 'easeOut' }}
-            />
-          </div>
-        </motion.div>
-
-        {/* ④ メインCTAボタン — marginTop:auto でボタン群を下へ */}
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.30, type: 'spring', stiffness: 155 }}
-          style={{ flexShrink: 0, position: 'relative', marginTop: 'auto' }}
+          transition={{ delay: 0.18, type: 'spring', stiffness: 130 }}
+          style={{ flexShrink: 0, textAlign: 'center' }}
         >
-          {/* Pulsing glow — pink-lavender-blue palette */}
-          <motion.div style={{
-            position: 'absolute', inset: '-7px -10px', borderRadius: 24,
-            background: 'linear-gradient(135deg, #ff88cc, #cc66ff, #8899ff, #55ccff, #ff88cc)',
-            backgroundSize: '400% 400%', filter: 'blur(14px)', zIndex: 0,
-          }}
-            animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'], opacity: [0.45, 0.92, 0.45] }}
-            transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-
-          <motion.button
-            whileTap={{ scale: 0.97, y: 3 }}
-            onClick={() => router.push('/deck')}
-            className="btn-puffy-pink"
-            style={{
-              position: 'relative', zIndex: 1, width: '100%',
-              padding: '17px 24px', borderRadius: 16,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
-              overflow: 'hidden',
-            }}
-          >
-            {/* Shimmer sweep */}
-            <motion.div
-              style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none', background: 'linear-gradient(105deg, transparent 32%, rgba(255,255,255,0.52) 50%, transparent 68%)' }}
-              animate={{ x: ['-130%', '230%'] }}
-              transition={{ duration: 0.95, delay: 5.5, repeat: Infinity, repeatDelay: 7.5, ease: 'easeOut' }}
-            />
-            <span style={{ fontFamily: ZEN, fontSize: 'clamp(1.05rem, 5.5vw, 1.28rem)', fontWeight: 900, color: 'white', position: 'relative', zIndex: 4, textShadow: '0 2px 6px rgba(0,0,0,0.5), 0 0 14px rgba(255,100,200,0.4)' }}>
-              ✨ 今日のデッキを組む
-            </span>
-            <span style={{ fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.88)', position: 'relative', zIndex: 4, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
-              カードスロットをセットしよう
-            </span>
-          </motion.button>
+          <p style={{
+            fontFamily: ZEN, margin: 0, lineHeight: 1.1,
+            fontSize: 'clamp(1.2rem, 6.5vw, 1.55rem)', fontWeight: 900,
+            background: 'linear-gradient(180deg, #fff0ff 0%, #ff99ee 22%, #cc66ff 55%, #88aaff 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.90)) drop-shadow(0 3px 0 rgba(160,80,220,0.50))',
+          }}>今日のあなたをプロデュース</p>
         </motion.div>
 
-        {/* ⑤ サブボタン 2列 */}
-        <div style={{ flexShrink: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        {/* ④ アイドルゲーム風 縦3ボタンメニュー */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 
-          <motion.button
-            initial={{ opacity: 0, x: -18 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.40, type: 'spring', stiffness: 155 }}
-            whileTap={{ scale: 0.94, y: 2 }}
-            onClick={() => router.push('/create')}
-            className="btn-puffy-purple"
-            style={{
-              padding: '15px 12px', borderRadius: 15,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
-              fontFamily: ZEN, cursor: 'pointer', overflow: 'hidden',
-            }}
-          >
-            <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 6px rgba(255,150,255,0.7))' }}>✨</span>
-            <span style={{ fontSize: '0.88rem', fontWeight: 900, color: 'white', textShadow: '0 2px 5px rgba(0,0,0,0.55)' }}>
-              カードをつくる
-            </span>
-          </motion.button>
+          {/* ── ゴールドオーバルフレーム ── */}
+          <div style={{
+            position: 'relative',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,230,255,0.35) 100%)',
+            borderRadius: 32,
+            padding: '20px 14px',
+            boxShadow: [
+              '0 0 0 3px rgba(255,215,0,0.85)',
+              '0 0 0 6px rgba(255,215,0,0.22)',
+              '0 0 36px rgba(255,200,255,0.55)',
+              'inset 0 0 24px rgba(255,255,255,0.45)',
+            ].join(', '),
+          }}>
 
-          <motion.button
-            initial={{ opacity: 0, x: 18 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.46, type: 'spring', stiffness: 155 }}
-            whileTap={{ scale: 0.94, y: 2 }}
-            onClick={() => router.push('/binder')}
-            className="btn-puffy-blue"
-            style={{
-              padding: '15px 12px', borderRadius: 15,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
-              fontFamily: ZEN, cursor: 'pointer', overflow: 'hidden',
-            }}
-          >
-            <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 6px rgba(160,200,255,0.7))' }}>💖</span>
-            <span style={{ fontSize: '0.88rem', fontWeight: 900, color: 'white', textShadow: '0 2px 5px rgba(0,0,0,0.55)' }}>
-              コレクションをみる
-            </span>
-          </motion.button>
+            {/* フレーム四隅の星 */}
+            {CORNER_STARS.map((pos, i) => (
+              <motion.span key={i}
+                style={{ position: 'absolute', ...pos, fontSize: '1.25rem', color: '#ffd700', filter: 'drop-shadow(0 0 5px #ffd700)', lineHeight: 1, zIndex: 10 }}
+                animate={{ opacity: [0.6, 1, 0.6], scale: [0.85, 1.25, 0.85], rotate: [0, 25, 0] }}
+                transition={{ duration: 1.8, delay: i * 0.45, repeat: Infinity, ease: 'easeInOut' }}
+              >★</motion.span>
+            ))}
 
+            {/* ボタン縦3列 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+              {MENU_BTNS.map((btn, i) => (
+                <motion.button
+                  key={btn.route}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: btn.delay, type: 'spring', stiffness: 160 }}
+                  whileTap={{ scale: 0.97, y: 4 }}
+                  onClick={() => router.push(btn.route)}
+                  style={{
+                    position: 'relative',
+                    display: 'flex', alignItems: 'center',
+                    height: 76, borderRadius: 18,
+                    border: 'none', cursor: 'pointer', overflow: 'hidden',
+                    background: btn.bodyGrad,
+                    boxShadow: [
+                      '0 0 0 2.5px rgba(255,215,0,0.88)',
+                      '0 0 0 5px rgba(255,215,0,0.22)',
+                      `0 5px 0 ${btn.shadow}`,
+                      `0 10px 22px ${btn.glow}`,
+                      'inset 0 1px 0 rgba(255,255,255,0.65)',
+                    ].join(', '),
+                    padding: 0,
+                  }}
+                >
+                  {/* 左：アイコンパネル（ブックカバー風） */}
+                  <div style={{
+                    width: 72, height: '100%', flexShrink: 0,
+                    background: btn.panelGrad,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    borderRight: '2.5px solid rgba(255,215,0,0.55)',
+                    fontSize: '2.0rem', position: 'relative',
+                  }}>
+                    {/* パネル内のツヤ */}
+                    <div style={{
+                      position: 'absolute', top: 4, left: 6, right: 6, height: '40%',
+                      background: 'linear-gradient(to bottom, rgba(255,255,255,0.60), transparent)',
+                      borderRadius: '50% 50% 50% 50% / 6px 6px 10px 10px',
+                      pointerEvents: 'none',
+                    }} />
+                    <span style={{ filter: `drop-shadow(0 0 6px rgba(255,255,255,0.8))`, position: 'relative', zIndex: 1 }}>{btn.emoji}</span>
+                  </div>
+
+                  {/* 右：テキストエリア */}
+                  <div style={{ flex: 1, padding: '0 12px', textAlign: 'left' }}>
+                    <p style={{
+                      fontFamily: ZEN, margin: 0, fontWeight: 900, color: 'white',
+                      fontSize: 'clamp(0.95rem, 5vw, 1.1rem)',
+                      textShadow: '0 2px 5px rgba(0,0,0,0.30)',
+                    }}>{btn.label}</p>
+                    <p style={{
+                      fontFamily: ZEN, margin: '3px 0 0', fontWeight: 700,
+                      color: 'rgba(255,255,255,0.82)', fontSize: '0.65rem',
+                      textShadow: '0 1px 3px rgba(0,0,0,0.25)',
+                    }}>{btn.sub}</p>
+                  </div>
+
+                  {/* 右端の星装飾 */}
+                  <div style={{ paddingRight: 12, display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
+                    <motion.span
+                      style={{ color: btn.star1, fontSize: '0.9rem', filter: `drop-shadow(0 0 4px ${btn.star1})`, lineHeight: 1 }}
+                      animate={{ opacity: [0.6, 1, 0.6], rotate: [0, 22, 0] }}
+                      transition={{ duration: 1.6, delay: i * 0.35, repeat: Infinity }}
+                    >★</motion.span>
+                    <motion.span
+                      style={{ color: btn.star2, fontSize: '0.62rem', filter: `drop-shadow(0 0 3px ${btn.star2})`, lineHeight: 1 }}
+                      animate={{ opacity: [0.4, 1, 0.4], rotate: [0, -18, 0] }}
+                      transition={{ duration: 2.1, delay: i * 0.35 + 0.55, repeat: Infinity }}
+                    >★</motion.span>
+                  </div>
+
+                  {/* ボタン上部のツヤ光沢 */}
+                  <div style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, height: '42%', pointerEvents: 'none',
+                    background: 'linear-gradient(to bottom, rgba(255,255,255,0.45), transparent)',
+                    borderRadius: '18px 18px 0 0',
+                  }} />
+
+                  {/* シマースウィープ */}
+                  <motion.div
+                    style={{
+                      position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5,
+                      background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.48) 50%, transparent 70%)',
+                    }}
+                    animate={{ x: ['-130%', '230%'] }}
+                    transition={{ duration: 0.88, delay: 5 + i * 3, repeat: Infinity, repeatDelay: 9 + i * 2, ease: 'easeOut' }}
+                  />
+                </motion.button>
+              ))}
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   )
