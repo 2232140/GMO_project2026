@@ -262,78 +262,95 @@ export default function HomeScreen() {
                   style={{
                     position: 'relative',
                     display: 'flex', alignItems: 'center',
-                    height: 76, borderRadius: 18,
+                    height: 80, borderRadius: 18,
                     border: 'none', cursor: 'pointer', overflow: 'hidden',
                     background: btn.bodyGrad,
                     boxShadow: [
-                      '0 0 0 2.5px rgba(255,215,0,0.88)',
-                      '0 0 0 5px rgba(255,215,0,0.22)',
+                      '0 0 0 3px #ffd700',
+                      '0 0 0 5.5px rgba(255,215,0,0.30)',
                       `0 5px 0 ${btn.shadow}`,
-                      `0 10px 22px ${btn.glow}`,
+                      `0 10px 24px ${btn.glow}`,
                       'inset 0 1px 0 rgba(255,255,255,0.65)',
                     ].join(', '),
                     padding: 0,
                   }}
                 >
-                  {/* 左：アイコンパネル（ブックカバー風） */}
+                  {/* ── 本型アイコンパネル ── */}
                   <div style={{
-                    width: 72, height: '100%', flexShrink: 0,
+                    width: 82, height: '100%', flexShrink: 0,
                     background: btn.panelGrad,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    borderRight: '2.5px solid rgba(255,215,0,0.55)',
-                    fontSize: '2.0rem', position: 'relative',
+                    position: 'relative',
+                    borderRight: '3px solid rgba(255,215,0,0.72)',
                   }}>
-                    {/* パネル内のツヤ */}
+                    {/* 背表紙（スパイン） */}
                     <div style={{
-                      position: 'absolute', top: 4, left: 6, right: 6, height: '40%',
+                      position: 'absolute', left: 0, top: 0, bottom: 0, width: 13,
+                      background: 'rgba(0,0,0,0.18)',
+                      borderRight: '1.5px solid rgba(255,215,0,0.38)',
+                    }} />
+                    {/* カバー内ツヤ */}
+                    <div style={{
+                      position: 'absolute', top: 5, left: 15, right: 5, height: '36%',
                       background: 'linear-gradient(to bottom, rgba(255,255,255,0.60), transparent)',
-                      borderRadius: '50% 50% 50% 50% / 6px 6px 10px 10px',
+                      borderRadius: '50% 50% 50% 50% / 5px 5px 9px 9px',
                       pointerEvents: 'none',
                     }} />
+                    {/* アイコン画像 */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={btn.icon} alt={btn.label} style={{ width: 46, height: 46, objectFit: 'contain', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.20))', position: 'relative', zIndex: 1 }} />
+                    <img
+                      src={btn.icon} alt={btn.label}
+                      style={{
+                        position: 'absolute', bottom: 5, right: 4,
+                        width: 50, height: 50, objectFit: 'contain',
+                        filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.22))',
+                      }}
+                    />
                   </div>
 
-                  {/* 右：テキストエリア */}
-                  <div style={{ flex: 1, padding: '0 12px', textAlign: 'left' }}>
+                  {/* ── テキストエリア ── */}
+                  <div style={{ flex: 1, padding: '0 12px 0 14px', textAlign: 'left' }}>
                     <p style={{
                       fontFamily: ZEN, margin: 0, fontWeight: 900, color: 'white',
-                      fontSize: 'clamp(0.95rem, 5vw, 1.1rem)',
-                      textShadow: '0 2px 5px rgba(0,0,0,0.30)',
+                      fontSize: 'clamp(0.92rem, 4.8vw, 1.1rem)',
+                      textShadow: '0 2px 6px rgba(0,0,0,0.32)',
                     }}>{btn.label}</p>
                     <p style={{
-                      fontFamily: ZEN, margin: '3px 0 0', fontWeight: 700,
-                      color: 'rgba(255,255,255,0.82)', fontSize: '0.65rem',
+                      fontFamily: ZEN, margin: '4px 0 0', fontWeight: 700,
+                      color: 'rgba(255,255,255,0.80)', fontSize: '0.63rem',
                       textShadow: '0 1px 3px rgba(0,0,0,0.25)',
                     }}>{btn.sub}</p>
                   </div>
 
-                  {/* 右端の星装飾 */}
-                  <div style={{ paddingRight: 12, display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
-                    <motion.span
-                      style={{ color: btn.star1, fontSize: '0.9rem', filter: `drop-shadow(0 0 4px ${btn.star1})`, lineHeight: 1 }}
-                      animate={{ opacity: [0.6, 1, 0.6], rotate: [0, 22, 0] }}
-                      transition={{ duration: 1.6, delay: i * 0.35, repeat: Infinity }}
-                    >★</motion.span>
-                    <motion.span
-                      style={{ color: btn.star2, fontSize: '0.62rem', filter: `drop-shadow(0 0 3px ${btn.star2})`, lineHeight: 1 }}
-                      animate={{ opacity: [0.4, 1, 0.4], rotate: [0, -18, 0] }}
-                      transition={{ duration: 2.1, delay: i * 0.35 + 0.55, repeat: Infinity }}
-                    >★</motion.span>
+                  {/* ── 上部右に ☆×3 ── */}
+                  <div style={{
+                    position: 'absolute', top: 7, right: 10,
+                    display: 'flex', gap: 3, alignItems: 'center',
+                  }}>
+                    {([0.95, 0.72, 0.85] as const).map((sz, j) => (
+                      <motion.span key={j}
+                        style={{
+                          fontSize: `${sz}rem`, lineHeight: 1,
+                          color: '#ffd700',
+                          filter: 'drop-shadow(0 0 4px rgba(255,215,0,0.75))',
+                        }}
+                        animate={{ opacity: [0.55, 1, 0.55] }}
+                        transition={{ duration: 1.5, delay: j * 0.38 + i * 0.18, repeat: Infinity }}
+                      >☆</motion.span>
+                    ))}
                   </div>
 
-                  {/* ボタン上部のツヤ光沢 */}
+                  {/* ── ボタン上部のツヤ ── */}
                   <div style={{
-                    position: 'absolute', top: 0, left: 0, right: 0, height: '42%', pointerEvents: 'none',
-                    background: 'linear-gradient(to bottom, rgba(255,255,255,0.45), transparent)',
+                    position: 'absolute', top: 0, left: 0, right: 0, height: '44%', pointerEvents: 'none',
+                    background: 'linear-gradient(to bottom, rgba(255,255,255,0.48), transparent)',
                     borderRadius: '18px 18px 0 0',
                   }} />
 
-                  {/* シマースウィープ */}
+                  {/* ── シマースウィープ ── */}
                   <motion.div
                     style={{
                       position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5,
-                      background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.48) 50%, transparent 70%)',
+                      background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.50) 50%, transparent 70%)',
                     }}
                     animate={{ x: ['-130%', '230%'] }}
                     transition={{ duration: 0.88, delay: 5 + i * 3, repeat: Infinity, repeatDelay: 9 + i * 2, ease: 'easeOut' }}
