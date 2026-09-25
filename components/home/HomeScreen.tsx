@@ -42,7 +42,7 @@ const MENU_BTNS = [
   {
     label: '今日のデッキを組む',
     sub: 'カードスロットをセットしよう',
-    emoji: '✨',
+    icon: '/img/deck_icon.png',
     route: '/deck',
     panelGrad: 'linear-gradient(135deg, #ff5599 0%, #ff88bb 100%)',
     bodyGrad:  'linear-gradient(135deg, #ffbbdd 0%, #ff99cc 100%)',
@@ -54,7 +54,7 @@ const MENU_BTNS = [
   {
     label: 'カードをつくる',
     sub: 'あなただけのカードを',
-    emoji: '🎴',
+    icon: '/img/hero-cards.png',
     route: '/create',
     panelGrad: 'linear-gradient(135deg, #3388ff 0%, #88aaff 100%)',
     bodyGrad:  'linear-gradient(135deg, #bbddff 0%, #aaccff 100%)',
@@ -66,7 +66,7 @@ const MENU_BTNS = [
   {
     label: 'コレクションをみる',
     sub: 'アルバムを開こう',
-    emoji: '💖',
+    icon: '/img/icon-binder.png',
     route: '/binder',
     panelGrad: 'linear-gradient(135deg, #aa44ff 0%, #cc88ff 100%)',
     bodyGrad:  'linear-gradient(135deg, #ddbfff 0%, #ccaaff 100%)',
@@ -290,7 +290,8 @@ export default function HomeScreen() {
                       borderRadius: '50% 50% 50% 50% / 6px 6px 10px 10px',
                       pointerEvents: 'none',
                     }} />
-                    <span style={{ filter: `drop-shadow(0 0 6px rgba(255,255,255,0.8))`, position: 'relative', zIndex: 1 }}>{btn.emoji}</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={btn.icon} alt={btn.label} style={{ width: 46, height: 46, objectFit: 'contain', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.20))', position: 'relative', zIndex: 1 }} />
                   </div>
 
                   {/* 右：テキストエリア */}
