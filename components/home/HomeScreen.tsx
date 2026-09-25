@@ -5,28 +5,28 @@ import { useRouter } from 'next/navigation'
 import { Settings } from 'lucide-react'
 
 const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
-const TS  = { textShadow: '0 2px 8px rgba(120,0,80,0.55), 0 0 18px rgba(255,120,220,0.35)' }
+const TS  = { textShadow: '0 2px 8px rgba(40,20,120,0.55), 0 0 18px rgba(180,160,255,0.35)' }
 
 /* ── ambient glow blobs ── */
 const GLOWS = [
-  { top: -110, left:  -110, size: 380, color: 'rgba(255,140,230,0.55)',  blur: 55 },
-  { bottom: -110, right: -110, size: 380, color: 'rgba(200,80,255,0.45)', blur: 55 },
-  { top: '38%', left: '50%', transform: 'translate(-50%,-50%)', size: 260, color: 'rgba(255,180,240,0.18)', blur: 45 },
+  { top: -90,  left:  -90,  size: 340, color: 'rgba(255,150,220,0.50)',  blur: 55 },
+  { bottom: -90, right: -90, size: 340, color: 'rgba(140,180,255,0.55)', blur: 55 },
+  { top: '40%', left: '50%', transform: 'translate(-50%,-50%)', size: 250, color: 'rgba(210,180,255,0.30)', blur: 45 },
 ]
 
 /* ── floating sparkle particles ── */
 const PARTS = [
   { s:'✦', l:'5%',  sz:'1.0rem', dur:4.4, d:0.0, c:'#ffffff' },
-  { s:'★', l:'88%', sz:'0.8rem', dur:3.7, d:0.8, c:'#ffb8e0' },
-  { s:'✦', l:'15%', sz:'0.72rem',dur:5.1, d:1.6, c:'#e0c0ff' },
-  { s:'💖',l:'93%', sz:'0.9rem', dur:4.3, d:0.4, c:'#ff69b4' },
+  { s:'💗', l:'88%', sz:'0.85rem',dur:3.7, d:0.8, c:'#ffaad4' },
+  { s:'✦', l:'15%', sz:'0.72rem',dur:5.1, d:1.6, c:'#c8d8ff' },
+  { s:'💙', l:'93%', sz:'0.8rem', dur:4.3, d:0.4, c:'#a0c0ff' },
   { s:'✦', l:'2%',  sz:'0.9rem', dur:3.9, d:2.2, c:'#ffffff' },
-  { s:'★', l:'77%', sz:'0.75rem',dur:5.0, d:1.0, c:'#d8b0ff' },
-  { s:'💫',l:'48%', sz:'0.95rem',dur:5.4, d:1.9, c:'#ffffff' },
-  { s:'✦', l:'64%', sz:'0.7rem', dur:3.4, d:3.0, c:'#ffd0ee' },
-  { s:'★', l:'23%', sz:'0.85rem',dur:4.0, d:0.6, c:'#ffb8e0' },
-  { s:'✦', l:'96%', sz:'0.75rem',dur:4.7, d:3.4, c:'#c8d8ff' },
-  { s:'💖',l:'36%', sz:'0.7rem', dur:3.8, d:1.2, c:'#ff69b4' },
+  { s:'★',  l:'77%', sz:'0.75rem',dur:5.0, d:1.0, c:'#e0d8ff' },
+  { s:'✦', l:'48%', sz:'0.95rem',dur:5.4, d:1.9, c:'#c0d8ff' },
+  { s:'💗', l:'64%', sz:'0.7rem', dur:3.4, d:3.0, c:'#ffb0d4' },
+  { s:'★',  l:'23%', sz:'0.85rem',dur:4.0, d:0.6, c:'#ffffff' },
+  { s:'✦', l:'96%', sz:'0.75rem',dur:4.7, d:3.4, c:'#b0d0ff' },
+  { s:'💙', l:'36%', sz:'0.7rem', dur:3.8, d:1.2, c:'#90c0ff' },
   { s:'✦', l:'54%', sz:'1.1rem', dur:5.6, d:2.5, c:'#ffffff' },
 ]
 
@@ -43,13 +43,13 @@ export default function HomeScreen() {
   return (
     <div style={{
       position: 'fixed', inset: 0, overflow: 'hidden',
-      background: 'linear-gradient(160deg, #f470cc 0%, #e040cc 28%, #c030d8 56%, #8020b8 100%)',
+      background: 'linear-gradient(160deg, #cc66ee 0%, #9944ee 28%, #6655ee 56%, #3333cc 100%)',
     }}>
 
       {/* ── dot grid ── */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px)',
+        backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)',
         backgroundSize: '20px 20px',
       }} />
 
@@ -70,7 +70,7 @@ export default function HomeScreen() {
       {/* ── aurora overlay ── */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'linear-gradient(135deg, rgba(255,210,245,0.22), rgba(255,100,210,0.16), rgba(210,80,255,0.14), rgba(255,210,245,0.10))',
+        background: 'linear-gradient(135deg, rgba(255,200,240,0.18), rgba(200,180,255,0.16), rgba(180,210,255,0.15), rgba(255,200,240,0.10))',
         backgroundSize: '400% 400%',
         animation: 'auroraShift 10s ease-in-out infinite',
       }} />
@@ -119,12 +119,12 @@ export default function HomeScreen() {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '9px 18px', borderRadius: 9999,
-              background: 'rgba(255,220,245,0.28)',
+              background: 'rgba(255,255,255,0.22)',
               backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
-              border: '1.5px solid rgba(255,255,255,0.55)',
+              border: '1.5px solid rgba(255,255,255,0.50)',
               color: 'rgba(255,255,255,0.95)', cursor: 'pointer',
               fontFamily: ZEN, fontSize: '0.82rem', fontWeight: 700,
-              boxShadow: '0 2px 14px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15)',
+              boxShadow: '0 2px 14px rgba(40,20,140,0.35), inset 0 1px 0 rgba(255,255,255,0.20)',
               ...TS,
             }}
           >
@@ -140,14 +140,14 @@ export default function HomeScreen() {
           transition={{ delay: 0.08, type: 'spring', stiffness: 110, damping: 14 }}
           style={{ flexShrink: 0, display: 'flex', justifyContent: 'center', position: 'relative' }}
         >
-          {/* Breathing glow halo */}
+          {/* Breathing glow halo — lavender/icy-blue matching logo */}
           <motion.div
             style={{
               position: 'absolute', inset: '-20px -32px',
-              background: 'radial-gradient(ellipse, rgba(255,160,240,0.75) 0%, rgba(255,80,210,0.38) 45%, transparent 70%)',
+              background: 'radial-gradient(ellipse, rgba(220,190,255,0.72) 0%, rgba(180,210,255,0.40) 45%, transparent 70%)',
               filter: 'blur(18px)', pointerEvents: 'none',
             }}
-            animate={{ opacity: [0.38, 0.92, 0.38], scale: [0.91, 1.08, 0.91] }}
+            animate={{ opacity: [0.40, 0.90, 0.40], scale: [0.91, 1.08, 0.91] }}
             transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -155,34 +155,34 @@ export default function HomeScreen() {
             src="/img/logo.png" alt="MIRROR GRAPH"
             style={{
               maxHeight: '22vh', width: 'auto', maxWidth: '100%', display: 'block', position: 'relative',
-              filter: 'drop-shadow(0 0 14px rgba(255,160,230,0.95)) drop-shadow(0 0 36px rgba(255,80,200,0.60))',
+              filter: 'drop-shadow(0 0 18px rgba(220,190,255,0.90)) drop-shadow(0 0 38px rgba(180,210,255,0.55))',
             }}
           />
-          {/* Gold sparkles around logo */}
+          {/* Silver sparkles matching logo's star motifs */}
           {LOGO_S.map((s, i) => (
             <motion.span key={i}
-              style={{ position: 'absolute', ...s, fontSize: '1.1rem', color: '#ffd700', filter: 'drop-shadow(0 0 6px #ffd700)', pointerEvents: 'none', lineHeight: 1 }}
+              style={{ position: 'absolute', ...s, fontSize: '1.1rem', color: '#ffffff', filter: 'drop-shadow(0 0 6px rgba(200,220,255,0.95))', pointerEvents: 'none', lineHeight: 1 }}
               animate={{ opacity: [0, 1, 0], scale: [0.3, 1.5, 0.3], rotate: [0, 48, 0] }}
               transition={{ duration: 2.5, delay: s.delay, repeat: Infinity, ease: 'easeInOut' }}
             >✦</motion.span>
           ))}
         </motion.div>
 
-        {/* ③ キャッチコピー — ゲームタイトル風 */}
+        {/* ③ キャッチコピー — バルーンメタリック */}
         <motion.div
           initial={{ opacity: 0, y: 22, scale: 0.93 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.20, type: 'spring', stiffness: 115, damping: 16 }}
-          style={{ flexShrink: 0, position: 'relative', textAlign: 'center', padding: '6px 16px', overflow: 'hidden' }}
+          style={{ flexShrink: 0, position: 'relative', textAlign: 'center', padding: '20px 24px 16px' }}
         >
-          {/* Decorative gems & sparkles */}
+          {/* Gems float freely — no overflow clip here */}
           {[
-            { s: '💎', top: '0px',    left: '4%',   sz: '1.1rem', d: 0.0 },
-            { s: '★',  top: '-8px',   left: '22%',  sz: '1.4rem', d: 0.7, c: '#ffffff' },
-            { s: '💎', top: '6px',    right: '5%',  sz: '1.0rem', d: 1.3 },
-            { s: '★',  top: '-6px',   right: '24%', sz: '1.2rem', d: 0.2, c: '#ffd0f0' },
-            { s: '✦',  bottom: '2px', left: '12%',  sz: '1.0rem', d: 1.0, c: '#ffffff' },
-            { s: '✦',  bottom: '0px', right: '14%', sz: '0.95rem',d: 1.6, c: '#e0c0ff' },
+            { s: '💎', top: '8px',    left: '0%',   sz: '1.1rem', d: 0.0 },
+            { s: '✦',  top: '-2px',   left: '18%',  sz: '1.4rem', d: 0.7, c: '#ffffff' },
+            { s: '💎', top: '14px',   right: '0%',  sz: '1.0rem', d: 1.3 },
+            { s: '✦',  top: '-4px',   right: '20%', sz: '1.2rem', d: 0.2, c: '#c8d8ff' },
+            { s: '💗', bottom: '6px', left: '5%',   sz: '1.0rem', d: 1.0, c: '#ffaad4' },
+            { s: '💙', bottom: '4px', right: '7%',  sz: '0.95rem',d: 1.6, c: '#a0c0ff' },
           ].map((gem, i) => (
             <motion.span key={i}
               style={{
@@ -197,60 +197,60 @@ export default function HomeScreen() {
             >{gem.s}</motion.span>
           ))}
 
-          {/* 今日の */}
-          <p style={{
-            fontFamily: ZEN, margin: '0 0 -2px', lineHeight: 1.1,
-            fontSize: 'clamp(1.0rem, 5vw, 1.2rem)', fontWeight: 900,
-            color: '#ffffff',
-            WebkitTextStroke: '2px #ff88cc',
-            paintOrder: 'stroke fill',
-            filter: 'drop-shadow(0 3px 0 #cc0077)',
-            letterSpacing: '0.1em',
-          }}>今日の</p>
+          {/* Text area — shimmer clipped inside this inner div */}
+          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 6 }}>
+            {/* 今日の */}
+            <p style={{
+              fontFamily: ZEN, margin: '0 0 8px', lineHeight: 1.3,
+              fontSize: 'clamp(1.0rem, 5vw, 1.2rem)', fontWeight: 900,
+              background: 'linear-gradient(180deg, #fff5ff 0%, #ffbbee 45%, #ccaaff 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.85)) drop-shadow(0 2px 0 rgba(120,80,200,0.65))',
+              letterSpacing: '0.1em',
+            }}>今日の</p>
 
-          {/* あなたを */}
-          <p style={{
-            fontFamily: ZEN, margin: '0 0 -4px', lineHeight: 1.0,
-            fontSize: 'clamp(2.15rem, 11vw, 2.8rem)', fontWeight: 900,
-            color: '#ff69b4',
-            WebkitTextStroke: '3.5px white',
-            paintOrder: 'stroke fill',
-            filter: 'drop-shadow(0 5px 0 #aa0055) drop-shadow(0 8px 14px rgba(180,0,100,0.55))',
-          }}>あなたを</p>
+            {/* あなたを — big balloon */}
+            <p style={{
+              fontFamily: ZEN, margin: '0 0 6px', lineHeight: 1.15,
+              fontSize: 'clamp(2.1rem, 11vw, 2.75rem)', fontWeight: 900,
+              background: 'linear-gradient(180deg, #fff0ff 0%, #ffaaee 22%, #dd88ff 52%, #88aaff 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.90)) drop-shadow(0 4px 0 rgba(100,70,210,0.70)) drop-shadow(0 7px 12px rgba(80,60,190,0.45))',
+            }}>あなたを</p>
 
-          {/* プロデュース */}
-          <p style={{
-            fontFamily: ZEN, margin: 0, lineHeight: 1.1,
-            fontSize: 'clamp(1.65rem, 8.5vw, 2.15rem)', fontWeight: 900,
-            color: '#ee44cc',
-            WebkitTextStroke: '3px white',
-            paintOrder: 'stroke fill',
-            filter: 'drop-shadow(0 4px 0 #880099) drop-shadow(0 7px 14px rgba(150,0,200,0.5))',
-            letterSpacing: '0.03em',
-          }}>プロデュース</p>
+            {/* プロデュース */}
+            <p style={{
+              fontFamily: ZEN, margin: 0, lineHeight: 1.2,
+              fontSize: 'clamp(1.65rem, 8.5vw, 2.15rem)', fontWeight: 900,
+              background: 'linear-gradient(180deg, #fff8ff 0%, #eeaaff 25%, #9988ff 60%, #77aaff 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.85)) drop-shadow(0 3px 0 rgba(80,60,200,0.65)) drop-shadow(0 6px 10px rgba(60,60,180,0.40))',
+              letterSpacing: '0.03em',
+            }}>プロデュース</p>
 
-          {/* Shimmer sweep */}
-          <motion.div
-            style={{
-              position: 'absolute', inset: 0, pointerEvents: 'none',
-              background: 'linear-gradient(105deg, transparent 33%, rgba(255,255,255,0.42) 50%, transparent 67%)',
-            }}
-            animate={{ x: ['-130%', '230%'] }}
-            transition={{ duration: 0.85, delay: 7, repeat: Infinity, repeatDelay: 9, ease: 'easeOut' }}
-          />
+            {/* Shimmer sweep — contained within inner div */}
+            <motion.div
+              style={{
+                position: 'absolute', inset: 0, pointerEvents: 'none',
+                background: 'linear-gradient(105deg, transparent 33%, rgba(255,255,255,0.40) 50%, transparent 67%)',
+              }}
+              animate={{ x: ['-130%', '230%'] }}
+              transition={{ duration: 0.85, delay: 7, repeat: Infinity, repeatDelay: 9, ease: 'easeOut' }}
+            />
+          </div>
         </motion.div>
 
-        {/* ④ メインCTAボタン */}
+        {/* ④ メインCTAボタン — marginTop:auto でボタン群を下へ */}
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.30, type: 'spring', stiffness: 155 }}
-          style={{ flexShrink: 0, position: 'relative' }}
+          style={{ flexShrink: 0, position: 'relative', marginTop: 'auto' }}
         >
-          {/* Rainbow pulsing glow behind button */}
+          {/* Pulsing glow — pink-lavender-blue palette */}
           <motion.div style={{
             position: 'absolute', inset: '-7px -10px', borderRadius: 24,
-            background: 'linear-gradient(135deg, #ff1493, #ee44cc, #cc44ff, #9944ff, #ff1493)',
+            background: 'linear-gradient(135deg, #ff88cc, #cc66ff, #8899ff, #55ccff, #ff88cc)',
             backgroundSize: '400% 400%', filter: 'blur(14px)', zIndex: 0,
           }}
             animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'], opacity: [0.45, 0.92, 0.45] }}
@@ -318,7 +318,7 @@ export default function HomeScreen() {
               fontFamily: ZEN, cursor: 'pointer', overflow: 'hidden',
             }}
           >
-            <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 6px rgba(255,150,220,0.7))' }}>💖</span>
+            <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 6px rgba(160,200,255,0.7))' }}>💖</span>
             <span style={{ fontSize: '0.88rem', fontWeight: 900, color: 'white', textShadow: '0 2px 5px rgba(0,0,0,0.55)' }}>
               コレクションをみる
             </span>
