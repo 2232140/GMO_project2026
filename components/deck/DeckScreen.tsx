@@ -503,12 +503,26 @@ function Slot({ cat, card, locked, isShuffling, onTap, onRemove, onLock, onFlip 
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
                   zIndex: 2,
                 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={cat.mark} alt={cat.label} style={{ width: '65%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply', opacity: 0.6 }} />
-                  <span style={{ fontFamily: ZEN, fontSize: '0.36rem', fontWeight: 900, color: 'rgba(180,60,120,0.75)', letterSpacing: '0.06em' }}>
-                    {cat.label}
-                  </span>
+                  <motion.div
+                    animate={{ scale: [1, 1.12, 1], opacity: [0.6, 1, 0.6] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={cat.mark} alt={cat.label} style={{ width: '65%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }} />
+                    <span style={{ fontFamily: ZEN, fontSize: '0.36rem', fontWeight: 900, color: 'rgba(180,60,120,0.75)', letterSpacing: '0.06em' }}>
+                      {cat.label}
+                    </span>
+                  </motion.div>
                 </div>
+                {/* タップ誘導スパークル */}
+                <motion.span
+                  animate={{ opacity: [0, 1, 0], scale: [0.5, 1.1, 0.5] }}
+                  transition={{ duration: 1.6, repeat: Infinity, delay: 0.4, ease: 'easeInOut' }}
+                  style={{ position: 'absolute', top: '8%', right: '8%', fontSize: '0.6rem', zIndex: 3, color: 'rgba(255,100,200,0.95)', pointerEvents: 'none' }}
+                >
+                  ✦
+                </motion.span>
               </>
             )}
 
@@ -516,6 +530,20 @@ function Slot({ cat, card, locked, isShuffling, onTap, onRemove, onLock, onFlip 
             <img src="/img/slot-frame.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 3, pointerEvents: 'none' }} />
           </button>
         </motion.div>
+
+        {/* ✦ 空スロットのパルスリング */}
+        {!card && (
+          <motion.div
+            animate={{ opacity: [0, 0.75, 0], scale: [0.88, 1.04, 0.88] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute', inset: 0, borderRadius: 8,
+              border: '2px solid rgba(255,100,200,0.9)',
+              boxShadow: '0 0 14px rgba(255,100,200,0.65)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
 
         {/* 🔒 ロックボタン (左上) — カードがある時のみ */}
         {card && (
