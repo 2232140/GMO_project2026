@@ -875,7 +875,14 @@ export default function DeckScreen() {
       }}>
 
         {/* ━━━ ① ヘッダー ━━━ */}
-        <header style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <header style={{
+          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: 'rgba(28,4,56,0.48)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: 14,
+          padding: '7px 10px',
+          border: '1px solid rgba(255,255,255,0.22)',
+        }}>
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={() => router.push('/')}
@@ -885,9 +892,19 @@ export default function DeckScreen() {
             戻る
           </motion.button>
 
-          <h1 style={{ fontFamily: ZEN, fontWeight: 900, fontSize: '1rem', color: 'white', margin: 0, textShadow: `0 0 14px rgba(255,120,220,0.9), ${TEXT_SHADOW}` }}>
-            デッキ作成
-          </h1>
+          <div style={{ textAlign: 'center' }}>
+            <h1 style={{
+              fontFamily: ZEN, fontWeight: 900, fontSize: '1.05rem', margin: 0,
+              background: 'linear-gradient(90deg, #ffd700 0%, #ff69b4 50%, #c084fc 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 8px rgba(255,100,200,0.75)) drop-shadow(0 2px 5px rgba(0,0,0,0.9))',
+            }}>
+              ★ デッキ作成 ★
+            </h1>
+            <p style={{ fontFamily: ZEN, fontSize: '0.55rem', fontWeight: 700, color: 'rgba(255,220,255,0.75)', margin: 0, letterSpacing: '0.16em', textShadow: TEXT_SHADOW }}>
+              STYLE DECK
+            </p>
+          </div>
 
           {/* AI提案ボタン */}
           <motion.button
