@@ -123,6 +123,199 @@ function computeScores(deck: Record<SlotKey, Card | null>): StyleScore[] {
   return scores.slice(0, 4)
 }
 
+/* ━━━ SaveCeremony ━━━ */
+const SPARKLE_POS: React.CSSProperties[] = [
+  { top: '7%',  left: '9%',   fontSize: '1.5rem', color: '#ffd700' },
+  { top: '11%', right: '10%', fontSize: '1.1rem', color: '#ff69b4' },
+  { top: '32%', left: '4%',   fontSize: '0.9rem', color: '#c084fc' },
+  { top: '38%', right: '5%',  fontSize: '1.3rem', color: '#67e8f9' },
+  { bottom: '26%', left: '7%',  fontSize: '1.0rem', color: '#ffd700' },
+  { bottom: '22%', right: '8%', fontSize: '0.85rem',color: '#ff69b4' },
+  { bottom: '13%', left: '18%', fontSize: '1.4rem', color: '#a78bfa' },
+  { bottom: '15%', right: '16%',fontSize: '1.2rem', color: '#ffd700' },
+]
+
+function SaveCeremony({ deck, totalScore, scores, onClose }: {
+  deck: Record<SlotKey, Card | null>
+  totalScore: number
+  scores: StyleScore[]
+  onClose: () => void
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 90,
+        background: 'radial-gradient(ellipse at 50% 45%, rgba(120,20,200,0.97) 0%, rgba(20,0,55,0.99) 100%)',
+        backdropFilter: 'blur(20px)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: 18, overflow: 'hidden', padding: '0 24px',
+      }}
+    >
+      {/* 白フラッシュ */}
+      <motion.div
+        initial={{ opacity: 0.85 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        style={{ position: 'absolute', inset: 0, background: 'white', pointerEvents: 'none', zIndex: 1 }}
+      />
+
+      {/* 浮遊スパークル */}
+      {SPARKLE_POS.map((pos, i) => (
+        <motion.div
+          key={i}
+          animate={{ y: [-8, 8, -8], opacity: [0.55, 1, 0.55], scale: [0.88, 1.18, 0.88] }}
+          transition={{ duration: 1.9 + i * 0.22, repeat: Infinity, delay: i * 0.17, ease: 'easeInOut' }}
+          style={{ position: 'absolute', ...pos, pointerEvents: 'none', zIndex: 2 }}
+        >
+          {i % 2 === 0 ? '✦' : '★'}
+        </motion.div>
+      ))}
+
+      {/* タイトル */}
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0, y: -20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, type: 'spring', stiffness: 280, damping: 20 }}
+        style={{ textAlign: 'center', zIndex: 3 }}
+      >
+        <p style={{ fontFamily: ZEN, fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,200,255,0.85)', margin: '0 0 8px', letterSpacing: '0.12em' }}>
+          ✦ コーデアルバムに保存しました ✦
+        </p>
+        <h2 style={{
+          fontFamily: ZEN, fontWeight: 900, fontSize: '2.4rem', margin: 0, lineHeight: 1.1,
+          background: 'linear-gradient(135deg, #ffd700 0%, #ff69b4 50%, #c084fc 100%)',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          filter: 'drop-shadow(0 0 18px rgba(255,200,80,0.9)) drop-shadow(0 3px 6px rgba(0,0,0,0.95))',
+        }}>
+          コーデ完成！
+        </h2>
+      </motion.div>
+
+      {/* カードファン */}
+      <div style={{ position: 'relative', width: 280, height: 162, flexShrink: 0, zIndex: 3 }}>
+        {CATEGORIES.map((cat, i) => {
+          const card = deck[cat.key]
+          const angle = (i - 2) * 16
+          return (
+            <div
+              key={cat.key}
+              style={{
+                position: 'absolute', bottom: 0, left: '50%', marginLeft: -35,
+                transformOrigin: '50% 100%', transform: `rotate(${angle}deg)`,
+                zIndex: i, width: 70,
+              }}
+            >
+              <motion.div
+                initial={{ y: 90, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.35 + i * 0.1, type: 'spring', stiffness: 260, damping: 22 }}
+                style={{
+                  width: 70, aspectRatio: '373 / 669', position: 'relative', borderRadius: 9,
+                  overflow: 'hidden',
+                  backgroundColor: card ? 'white' : 'rgba(80,20,120,0.6)',
+                  boxShadow: card
+                    ? `0 0 16px ${card.color}bb, 0 4px 14px rgba(0,0,0,0.65)`
+                    : '0 4px 12px rgba(0,0,0,0.5)',
+                  border: card ? '2px solid rgba(255,255,255,0.9)' : '1.5px dashed rgba(255,255,255,0.25)',
+                }}
+              >
+                {card ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={card.image} alt={card.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/img/Card_Frame2.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
+                  </>
+                ) : (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '1.4rem' }}>
+                    ?
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* スコア */}
+      <motion.div
+        initial={{ scale: 0.4, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.9, type: 'spring', stiffness: 220, damping: 18 }}
+        style={{ textAlign: 'center', zIndex: 3 }}
+      >
+        <p style={{ fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,200,255,0.75)', margin: '0 0 2px', letterSpacing: '0.1em' }}>
+          スタイルスコア
+        </p>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 4 }}>
+          <span style={{
+            fontFamily: ZEN, fontWeight: 900, fontSize: '3.8rem', lineHeight: 1,
+            background: 'linear-gradient(135deg, #ffd700 0%, #ffaa00 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            filter: 'drop-shadow(0 0 14px rgba(255,200,0,0.85))',
+          }}>
+            {totalScore}
+          </span>
+          <span style={{ fontFamily: ZEN, fontWeight: 900, fontSize: '1.4rem', color: '#ffd700' }}>pt</span>
+        </div>
+      </motion.div>
+
+      {/* スタイルスコアバッジ */}
+      {scores.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', zIndex: 3, maxWidth: 320 }}
+        >
+          {scores.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 1.3 + i * 0.1, type: 'spring' }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                padding: '5px 11px', borderRadius: 9999,
+                background: 'linear-gradient(135deg, rgba(200,40,180,0.55), rgba(120,20,200,0.55))',
+                border: '1.5px solid rgba(255,180,255,0.6)',
+                boxShadow: '0 2px 10px rgba(200,40,180,0.4)',
+              }}
+            >
+              <span style={{ fontFamily: ZEN, fontSize: '0.65rem', fontWeight: 900, color: 'white', textShadow: TEXT_SHADOW }}>{s.label}</span>
+              <span style={{ fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 900, color: '#ffd700', textShadow: '0 0 6px rgba(255,200,0,0.7)' }}>{s.pct}%</span>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
+      {/* とじるボタン */}
+      <motion.button
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={e => { e.stopPropagation(); onClose() }}
+        style={{
+          fontFamily: ZEN, fontWeight: 900, fontSize: '0.92rem',
+          padding: '12px 44px', borderRadius: 9999,
+          background: 'linear-gradient(135deg, #ff69b4 0%, #c040e0 100%)',
+          border: '2.5px solid rgba(255,255,255,0.85)',
+          color: 'white', cursor: 'pointer', zIndex: 3,
+          boxShadow: '0 4px 22px rgba(200,40,160,0.65), 0 2px 8px rgba(0,0,0,0.5)',
+          textShadow: TEXT_SHADOW,
+        }}
+      >
+        とじる
+      </motion.button>
+    </motion.div>
+  )
+}
+
 /* ━━━ FlipModal ━━━ */
 function FlipModal({ card, onClose }: { card: Card; onClose: () => void }) {
   const [showBack, setShowBack] = useState(false)
@@ -445,7 +638,11 @@ export default function DeckScreen() {
   const [styleScores, setStyleScores] = useState<StyleScore[]>([])
   const [flipCard, setFlipCard] = useState<Card | null>(null)
   const [saveLoading, setSaveLoading] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [ceremony, setCeremony] = useState<{
+    deck: Record<SlotKey, Card | null>
+    totalScore: number
+    scores: StyleScore[]
+  } | null>(null)
 
   const displayScores = styleScores.length > 0 ? styleScores : computeScores(deck)
 
@@ -547,8 +744,11 @@ export default function DeckScreen() {
     saveStoredCoord(coord)
 
     setSaveLoading(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    setCeremony({
+      deck: { ...deck },
+      totalScore: computeTotalScore(deck, displayScores),
+      scores: displayScores,
+    })
   }
 
   return (
@@ -882,25 +1082,15 @@ export default function DeckScreen() {
         )}
       </AnimatePresence>
 
-      {/* ━━━ 保存完了トースト ━━━ */}
+      {/* ━━━ 保存セレモニー ━━━ */}
       <AnimatePresence>
-        {saved && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }}
-            style={{ position: 'fixed', bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', paddingBottom: 90, zIndex: 60, pointerEvents: 'none' }}
-          >
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              background: 'linear-gradient(135deg, #ff69b4, #c040e0)',
-              borderRadius: 12, padding: '11px 22px',
-              color: 'white', fontFamily: ZEN, fontWeight: 900, fontSize: '0.9rem',
-              boxShadow: '0 4px 20px rgba(200,40,160,0.65)',
-              border: '2px solid rgba(255,255,255,0.8)', textShadow: TEXT_SHADOW,
-            }}>
-              <Check size={16} />
-              ✦ デッキを保存しました！
-            </div>
-          </motion.div>
+        {ceremony && (
+          <SaveCeremony
+            deck={ceremony.deck}
+            totalScore={ceremony.totalScore}
+            scores={ceremony.scores}
+            onClose={() => setCeremony(null)}
+          />
         )}
       </AnimatePresence>
 
