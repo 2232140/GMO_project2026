@@ -454,10 +454,12 @@ function Slot({ cat, card, locked, isShuffling, onTap, onRemove, onLock, onFlip 
   return (
     <div style={{ flex: 1, maxWidth: 68, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
       <div style={{ position: 'relative', width: '100%' }}>
-        {/* シャッフルアニメーション */}
+        {/* カード差し込みアニメーション */}
         <motion.div
-          animate={isShuffling && !locked ? { scale: [1, 0.88, 1.06, 0.93, 1], rotate: [-5, 5, -3, 3, 0] } : { scale: 1, rotate: 0 }}
-          transition={isShuffling && !locked ? { duration: 0.45, repeat: Infinity } : {}}
+          key={card?.id ?? 'empty'}
+          initial={{ scale: 0.72, opacity: 0, y: -10 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           style={{ width: '100%' }}
         >
           <button
@@ -557,6 +559,81 @@ function Slot({ cat, card, locked, isShuffling, onTap, onRemove, onLock, onFlip 
         {cat.label}
       </span>
     </div>
+  )
+}
+
+/* ━━━ AILoadingOverlay ━━━ */
+function AILoadingOverlay() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 70,
+        background: 'rgba(10,0,30,0.88)',
+        backdropFilter: 'blur(14px)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        gap: 28,
+      }}
+    >
+      {/* 魔法陣リング */}
+      <div style={{ position: 'relative', width: 148, height: 148 }}>
+        {[
+          { inset: 0,  dur: 3.2, dir: 1,  color: 'rgba(255,80,200,0.75)',  shadow: '0 0 14px rgba(255,80,200,0.6)'  },
+          { inset: 18, dur: 2.4, dir: -1, color: 'rgba(140,80,255,0.65)',  shadow: '0 0 12px rgba(140,80,255,0.5)'  },
+          { inset: 36, dur: 1.8, dir: 1,  color: 'rgba(80,200,255,0.55)',  shadow: '0 0 10px rgba(80,200,255,0.45)' },
+        ].map((ring, i) => (
+          <motion.div
+            key={i}
+            animate={{ rotate: ring.dir > 0 ? 360 : -360 }}
+            transition={{ duration: ring.dur, repeat: Infinity, ease: 'linear' }}
+            style={{
+              position: 'absolute', inset: ring.inset, borderRadius: '50%',
+              border: `1.5px solid ${ring.color}`, boxShadow: ring.shadow,
+            }}
+          />
+        ))}
+        <motion.div
+          animate={{ scale: [0.85, 1.25, 0.85], rotate: [0, 180, 360] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem' }}
+        >
+          ✨
+        </motion.div>
+      </div>
+
+      {/* テキスト */}
+      <motion.div
+        animate={{ opacity: [0.75, 1, 0.75] }}
+        transition={{ duration: 1.6, repeat: Infinity }}
+        style={{ textAlign: 'center' }}
+      >
+        <p style={{ fontFamily: ZEN, fontWeight: 900, fontSize: '1.02rem', color: 'white', margin: '0 0 7px', textShadow: TEXT_SHADOW }}>
+          AIがコーデを提案中...
+        </p>
+        <p style={{ fontFamily: ZEN, fontSize: '0.72rem', color: 'rgba(255,200,255,0.8)', margin: 0, textShadow: TEXT_SHADOW }}>
+          あなたにぴったりのスタイルを分析しています 💖
+        </p>
+      </motion.div>
+
+      {/* バウンシングドット */}
+      <div style={{ display: 'flex', gap: 10 }}>
+        {(['#ff69b4', '#c084fc', '#67d8f9'] as const).map((color, dot) => (
+          <motion.div
+            key={dot}
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 0.75, repeat: Infinity, delay: dot * 0.18, ease: 'easeInOut' }}
+            style={{
+              width: 9, height: 9, borderRadius: '50%',
+              background: color,
+              boxShadow: `0 0 8px ${color}bb`,
+            }}
+          />
+        ))}
+      </div>
+    </motion.div>
   )
 }
 
@@ -1080,6 +1157,11 @@ export default function DeckScreen() {
             </motion.div>
           </>
         )}
+      </AnimatePresence>
+
+      {/* ━━━ AIローディングオーバーレイ ━━━ */}
+      <AnimatePresence>
+        {isAILoading && <AILoadingOverlay />}
       </AnimatePresence>
 
       {/* ━━━ AI提案完了ダイアログ ━━━ */}
