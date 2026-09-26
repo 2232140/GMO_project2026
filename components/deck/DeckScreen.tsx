@@ -841,7 +841,7 @@ export default function DeckScreen() {
           ))}
         </div>
 
-        {/* ━━━ ③ スタイルスコアバッジ ━━━ */}
+        {/* ━━━ ③ スタイルスコアゲージ ━━━ */}
         <AnimatePresence>
           {displayScores.length > 0 && (
             <motion.div
@@ -850,30 +850,56 @@ export default function DeckScreen() {
               exit={{ opacity: 0, height: 0 }}
               style={{ flexShrink: 0, overflow: 'hidden' }}
             >
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, paddingInline: 2 }}>
-                {displayScores.map((score, i) => (
-                  <motion.div
-                    key={score.label}
-                    initial={{ opacity: 0, scale: 0.8, y: 6 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ delay: i * 0.08 }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      padding: '5px 10px',
-                      borderRadius: 9999,
-                      background: 'linear-gradient(135deg, rgba(200,40,180,0.5) 0%, rgba(120,20,200,0.5) 100%)',
-                      border: '1.5px solid rgba(255,180,255,0.55)',
-                      boxShadow: '0 2px 10px rgba(200,40,180,0.35)',
-                    }}
-                  >
-                    <span style={{ fontFamily: ZEN, fontSize: '0.65rem', fontWeight: 900, color: 'white', textShadow: TEXT_SHADOW }}>
-                      {score.label}
-                    </span>
-                    <span style={{ fontFamily: ZEN, fontSize: '0.7rem', fontWeight: 900, color: '#ffd700', textShadow: '0 0 6px rgba(255,215,0,0.7)' }}>
-                      {score.pct}%
-                    </span>
-                  </motion.div>
-                ))}
+              <div style={{
+                background: 'rgba(255,255,255,0.07)',
+                borderRadius: 12,
+                border: '1px solid rgba(255,255,255,0.16)',
+                padding: '8px 10px',
+                display: 'flex', flexDirection: 'column', gap: 7,
+              }}>
+                {displayScores.map((score, i) => {
+                  const barGrad = score.label.includes('Y2K')     ? 'linear-gradient(90deg,#ff4da6,#ff99d4)'
+                    : score.label.includes('ピンク')   ? 'linear-gradient(90deg,#ff6b9d,#ffb3cc)'
+                    : score.label.includes('ガーリー') ? 'linear-gradient(90deg,#ff69b4,#ffadd8)'
+                    : score.label.includes('パープル') ? 'linear-gradient(90deg,#9b59ff,#c89aff)'
+                    : 'linear-gradient(90deg,#ffd700,#ffe97a)'
+                  return (
+                    <motion.div
+                      key={score.label}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.09 }}
+                      style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontFamily: ZEN, fontSize: '0.62rem', fontWeight: 900, color: 'white', textShadow: TEXT_SHADOW }}>
+                          {score.label}
+                        </span>
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: i * 0.09 + 0.45 }}
+                          style={{ fontFamily: ZEN, fontSize: '0.72rem', fontWeight: 900, color: '#ffd700', textShadow: '0 0 6px rgba(255,200,0,0.8)' }}
+                        >
+                          {score.pct}%
+                        </motion.span>
+                      </div>
+                      <div style={{
+                        position: 'relative', height: 9, borderRadius: 9999,
+                        background: 'rgba(0,0,0,0.4)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        overflow: 'hidden',
+                      }}>
+                        <motion.div
+                          initial={{ width: '0%' }}
+                          animate={{ width: `${score.pct}%` }}
+                          transition={{ delay: i * 0.09 + 0.18, duration: 0.75, ease: [0.22, 0.61, 0.36, 1] }}
+                          style={{ height: '100%', background: barGrad, borderRadius: 9999 }}
+                        />
+                      </div>
+                    </motion.div>
+                  )
+                })}
               </div>
             </motion.div>
           )}
