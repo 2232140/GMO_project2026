@@ -394,18 +394,31 @@ export default function BinderScreen() {
       <div style={{ position: 'relative', zIndex: 1, height: '100dvh', maxWidth: 430, margin: '0 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
         {/* ヘッダー */}
-        <header style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 14px 10px', position: 'relative', background: ['repeating-linear-gradient(45deg, rgba(255,215,0,0.055) 0px, rgba(255,215,0,0.055) 1px, transparent 1px, transparent 7px)', 'repeating-linear-gradient(-45deg, rgba(255,215,0,0.055) 0px, rgba(255,215,0,0.055) 1px, transparent 1px, transparent 7px)', 'linear-gradient(135deg, rgba(255,55,170,0.93) 0%, rgba(125,35,215,0.93) 100%)'].join(', '), backdropFilter: 'blur(16px)', borderBottom: '2px solid rgba(255,215,0,0.52)', boxShadow: '0 4px 22px rgba(170,20,170,0.32), inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 0 rgba(255,215,0,0.18)' }}>
-          {/* ゴールドコーナーブラケット */}
-          <div style={{ position: 'absolute', top: 5, left: 5, width: 11, height: 11, borderTop: '2px solid rgba(255,215,0,0.78)', borderLeft: '2px solid rgba(255,215,0,0.78)', borderRadius: '3px 0 0 0', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: 5, right: 5, width: 11, height: 11, borderTop: '2px solid rgba(255,215,0,0.78)', borderRight: '2px solid rgba(255,215,0,0.78)', borderRadius: '0 3px 0 0', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: 7, left: 5, width: 11, height: 11, borderBottom: '2px solid rgba(255,215,0,0.55)', borderLeft: '2px solid rgba(255,215,0,0.55)', borderRadius: '0 0 0 3px', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: 7, right: 5, width: 11, height: 11, borderBottom: '2px solid rgba(255,215,0,0.55)', borderRight: '2px solid rgba(255,215,0,0.55)', borderRadius: '0 0 3px 0', pointerEvents: 'none' }} />
-          <motion.button whileTap={{ scale: 0.92 }} onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'white', fontFamily: ZEN, fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', textShadow: TEXT_SHADOW, position: 'relative', zIndex: 1 }}>
-            <ChevronLeft size={17} />戻る
+        <header style={{
+          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          margin: '10px 14px 0',
+          background: 'rgba(28,4,56,0.48)', backdropFilter: 'blur(10px)',
+          borderRadius: 14, padding: '7px 10px',
+          border: '1px solid rgba(255,255,255,0.22)',
+        }}>
+          <motion.button whileTap={{ scale: 0.93 }} onClick={() => router.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ChevronLeft size={15} color="rgba(255,180,220,0.75)" />
+            <span style={{ fontFamily: ZEN, fontSize: '0.75rem', color: 'rgba(255,180,220,0.75)', fontWeight: 700 }}>戻る</span>
           </motion.button>
-          <h1 style={{ fontFamily: FREDOKA, fontWeight: 700, fontSize: '1.28rem', color: 'white', margin: 0, letterSpacing: '0.1em', textShadow: '0 2px 0 rgba(170,20,130,0.55), 0 0 24px rgba(255,215,0,0.55)', WebkitTextStroke: '0.5px rgba(255,215,0,0.5)', position: 'relative', zIndex: 1 }}>
-            MY BINDER
-          </h1>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            <span style={{
+              fontFamily: FREDOKA, fontSize: '0.9rem', fontWeight: 700,
+              background: 'linear-gradient(90deg,#ffd700 0%,#ff69b4 50%,#c084fc 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 6px rgba(255,100,200,0.55))',
+              letterSpacing: '0.06em',
+            }}>
+              ✦ マイバインダー ✦
+            </span>
+            <span style={{ fontFamily: FREDOKA, fontSize: '0.55rem', letterSpacing: '0.2em', color: 'rgba(255,180,230,0.55)', fontWeight: 600 }}>
+              MY BINDER
+            </span>
+          </div>
           <div style={{ width: 52 }} />
         </header>
 
