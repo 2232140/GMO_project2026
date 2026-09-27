@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft, X, Star, BookOpen } from 'lucide-react'
+import { ChevronLeft, X, Star } from 'lucide-react'
 import { MOCK_ITEM_CARDS, MOCK_COORD_CARDS, SLOT_CONFIG } from '@/lib/mockData'
 import { ItemCard, CoordCard, CardCategory } from '@/lib/types'
 import { getStoredCards, getStoredCoords, StoredCoord } from '@/lib/cardStore'
@@ -100,23 +100,37 @@ export default function AlbumPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-4 pt-4 pb-2">
+      <header
+        className="flex items-center justify-between mx-4 mt-3 mb-1 px-3 py-2 rounded-2xl"
+        style={{ background: 'rgba(28,4,56,0.48)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.22)' }}
+      >
         <button
           onClick={() => router.push('/')}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors flex-shrink-0"
         >
           <ChevronLeft className="w-5 h-5" />
           <span className="text-sm font-medium">ホーム</span>
         </button>
         <div className="text-center">
-          <h1 className="text-base font-black flex items-center gap-1.5"
-            style={{ background:'linear-gradient(90deg,#ffd700,#ff69b4)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
-            <BookOpen className="w-4 h-4 text-amber-300 flex-shrink-0" style={{WebkitTextFillColor:'#fcd34d'}} />
-            コレクションアルバム
+          <h1
+            className="font-black whitespace-nowrap"
+            style={{
+              fontSize: '0.92rem',
+              background: 'linear-gradient(90deg, #ffd700 0%, #ff69b4 50%, #c084fc 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 8px rgba(255,100,200,0.75)) drop-shadow(0 2px 5px rgba(0,0,0,0.9))',
+            }}
+          >
+            ✦ コレクションアルバム ✦
           </h1>
-          <p className="text-white/45 text-xs font-semibold">あなたのカード帳 ✦</p>
+          <p
+            className="font-bold tracking-widest"
+            style={{ fontSize: '0.52rem', color: 'rgba(255,220,255,0.72)', textShadow: '0 2px 4px rgba(0,0,0,0.9)', letterSpacing: '0.18em' }}
+          >
+            COLLECTION ALBUM
+          </p>
         </div>
-        <div className="w-16" />
+        <div className="w-16 flex-shrink-0" />
       </header>
 
       {/* Tabs */}
