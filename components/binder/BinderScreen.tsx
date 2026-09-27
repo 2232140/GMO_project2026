@@ -526,7 +526,7 @@ export default function BinderScreen() {
                   ))}
                 </motion.div>
               ) : (
-                <motion.div key="item" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 9 }}>
+                <motion.div key="item" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
                   {filteredItems.map(card => (
                     <ItemCardThumb key={card.id} card={card} onTap={() => setSelectedItem(card)} />
                   ))}
