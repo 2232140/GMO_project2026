@@ -79,6 +79,7 @@ function storedCoordToCoordCard(sc: StoredCoord): CoordCard {
     deckCards,
     totalScore: sc.totalScore,
     theme: sc.theme,
+    scores: sc.scores,
   }
 }
 
@@ -402,10 +403,56 @@ export default function AlbumPage() {
                 })}
               </div>
 
-              <div className="glass rounded-xl p-3">
-                <p className="text-white/50 text-xs font-bold mb-2">テーマ</p>
+              <div className="glass rounded-xl p-3 mb-3">
+                <p className="text-white/50 text-xs font-bold mb-1">テーマ</p>
                 <p className="text-white font-bold">{selectedCoord.theme}</p>
               </div>
+
+              {selectedCoord.scores && selectedCoord.scores.length > 0 && (
+                <div className="glass rounded-xl p-3">
+                  <p className="text-white/50 text-xs font-bold mb-2">スタイルスコア</p>
+                  <div className="flex flex-col gap-2">
+                    {selectedCoord.scores.map((score, i) => {
+                      const barGrad = score.label.includes('Y2K')     ? 'linear-gradient(90deg,#ff4da6,#ff99d4)'
+                        : score.label.includes('ピンク')   ? 'linear-gradient(90deg,#ff6b9d,#ffb3cc)'
+                        : score.label.includes('ガーリー') ? 'linear-gradient(90deg,#ff69b4,#ffadd8)'
+                        : score.label.includes('パープル') ? 'linear-gradient(90deg,#9b59ff,#c89aff)'
+                        : 'linear-gradient(90deg,#ffd700,#ffe97a)'
+                      return (
+                        <motion.div
+                          key={score.label}
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.08 }}
+                          className="flex flex-col gap-1"
+                        >
+                          <div className="flex justify-between items-center">
+                            <span className="text-white font-black" style={{ fontSize: '0.62rem' }}>{score.label}</span>
+                            <motion.span
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: i * 0.08 + 0.4 }}
+                              className="font-black"
+                              style={{ fontSize: '0.7rem', color: '#ffd700', textShadow: '0 0 6px rgba(255,200,0,0.8)' }}
+                            >
+                              {score.pct}%
+                            </motion.span>
+                          </div>
+                          <div className="relative rounded-full overflow-hidden" style={{ height: 8, background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <motion.div
+                              initial={{ width: '0%' }}
+                              animate={{ width: `${score.pct}%` }}
+                              transition={{ delay: i * 0.08 + 0.15, duration: 0.7, ease: [0.22, 0.61, 0.36, 1] }}
+                              className="absolute inset-0 rounded-full"
+                              style={{ background: barGrad }}
+                            />
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}

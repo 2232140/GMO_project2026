@@ -16,6 +16,11 @@ export interface ItemCard {
   image?: string
 }
 
+export interface StyleScore {
+  label: string
+  pct: number
+}
+
 export interface CoordCard {
   id: string
   name: string
@@ -23,6 +28,7 @@ export interface CoordCard {
   deckCards: Record<CardCategory, ItemCard | null>
   totalScore: number
   theme: string
+  scores?: StyleScore[]
 }
 
 export type DeckSlot = ItemCard | null
