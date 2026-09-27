@@ -35,6 +35,9 @@ function getZodiac(month: number, day: number): string {
   return '♓ うお座'
 }
 
+const ZEN = 'var(--font-zen-maru-gothic), var(--font-nunito), sans-serif'
+const FREDOKA = 'var(--font-fredoka), sans-serif'
+
 const SELECT_STYLE: React.CSSProperties = {
   background: 'rgba(255,255,255,0.14)',
   border: '1px solid rgba(255,255,255,0.22)',
@@ -256,24 +259,46 @@ export default function SettingsPage() {
   const zodiac = birthMonth && birthDay ? getZodiac(birthMonth, birthDay) : null
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div style={{ position: 'fixed', inset: 0, backgroundImage: "url('/img/wall.jpeg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,rgba(255,150,220,0.14) 0%,rgba(200,120,255,0.10) 50%,rgba(255,180,240,0.13) 100%)', pointerEvents: 'none' }} />
 
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 pt-4 pb-2">
-        <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors">
-          <ChevronLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">ホーム</span>
-        </button>
-        <div className="text-center">
-          <h1 className="text-base font-black text-white flex items-center gap-1.5">
-            <Settings className="w-4 h-4 text-white/70" />
-            マイパーソナライズ設定
-          </h1>
-        </div>
-        <div className="w-16" />
-      </header>
+      <div style={{ position: 'relative', zIndex: 1, height: '100dvh', maxWidth: 430, margin: '0 auto', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
 
-      <div className="flex-1 px-4 pb-8 flex flex-col gap-5">
+        {/* Header */}
+        <header style={{
+          flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          margin: '10px 14px 0',
+          background: 'rgba(28,4,56,0.48)', backdropFilter: 'blur(10px)',
+          borderRadius: 14, padding: '7px 10px',
+          border: '1px solid rgba(255,255,255,0.22)',
+        }}>
+          <motion.button whileTap={{ scale: 0.93 }}
+            onClick={() => router.push('/')}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', gap: 4 }}
+          >
+            <ChevronLeft size={15} color="rgba(255,180,220,0.75)" />
+            <span style={{ fontFamily: ZEN, fontSize: '0.75rem', color: 'rgba(255,180,220,0.75)', fontWeight: 700 }}>ホーム</span>
+          </motion.button>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            <span style={{
+              fontFamily: FREDOKA, fontSize: '0.9rem', fontWeight: 700,
+              background: 'linear-gradient(90deg,#ffd700 0%,#ff69b4 50%,#c084fc 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 6px rgba(255,100,200,0.55))',
+              letterSpacing: '0.06em',
+            }}>
+              ✦ パーソナライズ ✦
+            </span>
+            <span style={{ fontFamily: FREDOKA, fontSize: '0.55rem', letterSpacing: '0.2em', color: 'rgba(255,180,230,0.55)', fontWeight: 600 }}>
+              MY SETTINGS
+            </span>
+          </div>
+
+          <div style={{ width: 56 }} />
+        </header>
+
+        <div className="px-4 pb-8 flex flex-col gap-5" style={{ marginTop: 10 }}>
 
         {/* ── 体型 ── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
@@ -599,16 +624,43 @@ export default function SettingsPage() {
 
         {/* ── 保存 ── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}>
-          <button onClick={handleSave} disabled={saved}
-            className="w-full py-4 rounded-2xl btn-glow-gold text-white font-black text-base flex items-center justify-center gap-2"
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={handleSave}
+            disabled={saved}
+            style={{
+              position: 'relative', overflow: 'hidden',
+              width: '100%', padding: '16px', border: 'none', borderRadius: 16,
+              cursor: saved ? 'default' : 'pointer', outline: 'none',
+              fontFamily: ZEN, fontSize: '1rem', fontWeight: 900, color: 'white',
+              background: saved
+                ? 'linear-gradient(90deg,#48bb78,#38a169)'
+                : 'linear-gradient(90deg,#ffd700 0%,#ff69b4 45%,#c084fc 100%)',
+              backgroundSize: '300% 100%',
+              animation: saved ? 'none' : 'holoShimmer 3s linear infinite',
+              boxShadow: saved
+                ? '0 0 20px rgba(56,161,105,0.5),inset 0 2px 4px rgba(255,255,255,0.25),0 4px 0 #206040'
+                : '0 0 32px rgba(255,180,0,0.6),inset 0 2px 5px rgba(255,255,255,0.3),0 4px 0 #806000',
+              textShadow: '0 1px 3px rgba(0,0,0,0.4)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}
           >
+            {!saved && (
+              <div style={{
+                position: 'absolute', inset: 0, borderRadius: 16, pointerEvents: 'none',
+                background: 'linear-gradient(105deg,transparent 35%,rgba(255,255,255,0.22) 50%,transparent 65%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmerSweep 2.2s linear infinite',
+              }} />
+            )}
             {saved
-              ? <><Check className="w-5 h-5" /> 保存しました！</>
-              : <><Sparkles className="w-5 h-5" /> 設定を保存する</>
+              ? <><Check size={20} /> 保存しました！</>
+              : <><Sparkles size={20} /> 設定を保存する</>
             }
-          </button>
+          </motion.button>
         </motion.div>
 
+        </div>
       </div>
     </div>
   )
