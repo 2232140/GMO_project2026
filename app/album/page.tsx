@@ -28,6 +28,14 @@ const RARITY_MAP: Record<string, ItemCard['rarity']> = {
   N: 'normal', R: 'rare', SR: 'super-rare', legend: 'legend',
 }
 
+const CARD_FALLBACK_IMAGE: Record<string, string> = {
+  tops:    '/img/dress.png',
+  bottoms: '/img/bottom.png',
+  shoes:   '/img/shoes.png',
+  cosme:   '/img/cosme.png',
+  bag:     '/img/bag.png',
+}
+
 /* ━━━ converters ━━━ */
 function storedCardToItemCard(sc: ReturnType<typeof getStoredCards>[number]): ItemCard {
   return {
@@ -167,21 +175,37 @@ export default function AlbumPage() {
                       </div>
 
                       {/* Mini card fan */}
-                      <div className="flex justify-center gap-1 py-2 relative h-16">
-                        {Object.values(coord.deckCards).filter(Boolean).map((card, ci) => (
-                          <div
-                            key={ci}
-                            className="absolute w-10 h-14 rounded-lg flex items-center justify-center text-xl"
-                            style={{
-                              background: card ? `linear-gradient(135deg, ${card.color}33, ${card.color}66)` : 'rgba(30,10,50,0.9)',
-                              border: '1px solid rgba(255,255,255,0.2)',
-                              transform: `rotate(${(ci - 2) * 8}deg) translateX(${(ci - 2) * 12}px)`,
-                              zIndex: ci,
-                            }}
-                          >
-                            {card?.emoji}
-                          </div>
-                        ))}
+                      <div className="flex justify-center py-2 relative h-20">
+                        {Object.values(coord.deckCards).filter(Boolean).map((card, ci) => {
+                          const imgSrc = card!.image ?? CARD_FALLBACK_IMAGE[card!.category] ?? '/img/dress.png'
+                          return (
+                            <div
+                              key={ci}
+                              className="absolute rounded-lg overflow-hidden"
+                              style={{
+                                width: 38, height: 56,
+                                backgroundColor: 'white',
+                                border: '1.5px solid rgba(255,255,255,0.88)',
+                                boxShadow: `0 3px 10px rgba(0,0,0,0.5), 0 0 8px ${card!.color}55`,
+                                transform: `rotate(${(ci - 2) * 9}deg) translateX(${(ci - 2) * 13}px)`,
+                                zIndex: ci,
+                              }}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={imgSrc}
+                                alt={card!.name}
+                                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+                              />
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src="/img/Card_Frame2.png"
+                                alt=""
+                                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', pointerEvents: 'none' }}
+                              />
+                            </div>
+                          )
+                        })}
                       </div>
 
                       <div>
