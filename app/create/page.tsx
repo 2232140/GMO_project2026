@@ -617,26 +617,48 @@ export default function CreatePage() {
 
         {/* Header */}
         {!showIssue && !isProcessing && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 0', flexShrink: 0 }}>
+          <div style={{
+            flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            margin: '10px 14px 0',
+            background: 'rgba(28,4,56,0.48)', backdropFilter: 'blur(10px)',
+            borderRadius: 14, padding: '7px 10px',
+            border: '1px solid rgba(255,255,255,0.22)',
+          }}>
+            {/* Back button */}
             <motion.button whileTap={{ scale: 0.93 }}
               onClick={() => step === 1 ? router.push('/') : setStep(1)}
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center', gap: 4 }}
             >
-              <ChevronLeft size={16} color="rgba(255,180,220,0.7)" />
-              <span style={{ fontFamily: ZEN, fontSize: '0.8rem', color: 'rgba(255,180,220,0.7)', fontWeight: 700 }}>戻る</span>
+              <ChevronLeft size={15} color="rgba(255,180,220,0.75)" />
+              <span style={{ fontFamily: ZEN, fontSize: '0.75rem', color: 'rgba(255,180,220,0.75)', fontWeight: 700 }}>戻る</span>
             </motion.button>
 
+            {/* Center title */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+              <span style={{
+                fontFamily: FREDOKA, fontSize: '0.9rem', fontWeight: 700,
+                background: 'linear-gradient(90deg,#ffd700 0%,#ff69b4 50%,#c084fc 100%)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 0 6px rgba(255,100,200,0.55))',
+                letterSpacing: '0.06em',
+              }}>
+                {step === 1 ? '✦ カード作成 ✦' : '✦ カードを編集 ✦'}
+              </span>
+              <span style={{ fontFamily: FREDOKA, fontSize: '0.55rem', letterSpacing: '0.2em', color: 'rgba(255,180,230,0.55)', fontWeight: 600 }}>
+                STYLE CARD
+              </span>
+            </div>
+
             {/* Step dots */}
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
               {[1, 2].map(s => (
                 <div key={s} style={{
-                  width: s === step ? 24 : 8, height: 8, borderRadius: 4, transition: 'all 0.3s',
+                  width: s === step ? 20 : 7, height: 7, borderRadius: 4, transition: 'all 0.3s',
                   background: s === step ? '#ff1493' : 'rgba(255,100,180,0.25)',
-                  boxShadow: s === step ? '0 0 8px rgba(255,20,147,0.8)' : 'none',
+                  boxShadow: s === step ? '0 0 7px rgba(255,20,147,0.8)' : 'none',
                 }} />
               ))}
             </div>
-            <div style={{ width: 56 }} />
           </div>
         )}
 
@@ -899,17 +921,9 @@ export default function CreatePage() {
               initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
               style={{ flex: 1, overflowY: 'auto', padding: '10px 16px 28px', display: 'flex', flexDirection: 'column', gap: 12 }}
             >
-              <p style={{
-                fontFamily: FREDOKA, fontSize: '1.15rem', fontWeight: 700, letterSpacing: 3,
-                color: '#ff8fd8', margin: 0, textAlign: 'center', flexShrink: 0,
-                textShadow: '0 0 16px rgba(255,100,200,0.95),0 0 32px rgba(255,20,147,0.65)',
-              }}>
-                ✨ カードを編集 ✨
-              </p>
-
               {/* Card preview */}
               <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-                <div style={{ width: 110, aspectRatio: '373 / 669', borderRadius: 8, position: 'relative', overflow: 'hidden', backgroundColor: 'white', boxShadow: `0 0 24px ${currentTheme.glow},0 4px 14px rgba(0,0,0,0.5)` }}>
+                <div style={{ width: 145, aspectRatio: '373 / 669', borderRadius: 10, position: 'relative', overflow: 'hidden', background: `linear-gradient(160deg,white 0%,${currentTheme.hex}28 100%)`, boxShadow: `0 0 28px ${currentTheme.glow},0 6px 18px rgba(0,0,0,0.55)` }}>
                   {/* アイテム画像 (中間層) */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cardImg} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 1 }} />
@@ -924,6 +938,35 @@ export default function CreatePage() {
                   <div style={{ position: 'absolute', top: 5, right: 5, zIndex: 3, background: 'linear-gradient(135deg,#ffd700,#ff8c00)', borderRadius: 20, padding: '1px 6px' }}>
                     <span style={{ fontFamily: FREDOKA, fontSize: '0.48rem', fontWeight: 700, color: '#3a1800' }}>SR</span>
                   </div>
+                  {/* Live card info overlay */}
+                  {(cardName || brand) && (
+                    <div style={{
+                      position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4,
+                      background: 'linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 100%)',
+                      padding: '22px 5px 6px',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1,
+                      pointerEvents: 'none',
+                    }}>
+                      {cardName && (
+                        <span style={{
+                          fontFamily: ZEN, fontSize: '0.44rem', fontWeight: 900, color: 'white',
+                          textAlign: 'center', textShadow: '0 1px 2px rgba(0,0,0,0.9)',
+                          lineHeight: 1.2, letterSpacing: '0.04em', maxWidth: '90%',
+                          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                        } as React.CSSProperties}>
+                          {cardName}
+                        </span>
+                      )}
+                      {brand && (
+                        <span style={{
+                          fontFamily: FREDOKA, fontSize: '0.38rem', color: currentTheme.hex,
+                          letterSpacing: '0.12em', textShadow: `0 0 5px ${currentTheme.glow}`,
+                        }}>
+                          {brand.toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1027,12 +1070,21 @@ export default function CreatePage() {
 
               {/* Publish button */}
               <motion.button whileTap={{ scale: 0.97 }} onClick={handleIssue} style={{
+                position: 'relative', overflow: 'hidden',
                 flexShrink: 0, width: '100%', padding: '17px', border: 'none', borderRadius: 16, cursor: 'pointer', outline: 'none', marginTop: 4,
                 fontFamily: ZEN, fontSize: '1.08rem', fontWeight: 900, color: 'white',
-                background: 'linear-gradient(180deg,#c060f0 0%,#8020c0 50%,#4a0090 100%)',
-                boxShadow: '0 0 22px rgba(160,40,220,0.55),inset 0 2px 5px rgba(255,255,255,0.28),0 4px 0 #220050',
+                background: 'linear-gradient(90deg,#ff4da6 0%,#d040e0 40%,#7040ff 70%,#c060f0 100%)',
+                backgroundSize: '300% 100%',
+                animation: 'holoShimmer 3s linear infinite',
+                boxShadow: '0 0 32px rgba(200,40,240,0.8),inset 0 2px 5px rgba(255,255,255,0.3),0 4px 0 #220050',
                 textShadow: '0 1px 3px rgba(0,0,0,0.5)',
               }}>
+                <div style={{
+                  position: 'absolute', inset: 0, borderRadius: 16, pointerEvents: 'none',
+                  background: 'linear-gradient(105deg,transparent 35%,rgba(255,255,255,0.22) 50%,transparent 65%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmerSweep 2.2s linear infinite',
+                }} />
                 ✨ カードを発行する！
               </motion.button>
             </motion.div>
