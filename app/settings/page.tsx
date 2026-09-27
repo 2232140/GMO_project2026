@@ -260,7 +260,8 @@ export default function SettingsPage() {
 
   return (
     <div style={{ position: 'fixed', inset: 0, backgroundImage: "url('/img/wall.jpeg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,rgba(255,150,220,0.14) 0%,rgba(200,120,255,0.10) 50%,rgba(255,180,240,0.13) 100%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,0,18,0.82)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,rgba(255,80,180,0.18) 0%,rgba(160,60,255,0.14) 50%,rgba(255,120,200,0.16) 100%)', pointerEvents: 'none' }} />
 
       <div style={{ position: 'relative', zIndex: 1, height: '100dvh', maxWidth: 430, margin: '0 auto', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
 
