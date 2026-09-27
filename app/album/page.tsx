@@ -172,19 +172,44 @@ export default function AlbumPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  {coordCards.map((coord, i) => (
+                  {coordCards.map((coord, i) => {
+                    const isLegend = coord.totalScore >= 90
+                    const isHigh   = coord.totalScore >= 70
+                    const cardBorder = isLegend
+                      ? '2px solid rgba(255,215,0,0.85)'
+                      : isHigh
+                      ? '2px solid rgba(200,130,255,0.7)'
+                      : '1px solid rgba(255,255,255,0.15)'
+                    const cardGlow = isLegend
+                      ? '0 0 18px rgba(255,215,0,0.55), 0 0 6px rgba(255,200,80,0.4)'
+                      : isHigh
+                      ? '0 0 14px rgba(180,100,255,0.45)'
+                      : 'none'
+                    const overlayGrad = isLegend
+                      ? 'from-amber-400/15 to-yellow-300/10'
+                      : isHigh
+                      ? 'from-violet-500/12 to-purple-400/8'
+                      : 'from-pink-500/10 to-purple-500/10'
+                    return (
                     <motion.button
                       key={coord.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.1 }}
                       onClick={() => setSelectedCoord(coord)}
-                      className="glass-strong rounded-2xl p-3 flex flex-col gap-2 hover:bg-white/10 transition-all relative overflow-hidden holo-card"
+                      className="glass-strong rounded-2xl p-3 flex flex-col gap-2 hover:bg-white/10 transition-all relative overflow-hidden"
+                      style={{ border: cardBorder, boxShadow: cardGlow }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 pointer-events-none" />
+                      <div className={`absolute inset-0 bg-gradient-to-br ${overlayGrad} pointer-events-none`} />
 
                       {/* Score badge */}
-                      <div className="absolute top-2 right-2 flex items-center gap-1 bg-amber-400/90 px-2 py-0.5 rounded-full">
+                      <div
+                        className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full"
+                        style={{
+                          background: isLegend ? 'rgba(255,200,0,0.95)' : isHigh ? 'rgba(180,80,255,0.88)' : 'rgba(160,160,160,0.75)',
+                          boxShadow: isLegend ? '0 0 8px rgba(255,215,0,0.7)' : 'none',
+                        }}
+                      >
                         <Star className="w-3 h-3 text-white fill-white" />
                         <span className="text-white text-xs font-black">{coord.totalScore}</span>
                       </div>
@@ -231,7 +256,7 @@ export default function AlbumPage() {
                         </div>
                       </div>
                     </motion.button>
-                  ))}
+                  )})}
                 </div>
               )}
             </motion.div>
@@ -242,21 +267,21 @@ export default function AlbumPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-5">
                 {itemCards.map((card, i) => (
                   <motion.div
                     key={card.id}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.04, type: 'spring', stiffness: 200 }}
-                    className="flex flex-col items-center gap-1.5"
+                    transition={{ delay: i * 0.06, type: 'spring', stiffness: 200 }}
+                    className="flex flex-col items-center gap-2"
                   >
                     <HolographicCard
                       card={card}
-                      size="md"
+                      size="lg"
                       onClick={() => setSelectedCard(card)}
                     />
-                    <p className="text-white/70 text-xs text-center font-medium leading-tight line-clamp-2">
+                    <p className="text-white/75 text-xs text-center font-bold leading-tight line-clamp-2">
                       {card.name}
                     </p>
                   </motion.div>
